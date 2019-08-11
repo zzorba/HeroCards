@@ -127,24 +127,6 @@ export default class App {
         },
       },
     };
-    const browseCampaigns = {
-      component: {
-        name: 'My.Campaigns',
-        options: {
-          topBar: {
-            title: {
-              text: t`Campaigns`,
-            },
-            rightButtons: [{
-              icon: iconsMap.add,
-              id: 'add',
-              color: COLORS.navButton,
-              testID: t`New Campaign`,
-            }],
-          },
-        },
-      },
-    };
     const settings = {
       component: {
         name: 'Settings',
@@ -174,16 +156,6 @@ export default class App {
           bottomTab: {
             text: t`Decks`,
             icon: iconsMap.deck,
-          },
-        },
-      },
-    }, {
-      stack: {
-        children: [browseCampaigns],
-        options: {
-          bottomTab: {
-            text: t`Campaigns`,
-            icon: iconsMap.book,
           },
         },
       },

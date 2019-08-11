@@ -36,7 +36,7 @@ const BLURRED_ACT = require('../../assets/blur-act.jpeg');
 const BLURRED_AGENDA = require('../../assets/blur-agenda.jpeg');
 const PLAYER_BACK = require('../../assets/player-back.png');
 const ENCOUNTER_BACK = require('../../assets/encounter-back.png');
-const PER_INVESTIGATOR_ICON = (
+const PER_HERO_ICON = (
   <ArkhamIcon name="per_investigator" size={isBig ? 22 : 12} color="#000000" />
 );
 const ICON_SIZE = isBig ? 44 : 28;
@@ -193,7 +193,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
   }
 
   renderTestIcons(card: BaseCard) {
-    if (card.type_code === 'investigator') {
+    if (card.type_code === 'hero') {
       /* eslint-disable no-irregular-whitespace */
       return (
         <Text style={typography.cardText}>
@@ -253,7 +253,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     const doom = num(card.doom);
     const shroud = num(card.shroud);
     const clues = num(card.clues);
-    const perInvestigatorClues = card.clues && card.clues > 0 && !card.clues_fixed && PER_INVESTIGATOR_ICON;
+    const perInvestigatorClues = card.clues && card.clues > 0 && !card.clues_fixed && PER_HERO_ICON;
     return (
       <View style={styles.statsBlock}>
         { !!(card.xp || costString) && (
@@ -291,7 +291,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
       return (
         <Text style={typography.cardText}>
           { `${t`Fight`}: ${num(card.enemy_fight)}. ${t`Health`}: ${num(card.health)}` }
-          { !!card.health_per_investigator && PER_INVESTIGATOR_ICON }
+          { !!card.health_per_investigator && PER_HERO_ICON }
           { `. ${t`Evade`}: ${num(card.enemy_evade)}. ` }
           { '\n' }
           { `${t`Damage`}: ${num(card.enemy_damage)}. ${t`Horror`}: ${num(card.enemy_horror)}. ` }
@@ -313,7 +313,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
       card.type_code === 'asset' ||
       card.type_code === 'event' ||
       card.type_code === 'skill' ||
-      card.type_code === 'investigator' ||
+      card.type_code === 'hero' ||
       card.subtype_code === 'weakness' ||
       card.subtype_code === 'basicweakness'
     ) ? '#FFF' : '#222';
@@ -734,7 +734,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
 
     const isHorizontal = card.type_code === 'act' ||
       card.type_code === 'agenda' ||
-      card.type_code === 'investigator';
+      card.type_code === 'hero';
     const flavorFirst = card.type_code === 'story' ||
       card.type_code === 'act' ||
       card.type_code === 'agenda';

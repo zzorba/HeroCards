@@ -1,5 +1,5 @@
 export enum ScenarioInvestigator {
-  LEAD_INVESTIGATOR = 'lead_investigator',
+  LEAD_HERO = 'lead_investigator',
   ALL = 'all',
   ANY = 'any',
   CHOICE = 'choice',

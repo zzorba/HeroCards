@@ -5,8 +5,8 @@ import ScenarioCardQuery from './ScenarioCardQuery';
 import ScenarioEffect from './ScenarioEffect';
 
 export enum ScenarioInputType {
-  INVESTIGATOR_CHOICE = 'investigator_choice',
-  INVESTIGATOR_COUNTER = 'investigator_counter',
+  HERO_CHOICE = 'investigator_choice',
+  HERO_COUNTER = 'investigator_counter',
   CARD_CHOICE = 'card_choice',
   CHOOSE_ONE = 'choose_one',
   CHOOSE_MANY = 'choose_many',

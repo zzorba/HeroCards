@@ -16,7 +16,7 @@ export enum ScenarioEffectType {
 export enum ScenarioCampaignSetting {
   RESULT = 'result',
   NEXT_SCENARION = 'next_scenario',
-  CHOOSE_INVESTIGATORS = 'choose_investigators',
+  CHOOSE_HEROS = 'choose_investigators',
 }
 
 export default class ScenarioEffect {

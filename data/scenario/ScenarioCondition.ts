@@ -18,7 +18,7 @@ export enum TraumaConditionType {
 
 export enum ScenarioDataType {
   PLAYER_COUNT = 'player_count',
-  INVESTIGATOR = 'investigator',
+  HERO = 'hero',
   ANY_RESIGNED = 'any_resigned',
 }
 

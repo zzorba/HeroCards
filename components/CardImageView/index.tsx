@@ -50,7 +50,7 @@ class CardImageView extends React.Component<Props, State> {
 
     this.state = {
       flipped: !!props.card && (
-        props.card.type_code === 'investigator' ||
+        props.card.type_code === 'hero' ||
         props.card.type_code === 'act' ||
         props.card.type_code === 'agenda' ||
         (doubleCard && !!props.card.hidden)),

@@ -88,7 +88,7 @@ export default class DeckValidation {
           }
   			});
   			if (req_met_count < req_count) {
-  				return 'investigator';
+  				return 'hero';
   			}
   		}
   	} else {
@@ -120,7 +120,7 @@ export default class DeckValidation {
   				if (option.error) {
   					this.problem_list.push(option.error);
   				}
-  				return 'investigator';
+  				return 'hero';
   			}
   		}
       const atleast = option.atleast;
@@ -136,7 +136,7 @@ export default class DeckValidation {
   					if (option.error){
   						this.problem_list.push(option.error);
   					}
-  					return 'investigator';
+  					return 'hero';
   				}
   			}
   		}

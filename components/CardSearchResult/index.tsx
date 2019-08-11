@@ -197,7 +197,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     const {
       card,
     } = this.props;
-    if (card.type_code === 'investigator' || (
+    if (card.type_code === 'hero' || (
       card.skill_willpower === null &&
       card.skill_intellect === null &&
       card.skill_combat === null &&

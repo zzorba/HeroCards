@@ -35,7 +35,7 @@ export function rightButtonsForCard(card?: Card, color?: string) {
     testID: t`FAQ`,
   }];
   if (card &&
-    card.type_code === 'investigator' &&
+    card.type_code === 'hero' &&
     card.encounter_code === null
   ) {
     rightButtons.push({

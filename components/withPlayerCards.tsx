@@ -35,7 +35,7 @@ export default function withPlayerCards<Props, ExtraProps={}>(
           playerCards,
           card => {
             cards[card.code] = card;
-            if (card.type_code === 'investigator') {
+            if (card.type_code === 'hero') {
               investigators[card.code] = card;
             }
           });

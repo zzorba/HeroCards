@@ -50,7 +50,7 @@ export default class PlayerCardImage extends React.Component<Props> {
     } = this.props;
     switch (card.type_code) {
       case 'enemy': return styles.enemyImage;
-      case 'investigator': return styles.investigatorImage;
+      case 'hero': return styles.investigatorImage;
       case 'agenda': return styles.agendaImage;
       case 'act': return styles.actImage;
       case 'location': return styles.locationImage;
@@ -97,7 +97,7 @@ export default class PlayerCardImage extends React.Component<Props> {
       );
     }
     const horizontal = card.type_code === 'act' ||
-      card.type_code === 'investigator' ||
+      card.type_code === 'hero' ||
       card.type_code === 'agenda';
 
     if (isBig && !horizontal) {
