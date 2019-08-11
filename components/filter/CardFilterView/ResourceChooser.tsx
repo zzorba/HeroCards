@@ -32,10 +32,9 @@ export default class SkillIconChooser extends React.Component<Props> {
   render() {
     const {
       resources: {
-        willpower,
-        intellect,
-        combat,
-        agility,
+        physical,
+        mental,
+        energy,
         wild,
         doubleIcons,
       },
@@ -44,7 +43,7 @@ export default class SkillIconChooser extends React.Component<Props> {
     } = this.props;
     return (
       <AccordionItem
-        label={enabled ? t`Skill Icons` : t`Skill Icons: All`}
+        label={enabled ? t`Resources` : t`Resources: All`}
         height={90}
         enabled={enabled}
         toggleName="resourceEnabled"
@@ -52,15 +51,15 @@ export default class SkillIconChooser extends React.Component<Props> {
       >
         <View style={styles.toggleRow}>
           <ToggleFilter
-            icon="willpower"
-            setting="willpower"
-            value={willpower}
+            icon="physical"
+            setting="physical"
+            value={physical}
             onChange={this._onToggleChange}
           />
           <ToggleFilter
-            icon="intellect"
-            setting="intellect"
-            value={intellect}
+            icon="mental"
+            setting="mental"
+            value={mental}
             onChange={this._onToggleChange}
           />
           <ToggleFilter
@@ -72,15 +71,9 @@ export default class SkillIconChooser extends React.Component<Props> {
         </View>
         <View style={styles.toggleRow}>
           <ToggleFilter
-            icon="combat"
-            setting="combat"
-            value={combat}
-            onChange={this._onToggleChange}
-          />
-          <ToggleFilter
-            icon="agility"
-            setting="agility"
-            value={agility}
+            icon="energy"
+            setting="energy"
+            value={energy}
             onChange={this._onToggleChange}
           />
           <ToggleFilter

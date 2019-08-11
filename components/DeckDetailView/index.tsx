@@ -56,9 +56,7 @@ import { EditSpecialCardsProps } from '../EditSpecialDeckCards';
 import { UpgradeDeckProps } from '../DeckUpgradeDialog';
 import EditDeckDetailsDialog from './EditDeckDetailsDialog';
 import DeckViewTab from './DeckViewTab';
-import CardUpgradeDialog from './CardUpgradeDialog';
 import DeckNavFooter from '../DeckNavFooter';
-import withTabooSetOverride, { TabooSetOverrideProps } from '../withTabooSetOverride';
 import { NavigationProps } from '../types';
 import {
   getDeck,
@@ -92,7 +90,6 @@ interface ReduxActionProps {
 
 type Props = NavigationProps &
   DeckDetailProps &
-  TabooSetOverrideProps &
   ReduxProps &
   ReduxActionProps &
   PlayerCardProps &
@@ -113,7 +110,6 @@ interface State {
   hasPendingEdits: boolean;
   visible: boolean;
   editDetailsVisible: boolean;
-  upgradeCard?: Card;
 }
 
 class DeckDetailView extends React.Component<Props, State> {
@@ -129,7 +125,6 @@ class DeckDetailView extends React.Component<Props, State> {
       meta: {},
       slots: {},
       ignoreDeckLimitSlots: {},
-      xpAdjustment: 0,
       loaded: false,
       saving: false,
       copying: false,
@@ -1049,18 +1044,6 @@ class DeckDetailView extends React.Component<Props, State> {
     }));
   }
 
-  _hideCardUpgradeDialog = () => {
-    this.setState({
-      upgradeCard: undefined,
-    });
-  };
-
-  _showCardUpgradeDialog = (card: Card) => {
-    this.setState({
-      upgradeCard: card,
-    });
-  };
-
   _renderFooter = (slots?: Slots, controls?: React.ReactNode) => {
     const {
       componentId,
@@ -1068,7 +1051,6 @@ class DeckDetailView extends React.Component<Props, State> {
     } = this.props;
     const {
       parsedDeck,
-      xpAdjustment,
       meta,
     } = this.state;
     if (!parsedDeck) {
@@ -1133,7 +1115,6 @@ class DeckDetailView extends React.Component<Props, State> {
             isPrivate={!!isPrivate}
             buttons={this.renderButtons()}
             showEditNameDialog={this._showEditDetailsVisible}
-            showCardUpgradeDialog={this._showCardUpgradeDialog}
             showEditSpecial={deck.next_deck ? undefined : this._onEditSpecialPressed}
             signedIn={signedIn}
             login={login}
@@ -1154,7 +1135,7 @@ class DeckDetailView extends React.Component<Props, State> {
 
 function mapStateToProps(
   state: AppState,
-  props: NavigationProps & DeckDetailProps & TabooSetOverrideProps
+  props: NavigationProps & DeckDetailProps
 ): ReduxProps {
   const id = getEffectiveDeckId(state, props.id);
   const deck = getDeck(state, id) || undefined;
@@ -1174,16 +1155,14 @@ function mapDispatchToProps(dispatch: Dispatch): ReduxActionProps {
   } as any, dispatch) as ReduxActionProps;
 }
 
-export default withTabooSetOverride<NavigationProps & DeckDetailProps>(
-  connect<ReduxProps, ReduxActionProps, NavigationProps & DeckDetailProps & TabooSetOverrideProps, AppState>(
-    mapStateToProps,
-    mapDispatchToProps
-  )(
-    withPlayerCards<ReduxProps & ReduxActionProps & NavigationProps & DeckDetailProps & TabooSetOverrideProps>(
-      withDialogs(
-        withLoginState(
-          DeckDetailView
-        )
+export default connect<ReduxProps, ReduxActionProps, NavigationProps & DeckDetailProps, AppState>(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  withPlayerCards<ReduxProps & ReduxActionProps & NavigationProps & DeckDetailProps>(
+    withDialogs(
+      withLoginState(
+        DeckDetailView
       )
     )
   )

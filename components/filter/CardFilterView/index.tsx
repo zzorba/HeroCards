@@ -11,8 +11,7 @@ import { connect } from 'react-redux';
 import { t } from 'ttag';
 import { Pack } from '../../../actions/types';
 import FactionChooser from './FactionChooser';
-import XpChooser from './XpChooser';
-import SkillIconChooser from './SkillIconChooser';
+import ResourceChooser from './ResourceChooser';
 import FilterChooserButton from '../FilterChooserButton';
 import SliderChooser from '../SliderChooser';
 import ToggleFilter from '../../core/ToggleFilter';
@@ -24,8 +23,8 @@ import { COLORS } from '../../../styles/colors';
 
 const CARD_FACTION_CODES: FactionCodeType[] = [
   ...CORE_FACTION_CODES,
-  'neutral',
-  'mythos',
+  'basic',
+  'encounter',
 ];
 
 interface ReduxProps {
@@ -37,8 +36,7 @@ type Props = ReduxProps & FilterProps;
 interface State {
   loading: boolean;
   hasCost: boolean;
-  hasXp: boolean;
-  hasSkill: boolean;
+  hasResource: boolean;
   allUses: string[];
   allFactions: FactionCodeType[];
   allTraits: string[];
@@ -46,7 +44,6 @@ interface State {
   allTypeCodes: string[];
   allSubTypes: string[];
   allPacks: string[];
-  allSlots: string[];
   allEncounters: string[];
   allIllustrators: string[];
   levels: number[];
@@ -70,8 +67,7 @@ class CardFilterView extends React.Component<Props, State> {
     this.state = {
       loading: true,
       hasCost: false,
-      hasXp: false,
-      hasSkill: false,
+      hasResource: false,
       allUses: [],
       allFactions: CARD_FACTION_CODES,
       allTraits: [],
@@ -79,7 +75,6 @@ class CardFilterView extends React.Component<Props, State> {
       allTypeCodes: [],
       allSubTypes: [],
       allPacks: [],
-      allSlots: [],
       allEncounters: [],
       allIllustrators: [],
       levels: [],
@@ -94,32 +89,26 @@ class CardFilterView extends React.Component<Props, State> {
       const allFactions = filter(CARD_FACTION_CODES, faction_code =>
         cards.filtered(`faction_code == '${faction_code}'`).length > 0);
       let hasCost = false;
-      let hasXp = false;
-      let hasSkill = false;
+      let hasResource = false;
       const typesMap: { [key: string]: boolean } = {};
       const typeCodesMap: { [key: string]: boolean } = {};
       const usesMap: { [key: string]: boolean } = {};
       const subTypesMap: { [key: string]: boolean } = {};
       const traitsMap: { [key: string]: boolean } = {};
       const packsMap: { [key: string]: boolean } = {};
-      const slotsMap: { [key: string]: boolean } = {};
       const encountersMap: { [key: string]: boolean } = {};
       const illustratorsMap: { [key: string]: boolean } = {};
       forEach(cards, card => {
         if (card.cost !== null) {
           hasCost = true;
         }
-        if (card.xp !== null) {
-          hasXp = true;
-        }
-        if (!hasSkill && (
-          card.skill_willpower ||
-          card.skill_intellect ||
-          card.skill_combat ||
-          card.skill_agility ||
-          card.skill_wild
+        if (!hasResource && (
+          card.resource_physical ||
+          card.resource_mental ||
+          card.resource_energy ||
+          card.resource_wild
         )) {
-          hasSkill = true;
+          hasResource = true;
         }
         if (card.traits) {
           forEach(
@@ -137,18 +126,6 @@ class CardFilterView extends React.Component<Props, State> {
         if (card.pack_name) {
           packsMap[card.pack_name] = true;
         }
-        if (card.slot) {
-          if (card.slot.indexOf('.') !== -1) {
-            forEach(
-              map(card.slot.split('.'), s => s.trim()),
-              s => {
-                slotsMap[s] = true;
-              }
-            );
-          } else {
-            slotsMap[card.slot] = true;
-          }
-        }
         if (card.encounter_name) {
           encountersMap[card.encounter_name] = true;
         }
@@ -163,15 +140,13 @@ class CardFilterView extends React.Component<Props, State> {
         loading: false,
         allFactions,
         hasCost,
-        hasXp,
-        hasSkill,
+        hasResource,
         allUses: keys(usesMap).sort(),
         allTraits: keys(traitsMap).sort(),
         allTypes: keys(typesMap).sort(),
         allTypeCodes: keys(typeCodesMap).sort(),
         allSubTypes: keys(subTypesMap).sort(),
         allPacks: keys(packsMap).sort(),
-        allSlots: keys(slotsMap).sort(),
         allEncounters: keys(encountersMap).sort(),
         allIllustrators: keys(illustratorsMap).sort(),
       });
@@ -410,12 +385,10 @@ class CardFilterView extends React.Component<Props, State> {
       allTypeCodes,
       allSubTypes,
       allPacks,
-      allSlots,
       allEncounters,
       allIllustrators,
       hasCost,
-      hasXp,
-      hasSkill,
+      hasResource,
     } = this.state;
 
     if (loading) {
@@ -437,46 +410,6 @@ class CardFilterView extends React.Component<Props, State> {
           selection={factions}
           onFilterChange={onFilterChange}
         />
-        { hasXp && (
-          <XpChooser
-            maxLevel={defaultFilterState.level[1]}
-            levels={level}
-            enabled={levelEnabled}
-            onFilterChange={onFilterChange}
-            onToggleChange={onToggleChange}
-            exceptional={exceptional}
-            nonExceptional={nonExceptional}
-          />
-        ) }
-        { hasXp && (
-          <SliderChooser
-            label={t`Level`}
-            width={width}
-            values={level}
-            enabled={levelEnabled}
-            setting="level"
-            onFilterChange={onFilterChange}
-            toggleName="levelEnabled"
-            onToggleChange={onToggleChange}
-            max={defaultFilterState.level[1]}
-            height={2}
-          >
-            <View>
-              <ToggleFilter
-                label={t`Exceptional`}
-                setting="exceptional"
-                value={exceptional}
-                onChange={onToggleChange}
-              />
-              <ToggleFilter
-                label={t`Non-Exceptional`}
-                setting="nonExceptional"
-                value={nonExceptional}
-                onChange={onToggleChange}
-              />
-            </View>
-          </SliderChooser>
-        ) }
         <View>
           { (types.length > 0 || allTypes.length > 0) && (
             <FilterChooserButton
@@ -512,8 +445,8 @@ class CardFilterView extends React.Component<Props, State> {
             max={defaultFilterState.cost[1]}
           />
         ) }
-        { hasSkill && (
-          <SkillIconChooser
+        { hasResource && (
+          <ResourceChooser
             resources={resources}
             onFilterChange={onFilterChange}
             enabled={resourceEnabled}
@@ -538,16 +471,6 @@ class CardFilterView extends React.Component<Props, State> {
             <NavButton text={this.locationFilterText()} onPress={this._onLocationPress} />
           ) }
         </View>
-        { (slots.length > 0 || allSlots.length > 0) && (
-          <FilterChooserButton
-            componentId={componentId}
-            title={t`Slots`}
-            values={allSlots}
-            selection={slots}
-            setting="slots"
-            onFilterChange={onFilterChange}
-          />
-        ) }
         { (uses.length > 0 || allUses.length > 0) && (
           <FilterChooserButton
             componentId={componentId}

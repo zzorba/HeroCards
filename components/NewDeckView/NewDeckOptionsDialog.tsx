@@ -20,9 +20,8 @@ import withLoginState, { LoginStateProps } from '../withLoginState';
 import withPlayerCards, { PlayerCardProps } from '../withPlayerCards';
 import { saveNewDeck, NewDeckParams } from '../decks/actions';
 import { Deck, Slots } from '../../actions/types';
-import { RANDOM_BASIC_WEAKNESS } from '../../constants';
 import Card from '../../data/Card';
-import { getTabooSet, AppState } from '../../reducers';
+import { AppState } from '../../reducers';
 import { t } from 'ttag';
 import typography from '../../styles/typography';
 import space from '../../styles/space';
@@ -34,10 +33,6 @@ interface OwnProps {
   heroId?: string;
   viewRef?: View;
   onCreateDeck: (deck: Deck) => void;
-}
-
-interface ReduxProps {
-  defaultTabooSetId?: number;
 }
 
 interface ReduxActionProps {
@@ -206,9 +201,9 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
   hero() {
     const {
       heroId,
-      heros,
+      investigators,
     } = this.props;
-    return heroId ? heros[heroId] : undefined;
+    return heroId ? investigators[heroId] : undefined;
   }
 
   deckName() {
@@ -370,10 +365,8 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: AppState): ReduxProps {
-  return {
-    defaultTabooSetId: getTabooSet(state),
-  };
+function mapStateToProps() {
+  return {};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): ReduxActionProps {
@@ -385,7 +378,7 @@ export default withPlayerCards<OwnProps>(
     mapStateToProps,
     mapDispatchToProps
   )(
-    withLoginState<OwnProps & ReduxProps & ReduxActionProps & PlayerCardProps>(
+    withLoginState<OwnProps & ReduxActionProps & PlayerCardProps>(
       withNetworkStatus(NewDeckOptionsDialog),
       { noWrapper: true }
     )
