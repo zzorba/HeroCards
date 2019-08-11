@@ -1,16 +1,13 @@
 import Realm from 'realm';
-import { forEach, filter, keys, map } from 'lodash';
+import { filter, keys, map } from 'lodash';
 import { t } from 'ttag';
 
 import BaseCard from './BaseCard';
 import CardRestrictions from './CardRestrictions';
 import DeckRequirement from './DeckRequirement';
 import DeckOption from './DeckOption';
-import { BASIC_SKILLS } from '../constants';
 
 const USES_REGEX = new RegExp('.*Uses\\s*\\([0-9]+\\s(.+)\\)\\..*');
-const BONDED_REGEX = new RegExp('.*Bonded\\s*\\((.+?)\\)\\..*');
-const HEALS_HORROR_REGEX = new RegExp('[Hh]eals? (that much )?(\\d+ damage (and|or) )?(\\d+ )?horror');
 
 export default class Card extends BaseCard {
   public static schema: Realm.ObjectSchema = {
@@ -32,36 +29,32 @@ export default class Card extends BaseCard {
 
   static factionHeaderOrder() {
     return [
-      t`Guardian / Rogue`,
-      t`Rogue / Survivor`,
-      t`Survivor / Seeker`,
-      t`Seeker / Mystic`,
-      t`Mystic / Guardian`,
-      t`Guardian`,
-      t`Seeker`,
-      t`Mystic`,
-      t`Rogue`,
-      t`Survivor`,
-      t`Neutral`,
-      t`Weakness`,
-      t`Mythos`,
+      t`Hero`,
+      t`Aggression`,
+      t`Justice`,
+      t`Leadership`,
+      t`Protection`,
+      t`Basic`,
+      t`Encounter`,
     ];
   }
 
   static factionCodeToName(code: string, defaultName: string) {
     switch(code) {
-      case 'guardian':
-        return t`Guardian`;
-      case 'rogue':
-        return t`Rogue`;
-      case 'mystic':
-        return t`Mystic`;
-      case 'seeker':
-        return t`Seeker`;
-      case 'survivor':
-        return t`Survivor`;
-      case 'neutral':
-        return t`Neutral`;
+      case 'hero':
+        return t`Hero`;
+      case 'aggression':
+        return t`Aggression`;
+      case 'justice':
+        return t`Justice`;
+      case 'leadership':
+        return t`Leadership`;
+      case 'protection':
+        return t`Protection`;
+      case 'basic':
+        return t`Basic`;
+      case 'encounter':
+        return t`Encounter`;
       default:
         return defaultName;
     }
@@ -69,7 +62,7 @@ export default class Card extends BaseCard {
 
   static factionSortHeader(json: any) {
     if (json.spoiler) {
-      return t`Mythos`;
+      return t`Encounter`;
     }
     switch(json.subtype_code) {
       case 'basicweakness':
@@ -91,25 +84,18 @@ export default class Card extends BaseCard {
 
   static typeHeaderOrder() {
     return [
-      t`Investigator`,
-      t`Asset: Hand`,
-      t`Asset: Hand x2`,
-      t`Asset: Hand. Arcane`,
-      t`Asset: Body. Hand x2`,
-      t`Asset: Accessory`,
-      t`Asset: Ally`,
-      t`Asset: Arcane`,
-      t`Asset: Arcane x2`,
-      t`Asset: Body`,
-      t`Asset: Permanent`,
-      t`Asset: Tarot`,
-      t`Asset: Other`,
+      t`Hero`,
+      t`Ally`,
       t`Event`,
-      t`Skill`,
-      t`Basic Weakness`,
-      t`Weakness`,
+      t`Support`,
+      t`Upgrade`,
+      t`Obligation`,
       t`Scenario`,
-      t`Story`,
+      t`Main Scheme`,
+      t`Side Scheme`,
+      t`Minion`,
+      t`Treachery`,
+      t`Attachment`,
     ];
   }
 
@@ -127,52 +113,22 @@ export default class Card extends BaseCard {
         return t`Weakness`;
       default:
         switch(json.type_code) {
-          case 'asset':
-            if (json.spoiler) {
-              return t`Story`;
-            }
-            if (json.permanent || json.double_sided) {
-              return t`Asset: Permanent`;
-            }
-            switch(json.slot) {
-              case 'Hand':
-                return t`Asset: Hand`;
-              case 'Hand x2':
-                return t`Asset: Hand x2`;
-              case 'Accessory':
-                return t`Asset: Accessory`;
-              case 'Ally':
-                return t`Asset: Ally`;
-              case 'Arcane':
-                return t`Asset: Arcane`;
-              case 'Arcane x2':
-                return t`Asset: Arcane x2`;
-              case 'Body':
-                return t`Asset: Body`;
-              case 'Tarot':
-                return t`Asset: Tarot`;
-              case 'Body. Hand x2':
-                return t`Asset: Body. Hand x2`;
-              case 'Hand. Arcane':
-                return t`Asset: Hand. Arcane`;
-              default:
-                return t`Asset: Other`;
-            }
+          case 'hero':
+            return t`Hero`;
+          case 'alter_ego':
+            return t`Alter-Ego`;
+          case 'ally':
+            return t`Ally`;
           case 'event':
-            if (json.spoiler) {
-              return t`Story`;
-            }
             return t`Event`;
-          case 'skill':
-            if (json.spoiler) {
-              return t`Story`;
-            }
-            return t`Skill`;
-          case 'investigator':
-            if (json.spoiler) {
-              return t`Story`;
-            }
-            return t`Investigator`;
+          case 'resource':
+            return t`Resource`;
+          case 'support':
+            return t`Support`;
+          case 'upgrade':
+            return t`Upgrade`;
+          case 'obligation':
+            return t`Obligation`;
           default:
             return t`Scenario`;
         }
@@ -184,7 +140,6 @@ export default class Card extends BaseCard {
     packsByCode: {
       [pack_code: string]: {
         position: number;
-        cycle_position: number;
       };
     },
     cycleNames: {
@@ -192,10 +147,6 @@ export default class Card extends BaseCard {
     },
     lang: string
   ): Card {
-    if (json.code === '02041') {
-      json.subtype_code = null;
-      json.subtype_name = null;
-    }
     const deck_requirements = json.deck_requirements ?
       DeckRequirement.parse(json.deck_requirements) :
       null;
@@ -203,27 +154,9 @@ export default class Card extends BaseCard {
       DeckOption.parseList(json.deck_options) :
       [];
 
-    const wild = json.skill_wild || 0;
-    const eskills: any = {};
-    if (json.type_code !== 'investigator' && wild > 0) {
-      forEach(BASIC_SKILLS, skill => {
-        const value = json[`skill_${skill}`] || 0;
-        if (value > 0) {
-          eskills[`eskill_${skill}`] = value + wild;
-        }
-      });
-    }
-
     const name = json.name.replace('', '');
     let renderName = name;
     let renderSubname = json.subname;
-    if (json.type_code === 'act' && json.stage) {
-      renderSubname = t`Act ${json.stage}`;
-    } else if (json.type_code === 'agenda' && json.stage) {
-      renderSubname = t`Agenda ${json.stage}`;
-    } else if (json.type_code === 'scenario') {
-      renderSubname = t`Scenario`;
-    }
     const linked_card = json.linked_card ?
       Card.fromJson(json.linked_card, packsByCode, cycleNames, lang) :
       null;
@@ -231,13 +164,6 @@ export default class Card extends BaseCard {
       linked_card.back_linked = true;
       if (json.hidden && !linked_card.hidden) {
         renderName = linked_card.name;
-        if (linked_card.type_code === 'act' && linked_card.stage) {
-          renderSubname = t`Act ${linked_card.stage}`;
-        } else if (linked_card.type_code === 'agenda' && linked_card.stage) {
-          renderSubname = t`Agenda ${linked_card.stage}`;
-        } else {
-          renderSubname = linked_card.subname;
-        }
       }
     }
 
@@ -251,48 +177,22 @@ export default class Card extends BaseCard {
         map(json.traits.split('.'), trait => trait.toLowerCase().trim()),
         trait => trait),
       trait => `#${trait}#`).join(',') : null;
-    const slots_normalized = json.slot ? map(
-      filter(
-        map(json.slot.split('.'), slot => slot.toLowerCase().trim()),
-        slot => slot),
-      slot => `#${slot}#`).join(',') : null;
     const restrictions = Card.parseRestrictions(json.restrictions);
     const uses_match = json.real_text && json.real_text.match(USES_REGEX);
     const uses = uses_match ? uses_match[1].toLowerCase() : null;
 
-    const bonded_match = json.real_text && json.real_text.match(BONDED_REGEX);
-    const bonded_name = bonded_match ? bonded_match[1] : null;
-
-    const heals_horror_match = json.real_text && json.real_text.match(HEALS_HORROR_REGEX);
-    const heals_horror = heals_horror_match ? true : null;
-
     const sort_by_type = Card.typeHeaderOrder().indexOf(Card.typeSortHeader(json));
     const sort_by_faction = Card.factionHeaderOrder().indexOf(Card.factionSortHeader(json));
     const pack = packsByCode[json.pack_code] || null;
-    const sort_by_pack = pack ? (pack.cycle_position * 100 + pack.position) : -1;
-    const cycle_name = pack ? cycleNames[pack.cycle_position] : null;
+    const sort_by_pack = pack ? (pack.position) : -1;
     const spoiler = !!(json.spoiler || (linked_card && linked_card.spoiler));
-    const enemy_horror = json.type_code === 'enemy' ? (json.enemy_horror || 0) : null;
-    const enemy_damage = json.type_code === 'enemy' ? (json.enemy_damage || 0) : null;
-    const firstName = json.type_code === 'investigator' && json.name.indexOf(' ') !== -1 ?
-      json.name.substring(0, json.name.indexOf(' ')).replace(/"/g, '') :
-      json.name;
-
-    const altArtInvestigator =
-      json.code === '98001' || // Jenny
-      json.code === '98004' || // Roland
-      json.code === '98010' || // Carolyn
-      json.code === '99001'; // PROMO Marie
 
     return Object.assign(
       {},
       json,
-      eskills,
       {
         id: json.code,
-        tabooSetId: null,
         name,
-        firstName,
         renderName,
         renderSubname,
         deck_requirements,
@@ -301,48 +201,14 @@ export default class Card extends BaseCard {
         spoiler,
         traits_normalized,
         real_traits_normalized,
-        slots_normalized,
         uses,
-        bonded_name,
-        cycle_name,
         has_restrictions: !!restrictions,
         restrictions,
-        heals_horror,
         sort_by_type,
         sort_by_faction,
         sort_by_pack,
-        enemy_horror,
-        enemy_damage,
-        altArtInvestigator,
       },
     );
-  }
-
-  static fromTabooCardJson(
-    tabooId: number,
-    json: any,
-    card: Card
-  ): Card {
-    const code: string = json.code;
-    const result: Card = {} as Card;
-    forEach(keys(BaseCard.SCHEMA), property => {
-      // @ts-ignore TS7017
-      result[property] = card[property];
-    });
-    result.id = `${tabooId}-${code}`;
-    result.taboo_set_id = tabooId;
-
-    if (json.xp) {
-      result.extra_xp = json.xp;
-    }
-    if (json.text) {
-      result.taboo_text_change = json.text;
-    }
-    if (json.exceptional) {
-      result.exceptional = true;
-      result.deck_limit = 1;
-    }
-    return result;
   }
 }
 

@@ -29,7 +29,6 @@ import CardSectionHeader, { CardSectionHeaderData } from './CardSectionHeader';
 import CardSearchResult from '../CardSearchResult';
 import DeckValidation from '../../lib/DeckValidation';
 import Card, { CardsMap } from '../../data/Card';
-import TabooSet from '../../data/TabooSet';
 import typography from '../../styles/typography';
 import { COLORS } from '../../styles/colors';
 import { s, sizeScale } from '../../styles/space';
@@ -185,9 +184,7 @@ interface Props {
   showCardUpgradeDialog: (card: Card) => void;
   investigatorDataUpdates?: InvestigatorData;
   deckName: string;
-  tabooSet?: TabooSet;
   singleCardView: boolean;
-  tabooSetId?: number;
   xpAdjustment: number;
   signedIn: boolean;
   login: () => void;
@@ -316,21 +313,18 @@ export default class DeckViewTab extends React.Component<Props> {
         investigator,
       },
       componentId,
-      tabooSetId,
     } = this.props;
     showCard(
       componentId,
       investigator.code,
       investigator,
       false,
-      tabooSetId,
     );
   };
 
   _showSwipeCard = (id: string, card: Card) => {
     const {
       componentId,
-      tabooSetId,
       parsedDeck: {
         investigator,
         slots,
@@ -344,8 +338,7 @@ export default class DeckViewTab extends React.Component<Props> {
         componentId,
         card.code,
         card,
-        true,
-        tabooSetId
+        true
       );
       return;
     }
@@ -366,7 +359,6 @@ export default class DeckViewTab extends React.Component<Props> {
       cards,
       index,
       false,
-      tabooSetId,
       slots,
       onDeckCountChange,
       investigator,
@@ -508,7 +500,6 @@ export default class DeckViewTab extends React.Component<Props> {
 
   renderMetadata() {
     const {
-      tabooSet,
       parsedDeck: {
         normalCardCount,
         totalCardCount,
@@ -525,12 +516,7 @@ export default class DeckViewTab extends React.Component<Props> {
         </Text>
         <Text style={typography.small}>
           { this.xpString() }
-        </Text>
-        { !!tabooSet && (
-          <Text style={typography.small}>
-            { t`Taboo List: ${tabooSet.date_start}.` }
-          </Text>
-        ) }
+        </Text>        
       </View>
     );
   }

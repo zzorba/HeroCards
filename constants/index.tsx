@@ -5,59 +5,41 @@ import ArkhamIcon from '../assets/ArkhamIcon';
 
 
 export type TypeCodeType =
-  'asset' |
-  'event' |
-  'skill' |
-  'act' |
-  'agenda' |
-  'story' |
-  'enemy' |
-  'treachery' |
-  'location' |
-  'investigator' |
-  'scenario';
-
-export type SlotCodeType =
-  'hand' |
-  'hand x2' |
-  'arcane' |
-  'arcane x2' |
-  'accessory' |
-  'body' |
+  'hero' |
+  'alter_ego' |
   'ally' |
-  'tarot';
-
-export const SLOTS: SlotCodeType[] = [
-  'hand',
-  'hand x2',
-  'arcane',
-  'arcane x2',
-  'accessory',
-  'body',
-  'ally',
-  'tarot',
-];
+  'event' |
+  'resource' |
+  'support' |
+  'upgrade' |
+  'obligation' |
+  'villain' |
+  'main_scheme' |
+  'side_scheme' |
+  'minion' |
+  'treachery' |
+  'attachment';
 
 export type FactionCodeType =
-  'guardian' |
-  'seeker' |
-  'rogue' |
-  'mystic' |
-  'survivor' |
-  'neutral' |
-  'mythos';
+  'hero' |
+  'aggression' |
+  'justice' |
+  'leadership' |
+  'protection' |
+  'basic' |
+  'encounter';
 
 export const CORE_FACTION_CODES: FactionCodeType[] = [
-  'mystic',
-  'seeker',
-  'guardian',
-  'rogue',
-  'survivor',
+  'aggression',
+  'justice',
+  'leadership',
+  'protection',
 ];
 
 export const PLAYER_FACTION_CODES: FactionCodeType[] = [
+  'hero',
   ...CORE_FACTION_CODES,
-  'neutral',
+  'basic',
 ];
 
 export const FACTION_CODES: string[] = [
@@ -66,51 +48,36 @@ export const FACTION_CODES: string[] = [
   'dual',
 ];
 
-export const FACTION_CODE_TO_STRING = {
-  mystic: 'Mystic',
-  seeker: 'Seeker',
-  guardian: 'Guardian',
-  rogue: 'Rogue',
-  survivor: 'Survivor',
-  neutral: 'Neutral',
-  dual: 'Dual',
-};
-
-export type SkillCodeType = 'willpower' |
-  'intellect' |
-  'combat' |
-  'agility' |
+export type ResourceCodeType = 'energy' |
+  'physical' |
+  'mental' |
   'wild';
 
-export const BASIC_SKILLS: SkillCodeType[] = [
-  'willpower',
-  'intellect',
-  'combat',
-  'agility',
+export const BASIC_RESOURCES: ResourceCodeType[] = [
+  'physical',
+  'mental',
+  'energy',
 ];
 
-export const SKILLS: SkillCodeType[] = [
-  ...BASIC_SKILLS,
+export const RESOURCES: ResourceCodeType[] = [
+  ...BASIC_RESOURCES,
   'wild',
 ];
 
 export const SKILL_COLORS: { [skill: string]: string } = {
-  willpower: '#003961',
-  intellect: '#4e1a45',
-  combat: '#661e09',
-  agility: '#00543a',
-  wild: '#635120',
+  mental: '#003961',
+  energy: '#ff8f3f',
+  physical: '#661e09',
+  wild: '#00543a',
 };
 
 
 export const FACTION_COLORS: { [faction_code: string]: string } = {
-  mystic: '#4331b9',
-  seeker: '#ec8426',
-  guardian: '#2b80c5',
-  rogue: '#107116',
-  survivor: '#cc3038',
-  neutral: '#000000',
-  dual: '#868600',
+  leadership: '#2b80c5',
+  aggression: '#cc3038',
+  protection: '#107116',
+  justice: '#c0c000',
+  basic: '#808080',
 };
 
 export const FACTION_LIGHT_GRADIENTS: { [faction_code: string]: string[] } = {
@@ -142,67 +109,6 @@ export const FACTION_BACKGROUND_COLORS: { [faction_code: string]: string } = Obj
   },
 );
 
-export type ChaosTokenType =
-  '+1' | '0' | '-1' | '-2' | '-3' |
-  '-4' | '-5' | '-6' | '-7' | '-8' |
-  'skull' | 'cultist' | 'tablet' | 'elder_thing' |
-  'auto_fail' | 'elder_sign';
-
-export const CHAOS_TOKENS: ChaosTokenType[] = [
-  '+1', '0', '-1', '-2', '-3',
-  '-4', '-5', '-6', '-7', '-8',
-  'skull', 'cultist', 'tablet', 'elder_thing',
-  'auto_fail', 'elder_sign',
-];
-export type ChaosBag = { [chaosToken in ChaosTokenType]?: number; };
-
-export const CHAOS_TOKEN_ORDER: ChaosBag = {
-  '+1': 0,
-  '0': 1,
-  '-1': 2,
-  '-2': 3,
-  '-3': 4,
-  '-4': 5,
-  '-5': 6,
-  '-6': 7,
-  '-7': 8,
-  '-8': 9,
-  'skull': 10,
-  'cultist': 11,
-  'tablet': 12,
-  'elder_thing': 13,
-  'auto_fail': 14,
-  'elder_sign': 15,
-};
-
-export const SPECIAL_TOKENS: ChaosTokenType[] = [
-  'skull',
-  'cultist',
-  'tablet',
-  'elder_thing',
-  'auto_fail',
-  'elder_sign',
-];
-
-export const CHAOS_BAG_TOKEN_COUNTS: ChaosBag = {
-  '+1': 3,
-  '0': 4,
-  '-1': 5,
-  '-2': 4,
-  '-3': 3,
-  '-4': 2,
-  '-5': 2,
-  '-6': 1,
-  '-7': 1,
-  '-8': 1,
-  skull: 4,
-  cultist: 4,
-  tablet: 4,
-  elder_thing: 4,
-  auto_fail: 1,
-  elder_sign: 1,
-};
-
 export function createFactionIcons(
   size: number,
   defaultColor?: string
@@ -217,5 +123,3 @@ export function createFactionIcons(
     );
   });
 }
-
-export const RANDOM_BASIC_WEAKNESS = '01000';

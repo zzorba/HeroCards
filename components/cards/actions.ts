@@ -24,7 +24,7 @@ import {
   TabooCache,
 } from '../../actions/types';
 import { AppState } from '../../reducers/index';
-import { syncCards, syncTaboos } from '../../lib/publicApi';
+import { syncCards } from '../../lib/publicApi';
 
 function shouldFetchCards(state: AppState) {
   return !state.cards.loading;
@@ -54,21 +54,11 @@ export function fetchCards(
       const packs = await dispatch(fetchPacks(lang));
       try {
         const cardCache = await syncCards(realm, packs, lang, cardsCache(getState(), lang));
-        try {
-          const tabooCache = await syncTaboos(realm, lang, taboosCache(getState(), lang));
-          dispatch({
-            type: CARD_FETCH_SUCCESS,
-            cache: cardCache || undefined,
-            tabooCache: tabooCache || undefined,
-            lang: lang,
-          });
-        } catch (tabooErr) {
-          dispatch({
-            type: CARD_FETCH_SUCCESS,
-            cache: cardCache || undefined,
-            lang: lang,
-          });
-        }
+        dispatch({
+          type: CARD_FETCH_SUCCESS,
+          cache: cardCache || undefined,
+          lang: lang,
+        });
       } catch (err) {
         dispatch({
           type: CARD_FETCH_ERROR,

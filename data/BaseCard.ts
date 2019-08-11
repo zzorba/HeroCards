@@ -1,7 +1,7 @@
 import { filter } from 'lodash';
 import { t } from 'ttag';
 
-import { FactionCodeType, TypeCodeType, SkillCodeType } from '../constants';
+import { FactionCodeType, TypeCodeType, ResourceCodeType } from '../constants';
 import CardRestrictions from './CardRestrictions';
 import DeckRequirement from './DeckRequirement';
 import DeckOption from './DeckOption';
@@ -10,8 +10,6 @@ export default class BaseCard {
   protected static SCHEMA = {
     id: 'string',
     code: { type: 'string', indexed: true },
-    taboo_set_id: 'int?',
-    taboo_text_change: 'string?',
     pack_code: 'string',
     pack_name: 'string',
     type_code: { type: 'string', indexed: true },
@@ -24,24 +22,23 @@ export default class BaseCard {
     faction2_code: { type: 'string', optional: true, indexed: true },
     faction2_name: 'string?',
     position: 'int',
-    enemy_damage: 'int?',
-    enemy_horror: 'int?',
-    enemy_fight: 'int?',
-    enemy_evade: 'int?',
-    encounter_code: 'string?',
+    attack: 'int?',
+    attack_cost: 'int?',
+    thwart: 'int?',
+    thwart_cost: 'int?',
+    defense: 'int?',
+    recover: 'int?',
+    hand_size: 'int?',
+    boost: 'int?',
+    boost_text: 'string?',
+    scheme: 'string?',
     encounter_name: 'string?',
     encounter_position: 'int?',
-    exceptional: 'bool?',
-    xp: { type: 'int', optional: true, indexed: true },
-    extra_xp: 'int?',
-    victory: 'int?',
-    vengeance: 'int?',
     renderName: 'string',
     renderSubname: 'string?',
     name: 'string',
     real_name: 'string',
     subname: 'string?',
-    firstName: 'string?',
     illustrator: 'string?',
     text: 'string?',
     flavor: 'string?',
@@ -53,35 +50,31 @@ export default class BaseCard {
     quantity: 'int?',
     spoiler: 'bool?',
     stage: 'int?', // Act/Agenda deck
-    clues: 'int?',
-    shroud: 'int?',
-    clues_fixed: 'bool?',
-    doom: 'int?',
+    base_threat: 'int?',
+    escalation_threat: 'int?',
+    escalation_threat_fixed: 'bool?',
+    scheme_acceleration: 'int?',
+    scheme_crisis: 'int?',
+    scheme_hazard: 'int?',
+    threat: 'int?',
+    threat_fixed: 'int?',
     health: 'int?',
-    health_per_investigator: 'bool?',
-    sanity: 'int?',
+    health_per_hero: 'bool?',
     deck_limit: 'int?',
     traits: 'string?',
     real_traits: 'string?',
     is_unique: 'bool?',
     exile: 'bool?',
     hidden: 'bool?',
-    permanent: 'bool?',
     double_sided: 'bool',
     url: 'string?',
     octgn_id: 'string?',
     imagesrc: 'string?',
     backimagesrc: 'string?',
-    skill_willpower: 'int?',
-    skill_intellect: 'int?',
-    skill_combat: 'int?',
-    skill_agility: 'int?',
-    skill_wild: 'int?',
-    // Effective skills (add wilds to them)
-    eskill_willpower: 'int?',
-    eskill_intellect: 'int?',
-    eskill_combat: 'int?',
-    eskill_agility: 'int?',
+    resource_energy: 'int?',
+    resource_physical: 'int?',
+    resource_mental: 'int?',
+    resource_wild: 'int?',
     linked_to_code: 'string?',
     linked_to_name: 'string?',
 
@@ -93,31 +86,22 @@ export default class BaseCard {
     back_linked: 'bool?',
 
     // Derived data.
-    altArtInvestigator: 'bool?',
-    cycle_name: 'string?',
     has_restrictions: 'bool',
-    has_upgrades: 'bool?',
     traits_normalized: 'string?',
     real_traits_normalized: 'string?',
-    slots_normalized: 'string?',
     uses: 'string?',
-    bonded_name: { type: 'string', optional: true, indexed: true },
-    heals_horror: 'bool?',
     sort_by_type: 'int',
     sort_by_faction: 'int',
     sort_by_pack: 'int',
   };
   public id!: string;
   public code!: string;
-  public taboo_set_id!: number | null;
-  public taboo_text_change!: string | null;
   public pack_code!: string;
   public pack_name!: string;
   public type_code!: TypeCodeType;
   public type_name!: string;
   public subtype_code?: 'basicweakness' | 'weakness';
   public subtype_name!: string | null;
-  public slot!: string | null;
   public faction_code?: FactionCodeType;
   public faction_name!: string | null;
   public faction2_code?: FactionCodeType;
@@ -130,17 +114,11 @@ export default class BaseCard {
   public encounter_code!: string | null;
   public encounter_name!: string | null;
   public encounter_position!: number | null;
-  public exceptional?: boolean;
-  public xp!: number | null;
-  public extra_xp!: number | null;
-  public victory!: number | null;
-  public vengeance!: number | null;
   public renderName!: string;
   public renderSubname!: string | null;
   public name!: string;
   public real_name!: string;
   public subname!: string | null;
-  public firstName!: string | null;
   public illustrator!: string | null;
   public text!: string | null;
   public flavor!: string | null;
@@ -151,36 +129,23 @@ export default class BaseCard {
   public back_flavor!: string | null;
   public quantity!: number | null;
   public spoiler?: boolean;
-  public stage!: number | null; // Act/Agenda deck
-  public clues!: number | null;
-  public shroud!: number | null;
-  public clues_fixed?: boolean;
-  public doom!: number | null;
+  public stage!: number | null;
   public health!: number | null;
-  public health_per_investigator?: boolean;
-  public sanity!: number | null;
+  public health_per_hero?: boolean;
   public deck_limit!: number | null;
   public traits!: string | null;
   public real_traits!: string | null;
   public is_unique?: boolean;
-  public exile?: boolean;
   public hidden?: boolean;
-  public permanent?: boolean;
   public double_sided?: boolean;
   public url!: string | null;
   public octgn_id!: string | null;
   public imagesrc!: string | null;
   public backimagesrc!: string | null;
-  public skill_willpower!: number | null;
-  public skill_intellect!: number | null;
-  public skill_combat!: number | null;
-  public skill_agility!: number | null;
-  public skill_wild!: number | null;
-  // Effective skills (add wilds to them)
-  public eskill_willpower!: number | null;
-  public eskill_intellect!: number | null;
-  public eskill_combat!: number | null;
-  public eskill_agility!: number | null;
+  public resource_physical!: number | null;
+  public resource_mental!: number | null;
+  public resource_energy!: number | null;
+  public resource_wild!: number | null;
   public linked_to_code!: string | null;
   public linked_to_name!: string | null;
 
@@ -192,16 +157,10 @@ export default class BaseCard {
   public back_linked?: boolean;
 
   // Derived data.
-  public altArtInvestigator?: boolean;
-  public cycle_name!: string | null;
   public has_restrictions!: boolean;
-  public has_upgrades?: boolean;
   public traits_normalized!: string | null;
   public real_traits_normalized!: string | null;
-  public slots_normalized!: string | null;
   public uses!: string | null;
-  public bonded_name!: string | null;
-  public heals_horror?: boolean;
   public sort_by_type!: number;
   public sort_by_faction!: number;
   public sort_by_pack!: number;
@@ -212,11 +171,11 @@ export default class BaseCard {
   }
 
   costString(linked?: boolean) {
-    if (this.type_code !== 'asset' && this.type_code !== 'event') {
+    if (this.type_code !== 'ally' &&
+      this.type_code !== 'event') {
       return '';
     }
-    if (this.permanent ||
-      this.double_sided ||
+    if (this.double_sided ||
       linked ||
       (this.cost === null && (
         this.subtype_code === 'weakness' ||
@@ -227,13 +186,12 @@ export default class BaseCard {
     return t`Cost: ${costString}`;
   }
 
-  skillCount(skill: SkillCodeType): number {
+  resourceCount(skill: ResourceCodeType): number {
     switch (skill) {
-      case 'willpower': return this.skill_willpower || 0;
-      case 'intellect': return this.skill_intellect || 0;
-      case 'combat': return this.skill_combat || 0;
-      case 'agility': return this.skill_agility || 0;
-      case 'wild': return this.skill_wild || 0;
+      case 'physical': return this.resource_physical || 0;
+      case 'mental': return this.resource_mental || 0;
+      case 'energy': return this.resource_energy || 0;
+      case 'wild': return this.resource_wild || 0;
       default: {
         /* eslint-disable @typescript-eslint/no-unused-vars */
         const _exhaustiveCheck: never = skill;

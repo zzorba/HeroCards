@@ -17,7 +17,7 @@ import CardCostIcon, { COST_ICON_SIZE } from '../core/CardCostIcon';
 import Button from '../core/Button';
 import Switch from '../core/Switch';
 import Card from '../../data/Card';
-import { createFactionIcons, FACTION_COLORS, SKILLS, SkillCodeType } from '../../constants';
+import { createFactionIcons, FACTION_COLORS, RESOURCES, ResourceCodeType } from '../../constants';
 import { COLORS } from '../../styles/colors';
 import { ROW_HEIGHT, ICON_SIZE, TOGGLE_BUTTON_MODE, BUTTON_WIDTH } from './constants';
 import CardQuantityComponent from './CardQuantityComponent';
@@ -151,7 +151,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     );
   }
 
-  static skillIcon(skill: SkillCodeType, count: number): ReactNode[] {
+  static skillIcon(skill: ResourceCodeType, count: number): ReactNode[] {
     if (count === 0) {
       return [];
     }
@@ -206,8 +206,8 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       return null;
     }
     return (
-      <View style={styles.skillIcons}>
-        { flatMap(SKILLS, (skill: SkillCodeType) =>
+      <View style={styles.resources}>
+        { flatMap(RESOURCES, (skill: ResourceCodeType) =>
           CardSearchResult.skillIcon(skill, card.skillCount(skill))) }
       </View>
     );
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   },
   fullHeight: {
   },
-  skillIcons: {
+  resources: {
     flexDirection: 'row',
   },
   dualFactionIcons: {

@@ -385,8 +385,8 @@ class CardFilterView extends React.Component<Props, State> {
         illustrators,
         victory,
         vengeance,
-        skillIcons,
-        skillEnabled,
+        resources,
+        resourceEnabled,
         level,
         levelEnabled,
         exceptional,
@@ -514,9 +514,9 @@ class CardFilterView extends React.Component<Props, State> {
         ) }
         { hasSkill && (
           <SkillIconChooser
-            skillIcons={skillIcons}
+            resources={resources}
             onFilterChange={onFilterChange}
-            enabled={skillEnabled}
+            enabled={resourceEnabled}
             onToggleChange={onToggleChange}
           />
         ) }

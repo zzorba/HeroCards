@@ -7,11 +7,11 @@ import {
 import { t } from 'ttag';
 import AccordionItem from '../AccordionItem';
 import ToggleFilter from '../../core/ToggleFilter';
-import { SkillIconsFilters } from '../../../lib/filters';
+import { ResourceFilters } from '../../../lib/filters';
 
 interface Props {
   onFilterChange: (setting: string, value: any) => void;
-  skillIcons: SkillIconsFilters;
+  resources: ResourceFilters;
   enabled: boolean;
   onToggleChange: (setting: string, value: boolean) => void;
 }
@@ -20,18 +20,18 @@ export default class SkillIconChooser extends React.Component<Props> {
   _onToggleChange = (key: string) => {
     const {
       onFilterChange,
-      skillIcons,
+      resources,
     } = this.props;
 
-    onFilterChange('skillIcons', {
-      ...skillIcons,
-      [key]: !skillIcons[key as keyof SkillIconsFilters],
+    onFilterChange('resources', {
+      ...resources,
+      [key]: !resources[key as keyof ResourceFilters],
     });
   };
 
   render() {
     const {
-      skillIcons: {
+      resources: {
         willpower,
         intellect,
         combat,
@@ -47,7 +47,7 @@ export default class SkillIconChooser extends React.Component<Props> {
         label={enabled ? t`Skill Icons` : t`Skill Icons: All`}
         height={90}
         enabled={enabled}
-        toggleName="skillEnabled"
+        toggleName="resourceEnabled"
         onToggleChange={onToggleChange}
       >
         <View style={styles.toggleRow}>

@@ -1,45 +1,29 @@
 import { findIndex, forEach, map } from 'lodash';
 
-import { SKILLS, FactionCodeType } from '../constants';
+import { RESOURCES, FactionCodeType } from '../constants';
 
 
-export interface SkillIconsFilters {
-  willpower: boolean;
-  intellect: boolean;
-  combat: boolean;
-  agility: boolean;
+export interface ResourceFilters {
+  physical: boolean;
+  mental: boolean;
+  energy: boolean;
   wild: boolean;
   doubleIcons: boolean;
 }
 export interface FilterState {
-  [key: string]: string[] | boolean | [number, number] | SkillIconsFilters;
+  [key: string]: string[] | boolean | [number, number] | ResourceFilters;
   factions: FactionCodeType[];
   uses: string[];
   types: string[];
   subTypes: string[];
-  xpLevels: string[];
   traits: string[];
   packs: string[];
-  cycleNames: string[];
-  slots: string[];
   encounters: string[];
   illustrators: string[];
-  levelEnabled: boolean;
-  exceptional: boolean;
-  nonExceptional: boolean;
   costEnabled: boolean;
-  victory: boolean;
-  vengeance: boolean;
-  skillEnabled: boolean;
+  resourceEnabled: boolean;
   unique: boolean;
-  permanent: boolean;
-  fast: boolean;
-  exile: boolean;
-  skillIcons: SkillIconsFilters;
-  shroudEnabled: boolean;
-  cluesEnabled: boolean;
-  cluesFixed: boolean;
-  hauntedEnabled: boolean;
+  resources: ResourceFilters;
   enemyHealthEnabled: boolean;
   enemyHealthPerInvestigator: boolean;
   enemyDamageEnabled: boolean;
@@ -59,10 +43,7 @@ export interface FilterState {
   enemyAloof: boolean;
   enemyMassive: boolean;
   // Slider controls that are dynamically sized
-  level: [number, number];
   cost: [number, number];
-  shroud: [number, number];
-  clues: [number, number];
   enemyHealth: [number, number];
   enemyDamage: [number, number];
   enemyHorror: [number, number];
@@ -75,36 +56,20 @@ export const defaultFilterState: FilterState = {
   uses: [],
   types: [],
   subTypes: [],
-  xpLevels: [],
   traits: [],
   packs: [],
-  cycleNames: [],
-  slots: [],
   encounters: [],
   illustrators: [],
-  levelEnabled: false,
-  exceptional: false,
-  nonExceptional: false,
   costEnabled: false,
-  victory: false,
-  vengeance: false,
-  skillEnabled: false,
+  resourceEnabled: false,
   unique: false,
-  permanent: false,
-  fast: false,
-  exile: false,
-  skillIcons: {
-    willpower: false,
-    intellect: false,
-    combat: false,
-    agility: false,
+  resources: {
+    physical: false,
+    mental: false,
+    energy: false,
     wild: false,
     doubleIcons: false,
   },
-  shroudEnabled: false,
-  cluesEnabled: false,
-  cluesFixed: false,
-  hauntedEnabled: false,
   enemyHealthEnabled: false,
   enemyHealthPerInvestigator: false,
   enemyDamageEnabled: false,
@@ -123,11 +88,9 @@ export const defaultFilterState: FilterState = {
   enemyPrey: false,
   enemyAloof: false,
   enemyMassive: false,
+
   // Slider controls that are dynamically sized
-  level: [0, 5],
   cost: [0, 6],
-  shroud: [0, 6],
-  clues: [0, 6],
   enemyHealth: [0, 10],
   enemyDamage: [0, 5],
   enemyHorror: [0, 5],
@@ -152,19 +115,6 @@ function applyRangeFilter(
   }
 }
 
-function applySlotFilter(filters: FilterState, query: string[]) {
-  const {
-    slots,
-  } = filters;
-  if (slots.length) {
-    query.push([
-      '(',
-      map(slots, s => `slots_normalized CONTAINS[c] '#${safeValue(s)}#'`).join(' or '),
-      ')',
-    ].join(''));
-  }
-}
-
 function applyTraitFilter(filters: FilterState, query: string[]) {
   const {
     traits,
@@ -180,50 +130,20 @@ function applyTraitFilter(filters: FilterState, query: string[]) {
   }
 }
 
-function applySkillIconFilter(skillFilters: SkillIconsFilters, query: string[]) {
+function applyResourcesFilter(resourceFilters: ResourceFilters, query: string[]) {
   const parts: string[] = [];
-  const doubleIcons = skillFilters.doubleIcons;
+  const doubleIcons = resourceFilters.doubleIcons;
   const matchAll = doubleIcons &&
-    (findIndex(SKILLS, skill => skillFilters[skill]) === -1);
+    (findIndex(RESOURCES, skill => resourceFilters[skill]) === -1);
 
-  forEach(SKILLS, skill => {
-    if (matchAll || skillFilters[skill]) {
-      parts.push(`skill_${skill} > ${doubleIcons ? 1 : 0}`);
+  forEach(RESOURCES, resource => {
+    if (matchAll || resourceFilters[resource]) {
+      parts.push(`resource_${resource} > ${doubleIcons ? 1 : 0}`);
     }
   });
 
   if (parts.length) {
-    // Kick out investigators because they re-use the same field
-    // and by definition cannot have skill icons.
-    query.push(`(type_code != 'investigator')`);
     query.push(`(${parts.join(' or ')})`);
-  }
-}
-
-function applyLocationFilters(filters: FilterState, query: string[]) {
-  const {
-    shroudEnabled,
-    shroud,
-    cluesEnabled,
-    clues,
-    cluesFixed,
-    hauntedEnabled,
-  } = filters;
-  const oldLength = query.length;
-  if (shroudEnabled) {
-    applyRangeFilter(query, 'shroud', shroud, true);
-  }
-  if (cluesEnabled) {
-    applyRangeFilter(query, 'clues', clues, true);
-    if (clues[0] !== clues[1] || clues[0] !== 0) {
-      query.push(`(clues_fixed == ${cluesFixed} or linked_card.clues_fixed == ${cluesFixed})`);
-    }
-  }
-  if (hauntedEnabled) {
-    query.push(`(real_text CONTAINS '<b>Haunted</b>' or linked_card.real_text CONTAINS '<b>Haunted</b>')`);
-  }
-  if (query.length !== oldLength) {
-    query.push(`(type_code == 'location' or linked_card.type_code == 'location')`);
   }
 }
 
@@ -311,37 +231,6 @@ function applyEnemyFilters(filters: FilterState, query: string[]) {
   }
 }
 
-function applyMiscFilter(filters: FilterState, query: string[]) {
-  const {
-    victory,
-    vengeance,
-  } = filters;
-  if (victory) {
-    query.push('victory >= 0 or linked_card.victory >=0');
-  }
-  if (vengeance) {
-    query.push('vengeance >= 0 or linked_card.vengeance >=0');
-  }
-}
-
-function applyLevelFilter(filters: FilterState, query: string[]) {
-  const {
-    levelEnabled,
-    level,
-    exceptional,
-    nonExceptional,
-  } = filters;
-  if (levelEnabled) {
-    applyRangeFilter(query, 'xp', level, false);
-    if (exceptional && !nonExceptional) {
-      query.push(`(real_text CONTAINS 'Exceptional.' or linked_card.real_text CONTAINS 'Exceptional.')`);
-    }
-    if (nonExceptional && !exceptional) {
-      query.push(`!(real_text CONTAINS 'Exceptional.' or linked_card.real_text CONTAINS 'Exceptional.')`);
-    }
-  }
-}
-
 function applyCostFilter(filters: FilterState, query: string[]) {
   const {
     costEnabled,
@@ -362,21 +251,8 @@ function applyPlayerCardFilters(filters: FilterState, query: string[]) {
   const {
     uses,
     unique,
-    fast,
-    permanent,
-    exile,
   } = filters;
-  applySlotFilter(filters, query);
   applyFilter(uses, 'uses', query);
-  if (fast) {
-    query.push(`(real_text CONTAINS 'Fast.' or linked_card.real_text CONTAINS 'Fast.')`);
-  }
-  if (permanent) {
-    query.push(`(real_text CONTAINS 'Permanent.' or linked_card.real_text CONTAINS 'Permanent.')`);
-  }
-  if (exile) {
-    query.push(`(real_text CONTAINS[c] 'exile' or linked_card.real_text CONTAINS[c] 'exile')`);
-  }
   if (unique) {
     query.push('((is_unique == true or linked_card.is_unique == true) && type_code != "enemy")');
   }
@@ -393,15 +269,12 @@ export function filterToQuery(filters: FilterState): string[] {
   applyFilter(filters.packs, 'pack_name', query);
   applyFilter(filters.encounters, 'encounter_name', query);
   applyFilter(filters.illustrators, 'illustrator', query);
-  if (filters.skillEnabled) {
-    applySkillIconFilter(filters.skillIcons, query);
+  if (filters.resourceEnabled) {
+    applyResourcesFilter(filters.resources, query);
   }
-  applyMiscFilter(filters, query);
-  applyLevelFilter(filters, query);
   applyCostFilter(filters, query);
   applyTraitFilter(filters, query);
   applyEnemyFilters(filters, query);
-  applyLocationFilters(filters, query);
   return query;
 }
 

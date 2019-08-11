@@ -6,7 +6,7 @@ import { t } from 'ttag';
 
 import { ParsedDeck } from '../parseDeck';
 import ArkhamIcon from '../../assets/ArkhamIcon';
-import { SKILLS, SKILL_COLORS, SkillCodeType } from '../../constants';
+import { RESOURCES, SKILL_COLORS, ResourceCodeType } from '../../constants';
 import typography from '../../styles/typography';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 }
 
 interface Item {
-  skill: SkillCodeType;
+  skill: ResourceCodeType;
   value: number;
   svg: {
     fill: string;
@@ -29,7 +29,7 @@ interface LabelData {
 }
 
 export default class SkillIconChart extends React.PureComponent<Props> {
-  getSkillData(skill: SkillCodeType): Item {
+  getSkillData(skill: ResourceCodeType): Item {
     return {
       skill,
       value: this.props.parsedDeck.skillIconCounts[skill] || 0,
@@ -44,7 +44,7 @@ export default class SkillIconChart extends React.PureComponent<Props> {
   };
 
   render() {
-    const barData = map(SKILLS, skill => this.getSkillData(skill));
+    const barData = map(RESOURCES, skill => this.getSkillData(skill));
     const CUT_OFF = Math.min(
       4,
       (maxBy(map(barData, barData => barData.value)) || 0)
