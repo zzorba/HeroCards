@@ -1,5 +1,3 @@
-import { forEach } from 'lodash';
-
 import {
   UPDATE_PROMPT_DISMISSED,
   PACKS_FETCH_START,
@@ -89,16 +87,6 @@ export default function(
       } else {
         delete new_collection[action.code];
       }
-    } else if (action.cycle) {
-      forEach(state.all, pack => {
-        if (pack.cycle_position === action.cycle) {
-          if (action.value) {
-            new_collection[pack.code] = true;
-          } else {
-            delete new_collection[pack.code];
-          }
-        }
-      });
     }
 
     return Object.assign({},
@@ -115,16 +103,6 @@ export default function(
       } else {
         delete new_spoilers[action.code];
       }
-    } else if (action.cycle) {
-      forEach(state.all, pack => {
-        if (pack.cycle_position === action.cycle) {
-          if (action.value) {
-            new_spoilers[pack.code] = true;
-          } else {
-            delete new_spoilers[pack.code];
-          }
-        }
-      });
     }
 
     return Object.assign({},

@@ -1,21 +1,17 @@
 import {
-  SET_TABOO_SET,
   SET_SINGLE_CARD_VIEW,
-  SetTabooSetAction,
   SetSingleCardViewAction,
 } from '../actions/types';
 
 interface SettingsState {
-  tabooId?: number;
   singleCardView?: boolean;
 }
 
 const DEFAULT_SETTINGS_STATE: SettingsState = {
-  tabooId: undefined,
   singleCardView: false,
 };
 
-type SettingAction = SetTabooSetAction | SetSingleCardViewAction;
+type SettingAction = SetSingleCardViewAction;
 
 
 export default function(
@@ -23,12 +19,6 @@ export default function(
   action: SettingAction
 ): SettingsState {
   switch (action.type) {
-    case SET_TABOO_SET: {
-      return {
-        ...state,
-        tabooId: action.tabooId,
-      };
-    }
     case SET_SINGLE_CARD_VIEW: {
       return {
         ...state,

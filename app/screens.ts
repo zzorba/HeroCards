@@ -33,7 +33,6 @@ import InvestigatorSortDialog from '../components/InvestigatorSortDialog';
 import ScenarioDialog from '../components/ScenarioDialog';
 import ExileCardDialog from '../components/ExileCardDialog';
 import AboutView from '../components/AboutView';
-import WeaknessDrawDialog from '../components/weakness/WeaknessDrawDialog';
 
 // register all screens of the app (including internal ones)
 export function registerScreens(Provider: any, store: any) {
@@ -67,7 +66,6 @@ export function registerScreens(Provider: any, store: any) {
   Navigation.registerComponentWithRedux('Dialog.Sort', () => CardSortDialog, Provider, store);
   Navigation.registerComponentWithRedux('Dialog.InvestigatorSort', () => InvestigatorSortDialog, Provider, store);
   Navigation.registerComponentWithRedux('Dialog.Scenario', () => ScenarioDialog, Provider, store);
-  Navigation.registerComponentWithRedux('Weakness.Draw', () => WeaknessDrawDialog, Provider, store);
   Navigation.registerComponentWithRedux('SortButton', () => SortButton, Provider, store);
   Navigation.registerComponentWithRedux('TuneButton', () => TuneButton, Provider, store);
   Navigation.registerComponentWithRedux('MythosButton', () => MythosButton, Provider, store);

@@ -110,9 +110,6 @@ export function newCustomDeck(
       slots,
       ignoreDeckLimitSlots,
       problem,
-      0,
-      0,
-      tabooSetId,
       meta)
     );
 }
@@ -153,9 +150,6 @@ export function saveDeck(
   slots: { [code: string]: number },
   ignoreDeckLimitSlots: { [code: string]: number },
   problem: string,
-  spentXp: number,
-  xpAdjustment?: number,
-  tabooSetId?: number,
   meta?: DeckMeta
 ): Promise<Deck> {
   return getAccessToken().then(accessToken => {
@@ -167,14 +161,9 @@ export function saveDeck(
       name: name,
       slots: JSON.stringify(slots),
       problem: problem,
-      xp_spent: spentXp,
-      xp_adjustment: xpAdjustment || 0,
     };
     if (meta) {
       bodyParams.meta = JSON.stringify(meta);
-    }
-    if (tabooSetId) {
-      bodyParams.taboo = tabooSetId;
     }
     if (ignoreDeckLimitSlots && keys(ignoreDeckLimitSlots).length) {
       bodyParams.ignored = JSON.stringify(ignoreDeckLimitSlots);
@@ -210,60 +199,10 @@ export interface UpgradeDeckResult {
   upgradedDeck: Deck;
 }
 
-export function upgradeDeck(
-  id: number,
-  xp: number,
-  exiles?: string
-): Promise<UpgradeDeckResult> {
-  return getAccessToken().then(accessToken => {
-    if (!accessToken) {
-      throw new Error('badAccessToken');
-    }
-    const uri = `${Config.OAUTH_SITE}api/oauth2/deck/upgrade/${id}?access_token=${accessToken}`;
-    const params: Params = {
-      xp: xp,
-    };
-    if (exiles) {
-      params.exiles = exiles;
-    }
-
-    const body = encodeParams(params);
-    return fetch(uri, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body,
-    }).then(response => {
-      if (response.status !== 200) {
-        throw new Error(`Non-200 Status: ${response.status}`);
-      }
-      return response.json();
-    }, err => {
-      console.log(err.message || err);
-      return {
-        success: false,
-        msg: err.message || err,
-      };
-    }).then(json => {
-      if (!json.success) {
-        throw new Error(json.msg);
-      }
-      return Promise.all([loadDeck(id), loadDeck(json.msg)]).then(values => {
-        return {
-          deck: values[0],
-          upgradedDeck: values[1],
-        };
-      });
-    });
-  });
-}
-
 export default {
   decks,
   loadDeck,
   saveDeck,
-  upgradeDeck,
   newDeck,
   newCustomDeck,
 };

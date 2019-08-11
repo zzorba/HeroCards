@@ -16,16 +16,9 @@ export const syncCards = function(
   const langPrefix = lang && lang !== 'en' ? `${lang}.` : '';
   const uri = `https://${langPrefix}marvelcdb.com/api/public/cards/?encounter=1`;
   const packsByCode: { [code: string]: Pack } = {};
-  const cycleNames: { [cycle_position: number]: string } = {};
   forEach(packs, pack => {
     packsByCode[pack.code] = pack;
-    if (pack.position === 1) {
-      cycleNames[pack.cycle_position] = pack.name;
-    }
   });
-  cycleNames[50] = t`Return to...`;
-  cycleNames[70] = t`Standalone Scenarios`;
-  cycleNames[80] = t`Books`;
   const headers = new Headers();
   if (cache &&
     cache.lastModified &&
@@ -48,7 +41,7 @@ export const syncCards = function(
           try {
             realm.create(
               'Card',
-              Card.fromJson(cardJson, packsByCode, cycleNames, lang || 'en'),
+              Card.fromJson(cardJson, packsByCode, lang || 'en'),
               true
             );
           } catch (e) {

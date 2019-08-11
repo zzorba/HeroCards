@@ -13,7 +13,6 @@ import { connect } from 'react-redux';
 import DialogComponent from 'react-native-dialog';
 
 import RequiredCardSwitch from './RequiredCardSwitch';
-import TabooSetDialogOptions from '../TabooSetDialogOptions';
 import { showDeckModal } from '../navHelper';
 import Dialog from '../core/Dialog';
 import withNetworkStatus, { NetworkStatusProps } from '../core/withNetworkStatus';
@@ -32,7 +31,7 @@ import { COLORS } from '../../styles/colors';
 interface OwnProps {
   componentId: string;
   toggleVisible: () => void;
-  investigatorId?: string;
+  heroId?: string;
   viewRef?: View;
   onCreateDeck: (deck: Deck) => void;
 }
@@ -53,7 +52,6 @@ interface State {
   saving: boolean;
   deckName?: string;
   offlineDeck: boolean;
-  tabooSetId?: number;
   optionSelected: boolean[];
 }
 
@@ -68,7 +66,6 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       saving: false,
       offlineDeck: !props.signedIn || props.networkType === 'none',
       optionSelected: [true],
-      tabooSetId: props.defaultTabooSetId,
     };
 
     this._onOkayPress = throttle(this.onOkayPress.bind(this), 200);
@@ -76,9 +73,9 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props) {
     const {
-      investigatorId,
+      heroId,
     } = this.props;
-    if (investigatorId && investigatorId !== prevProps.investigatorId) {
+    if (heroId && heroId !== prevProps.heroId) {
       this.resetForm();
     }
   }
@@ -122,7 +119,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       onCreateDeck,
       toggleVisible,
     } = this.props;
-    const investigator = this.investigator();
+    const hero = this.hero();
     this.setState({
       saving: false,
     });
@@ -131,7 +128,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     }
     // Change the deck options for required cards, if present.
     onCreateDeck && onCreateDeck(deck);
-    showDeckModal(componentId, deck, investigator);
+    showDeckModal(componentId, deck, hero);
   };
 
   getSlots() {
@@ -141,15 +138,12 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     const {
       optionSelected,
     } = this.state;
-    const slots: Slots = {
-      // Random basic weakness.
-      [RANDOM_BASIC_WEAKNESS]: 1,
-    };
+    const slots: Slots = {};
 
-    // Seed all the 'basic' requirements from the investigator.
-    const investigator = this.investigator();
-    if (investigator && investigator.deck_requirements) {
-      forEach(investigator.deck_requirements.card, cardRequirement => {
+    // Seed all the 'basic' requirements from the hero.
+    const hero = this.hero();
+    if (hero && hero.deck_requirements) {
+      forEach(hero.deck_requirements.card, cardRequirement => {
         const card = cards[cardRequirement.code];
         slots[cardRequirement.code] = card.deck_limit || card.quantity || 0;
       });
@@ -185,10 +179,9 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       deckName,
       offlineDeck,
       saving,
-      tabooSetId,
     } = this.state;
-    const investigator = this.investigator();
-    if (investigator && (!saving || isRetry)) {
+    const hero = this.hero();
+    if (hero && (!saving || isRetry)) {
       const local = (offlineDeck || !signedIn || networkType === 'none');
       this.setState({
         saving: true,
@@ -196,9 +189,8 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       saveNewDeck({
         local,
         deckName: deckName || t`New Deck`,
-        investigatorCode: investigator.code,
+        heroCode: hero.code,
         slots: this.getSlots(),
-        tabooSetId,
       }).then(
         this._showNewDeck,
         () => {
@@ -211,32 +203,32 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     }
   }
 
-  investigator() {
+  hero() {
     const {
-      investigatorId,
-      investigators,
+      heroId,
+      heros,
     } = this.props;
-    return investigatorId ? investigators[investigatorId] : undefined;
+    return heroId ? heros[heroId] : undefined;
   }
 
   deckName() {
-    const investigator = this.investigator();
-    if (!investigator) {
+    const hero = this.hero();
+    if (!hero) {
       return undefined;
     }
-    switch (investigator.faction_code) {
+    switch (hero.faction_code) {
       case 'guardian':
-        return t`The Adventures of ${investigator.name}`;
+        return t`The Adventures of ${hero.name}`;
       case 'seeker':
-        return t`${investigator.name} Investigates`;
+        return t`${hero.name} Investigates`;
       case 'mystic':
-        return t`The ${investigator.name} Mysteries`;
+        return t`The ${hero.name} Mysteries`;
       case 'rogue':
-        return t`The ${investigator.name} Job`;
+        return t`The ${hero.name} Job`;
       case 'survivor':
-        return t`${investigator.name} on the Road`;
+        return t`${hero.name} on the Road`;
       default:
-        return t`${investigator.name} Does It All`;
+        return t`${hero.name} Does It All`;
     }
   }
 
@@ -244,13 +236,13 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     const {
       cards,
     } = this.props;
-    const investigator = this.investigator();
-    if (!investigator) {
+    const hero = this.hero();
+    if (!hero) {
       return [];
     }
     const result: Card[][] = [[]];
     forEach(
-      investigator.deck_requirements ? investigator.deck_requirements.card : [],
+      hero.deck_requirements ? hero.deck_requirements.card : [],
       cardRequirement => {
         result[0].push(cards[cardRequirement.code]);
         if (cardRequirement.alternates && cardRequirement.alternates.length) {
@@ -266,26 +258,18 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     return result;
   }
 
-  _setTabooSetId = (tabooSetId?: number) => {
-    this.setState({
-      tabooSetId,
-    });
-  };
-
   renderFormContent() {
     const {
-      investigatorId,
+      heroId,
       signedIn,
       refreshNetworkStatus,
       networkType,
-      tabooSets,
     } = this.props;
     const {
       saving,
       deckName,
       offlineDeck,
       optionSelected,
-      tabooSetId,
     } = this.state;
     if (saving) {
       return (
@@ -314,7 +298,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
         { map(cardOptions, (requiredCards, index) => {
           return (
             <RequiredCardSwitch
-              key={`${investigatorId}-${index}`}
+              key={`${heroId}-${index}`}
               index={index}
               disabled={index === 0 && cardOptions.length === 1}
               label={map(requiredCards, card => card.name).join('\n')}
@@ -323,11 +307,6 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
             />
           );
         }) }
-        <TabooSetDialogOptions
-          tabooSets={tabooSets}
-          tabooSetId={tabooSetId}
-          setTabooSetId={this._setTabooSetId}
-        />
         <DialogComponent.Description style={[typography.dialogLabel, space.marginBottomS]}>
           { t`Deck Type` }
         </DialogComponent.Description>
@@ -358,21 +337,21 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     const {
       toggleVisible,
       viewRef,
-      investigatorId,
+      heroId,
     } = this.props;
     const {
       saving,
       optionSelected,
     } = this.state;
-    const investigator = this.investigator();
-    if (!investigator) {
+    const hero = this.hero();
+    if (!hero) {
       return null;
     }
     const okDisabled = saving || !find(optionSelected, selected => selected);
     return (
       <Dialog
         title={t`New Deck`}
-        visible={!!investigatorId}
+        visible={!!heroId}
         viewRef={viewRef}
       >
         { this.renderFormContent() }

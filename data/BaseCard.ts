@@ -167,7 +167,7 @@ export default class BaseCard {
 
 
   factionCode(): FactionCodeType {
-    return this.faction_code || 'neutral';
+    return this.faction_code || 'basic';
   }
 
   costString(linked?: boolean) {

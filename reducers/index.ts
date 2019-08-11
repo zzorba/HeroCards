@@ -5,15 +5,13 @@ import storage from 'redux-persist/lib/storage';
 import { createSelector } from 'reselect';
 
 import signedIn from './signedIn';
-import campaigns from './campaigns';
 import filters from './filters';
 import cards from './cards';
 import decks from './decks';
 import packs from './packs';
 import settings from './settings';
 import { FilterState } from '../lib/filters';
-import { Campaign, SingleCampaign, Deck, DecksMap, Pack, SortType } from '../actions/types';
-import Card, { CardsMap } from '../data/Card';
+import { Deck, Pack, SortType } from '../actions/types';
 
 const packsPersistConfig = {
   key: 'packs',
@@ -50,7 +48,6 @@ const rootReducer = combineReducers({
   packs: persistReducer(packsPersistConfig, packs),
   cards: persistReducer(cardsPersistConfig, cards),
   decks: persistReducer(decksPersistConfig, decks),
-  campaigns,
   signedIn: persistReducer(signedInPersistConfig, signedIn),
   settings: persistReducer(settingsPeristConfig, settings),
   filters,
@@ -63,17 +60,8 @@ export default rootReducer;
 const DEFAULT_OBJECT = {};
 const DEFAULT_PACK_LIST: Pack[] = [];
 
-const allCampaignsSelector = (state: AppState) => state.campaigns.all;
 const allPacksSelector = (state: AppState) => state.packs.all;
 const allDecksSelector = (state: AppState) => state.decks.all;
-
-export const getCampaigns = createSelector(
-  allCampaignsSelector,
-  allCampaigns => sortBy(
-    values(allCampaigns),
-    campaign => campaign.lastUpdated ? -new Date(campaign.lastUpdated).getTime() : 0
-  )
-);
 
 export function getShowSpoilers(state: AppState, packCode: string): boolean {
   const show_spoilers = state.packs.show_spoilers || {};
@@ -86,27 +74,7 @@ export function getPackFetchDate(state: AppState): number | null {
 
 export const getAllPacks = createSelector(
   allPacksSelector,
-  allPacks => sortBy(
-    sortBy(allPacks || DEFAULT_PACK_LIST, pack => pack.position),
-    pack => pack.cycle_position
-  )
-);
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const EMPTY_PACKS: Pack[] = [];
-const allPacksCycleSelector = (state: AppState, cyclePack?: Pack) => getAllPacks(state);
-const cycleSelector = (state: AppState, cyclePack?: Pack) => cyclePack;
-export const getAllCyclePacks = createSelector(
-  allPacksCycleSelector,
-  cycleSelector,
-  (allPacks, cyclePack) => !cyclePack ?
-    EMPTY_PACKS :
-    filter(allPacks, pack => pack.cycle_position === cyclePack.cycle_position)
-);
-
-export const getAllStandalonePacks = createSelector(
-  allPacksSelector,
-  (packs) => filter(packs, pack => pack.cycle_position === 70)
+  allPacks => sortBy(allPacks || DEFAULT_PACK_LIST, pack => pack.position),
 );
 
 export function getPack(state: AppState, packCode: string): Pack | undefined {
@@ -148,81 +116,6 @@ export function getLatestDeck(state: AppState, deckId: number): Deck | undefined
   }
   return deck;
 }
-
-export const getDeckToCampaignMap = createSelector(
-  allCampaignsSelector,
-  allDecksSelector,
-  (
-    allCampaigns: { [id: string]: Campaign },
-    allDecks: DecksMap
-  ): { [id: string]: Campaign } => {
-    const decks = allDecks || {};
-    const campaigns = allCampaigns || {};
-    const result: { [id: string]: Campaign } = {};
-    forEach(
-      values(campaigns),
-      campaign => {
-        forEach(campaign.baseDeckIds || [], deckId => {
-          let deck = decks[deckId];
-          while (deck) {
-            result[deck.id] = campaign;
-            if (deck.next_deck) {
-              deck = decks[deck.next_deck];
-            } else {
-              break;
-            }
-          }
-        });
-      });
-    return result;
-  }
-);
-
-const getAllDecksForCampaignInvestigators = (state: AppState, investigators: CardsMap, campaign?: Campaign) => getAllDecks(state);
-const getInvestigatorsForCampaignInvestigators = (state: AppState, investigators: CardsMap, campaign?: Campaign) => investigators;
-const getLatestDeckIdsForCampaignInvestigators = (state: AppState, investigators: CardsMap, campaign?: Campaign) => getLatestCampaignDeckIds(state, campaign);
-export const getLatestCampaignInvestigators = createSelector(
-  getAllDecksForCampaignInvestigators,
-  getInvestigatorsForCampaignInvestigators,
-  getLatestDeckIdsForCampaignInvestigators,
-  (decks, investigators, latestDeckIds): Card[] => {
-    const latestDecks: Deck[] = flatMap(latestDeckIds, deckId => decks[deckId]);
-    return flatMap(
-      filter(latestDecks, deck => !!(deck && deck.investigator_code)),
-      deck => investigators[deck.investigator_code]
-    );
-  }
-);
-
-const EMPTY_DECK_ID_LIST: number[] = [];
-
-const latestDeckIdsDecksSelector = (state: AppState, campaign?: Campaign) => state.decks.all;
-const latestDeckidsCampaignSelector = (state: AppState, campaign?: Campaign) => campaign;
-export const getLatestCampaignDeckIds = createSelector(
-  latestDeckIdsDecksSelector,
-  latestDeckidsCampaignSelector,
-  (decks, campaign) => {
-    if (!campaign) {
-      return EMPTY_DECK_ID_LIST;
-    }
-    if (campaign.baseDeckIds) {
-      return flatMap(campaign.baseDeckIds, deckId => {
-        let deck = decks[deckId];
-        while (deck && deck.next_deck && deck.next_deck in decks) {
-          deck = decks[deck.next_deck];
-        }
-        return deck ? [deck.id] : [];
-      });
-    }
-    return flatMap(campaign.latestDeckIds || [], deckId => {
-      let deck = decks[deckId];
-      while (deck && deck.next_deck && deck.next_deck in decks) {
-        deck = decks[deck.next_deck];
-      }
-      return deck ? [deck.id] : [];
-    });
-  }
-);
 
 const EMPTY_MY_DECKS: number[] = [];
 
@@ -280,54 +173,6 @@ export const getDecks = createSelector(
       }
     });
     return decks;
-  }
-);
-
-function processCampaign(campaign: Campaign): SingleCampaign {
-  const latestScenario = last(campaign.scenarioResults);
-  const finishedScenarios = flatMap(campaign.scenarioResults || [], r => r.scenario);
-  return {
-    ...campaign,
-    latestScenario,
-    finishedScenarios,
-  };
-}
-
-export function getNextCampaignId(state: AppState): number {
-  return 1 + (max(map(keys(state.campaigns.all), id => parseInt(id, 10))) || 0);
-}
-
-const getAllCampaignsWithId = (state: AppState, id: number) => state.campaigns.all;
-const getIdWithId = (state: AppState, id: number) => id;
-export const getCampaign = createSelector(
-  getAllCampaignsWithId,
-  getIdWithId,
-  (allCampaigns, id): SingleCampaign | undefined => {
-    if (id in allCampaigns) {
-      const campaign = allCampaigns[id];
-      return campaign && processCampaign(campaign);
-    }
-    return undefined;
-  }
-);
-
-export function getTabooSet(state: AppState, tabooSetOverride?: number): number | undefined {
-  if (tabooSetOverride !== undefined) {
-    return tabooSetOverride;
-  }
-  return state.settings.tabooId;
-}
-
-const deckToCampaignMapForDeck = (state: AppState, deckId: number) => getDeckToCampaignMap(state);
-const deckIdForDeck = (state: AppState, deckId: number) => deckId;
-export const getCampaignForDeck = createSelector(
-  deckToCampaignMapForDeck,
-  deckIdForDeck,
-  (deckToCampaign, deckId): SingleCampaign | undefined => {
-    if (deckId in deckToCampaign) {
-      return processCampaign(deckToCampaign[deckId]);
-    }
-    return undefined;
   }
 );
 

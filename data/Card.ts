@@ -142,9 +142,6 @@ export default class Card extends BaseCard {
         position: number;
       };
     },
-    cycleNames: {
-      [cycle_code: string]: string;
-    },
     lang: string
   ): Card {
     const deck_requirements = json.deck_requirements ?
@@ -158,7 +155,7 @@ export default class Card extends BaseCard {
     let renderName = name;
     let renderSubname = json.subname;
     const linked_card = json.linked_card ?
-      Card.fromJson(json.linked_card, packsByCode, cycleNames, lang) :
+      Card.fromJson(json.linked_card, packsByCode, lang) :
       null;
     if (linked_card) {
       linked_card.back_linked = true;

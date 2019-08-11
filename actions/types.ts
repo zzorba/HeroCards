@@ -19,7 +19,7 @@ export type SortType =
 export interface Slots {
   [code: string]: number;
 }
-const HERO = 'hero';
+const INVESTIGATOR = 'investigator';
 const TOO_MANY_COPIES = 'too_many_copies';
 const INVALID_CARDS = 'invalid_cards';
 const TOO_FEW_CARDS = 'too_few_cards';
@@ -27,7 +27,7 @@ const TOO_MANY_CARDS = 'too_many_cards';
 const DECK_OPTIONS_LIMIT = 'deck_options_limit';
 
 export type DeckProblemType =
-  typeof HERO |
+  typeof INVESTIGATOR |
   typeof TOO_MANY_COPIES |
   typeof INVALID_CARDS |
   typeof TOO_FEW_CARDS |
@@ -45,7 +45,6 @@ export interface DeckMeta {
 export interface Deck {
   id: number;
   name: string;
-  taboo_id?: number;
   investigator_code: string;
   next_deck?: number;
   previous_deck?: number;
@@ -56,12 +55,8 @@ export interface Deck {
   scenarioCount?: number;
   slots: Slots;
   ignoreDeckLimitSlots: Slots;
-  exile_string?: string;
   problem?: DeckProblemType;
   version?: string;
-  xp?: number;
-  xp_adjustment?: number;
-  spentXp?: number;
 }
 
 export interface DecksMap {
@@ -73,152 +68,10 @@ export interface Pack {
   name: string;
   code: string;
   position: number;
-  cycle_position: number;
   available: string;
   known: number;
   total: number;
   url: string;
-}
-
-export interface Trauma {
-  physical?: number;
-  mental?: number;
-  killed?: boolean;
-  insane?: boolean;
-}
-
-export interface InvestigatorData {
-  [code: string]: Trauma;
-}
-
-export interface WeaknessSet {
-  packCodes: string[];
-  assignedCards: Slots;
-}
-
-export interface CampaignNoteSection {
-  title: string;
-  notes: string[];
-  custom?: boolean;
-}
-
-export interface CampaignNoteCount {
-  title: string;
-  count: number;
-  custom?: boolean;
-}
-
-export interface InvestigatorCampaignNoteSection {
-  title: string;
-  notes: {
-    [investigator_code: string]: string[];
-  };
-  custom?: boolean;
-}
-
-export interface InvestigatorCampaignNoteCount {
-  title: string;
-  counts: {
-    [investigator_code: string]: number;
-  };
-  custom?: boolean;
-}
-
-export interface ScenarioResult {
-  scenario: string;
-  scenarioCode: string;
-  resolution: string;
-  xp?: number;
-  scenarioPack?: string;
-  interlude?: boolean;
-}
-
-export enum CampaignDifficulty {
-  EASY = 'easy',
-  STANDARD = 'standard',
-  HARD = 'hard',
-  EXPERT = 'expert',
-}
-
-export const DIFFICULTIES: CampaignDifficulty[] = [
-  CampaignDifficulty.EASY,
-  CampaignDifficulty.STANDARD,
-  CampaignDifficulty.HARD,
-  CampaignDifficulty.EXPERT,
-];
-
-export const CUSTOM = 'custom';
-export const CORE = 'core';
-export const RTNOTZ = 'rtnotz';
-export const DWL = 'dwl';
-export const RTDWL = 'rtdwl';
-export const PTC = 'ptc';
-export const TFA = 'tfa';
-export const TCU = 'tcu';
-
-export type CampaignCycleCode =
-  typeof CUSTOM |
-  typeof CORE |
-  typeof RTNOTZ |
-  typeof DWL |
-  typeof RTDWL |
-  typeof PTC |
-  typeof TFA |
-  typeof TCU;
-
-export const ALL_CAMPAIGNS: CampaignCycleCode[] = [
-  CORE,
-  RTNOTZ,
-  DWL,
-  RTDWL,
-  PTC,
-  TFA,
-  TCU,
-];
-export interface CustomCampaignLog {
-  sections?: string[];
-  counts?: string[];
-  investigatorSections?: string[];
-  investigatorCounts?: string[];
-}
-
-export interface InvestigatorNotes {
-  sections: InvestigatorCampaignNoteSection[];
-  counts: InvestigatorCampaignNoteCount[];
-}
-
-export interface CampaignNotes {
-  sections: CampaignNoteSection[];
-  counts: CampaignNoteCount[];
-  investigatorNotes: InvestigatorNotes;
-}
-
-export interface Campaign {
-  id: number;
-  name: string;
-  difficulty: CampaignDifficulty;
-  cycleCode: CampaignCycleCode;
-  lastUpdated: Date;
-  showInterludes?: boolean;
-  baseDeckIds?: number[];
-  latestDeckIds?: number[]; // deprecated
-  investigatorData: InvestigatorData;
-  chaosBag: ChaosBag;
-  weaknessSet: WeaknessSet;
-  campaignNotes: CampaignNotes;
-  scenarioResults: ScenarioResult[];
-}
-
-export interface SingleCampaign extends Campaign {
-  latestScenario?: ScenarioResult;
-  finishedScenarios: string[];
-}
-
-
-export const SET_TABOO_SET = 'SET_TABOO_SET';
-export interface SetTabooSetAction {
-  type: typeof SET_TABOO_SET;
-  tabooId?: number;
 }
 
 export const SET_SINGLE_CARD_VIEW = 'SET_SINGLE_CARD_VIEW';
@@ -340,67 +193,14 @@ export const SET_IN_COLLECTION = 'SET_IN_COLLECTION';
 export interface SetInCollectionAction {
   type: typeof SET_IN_COLLECTION;
   code?: string;
-  cycle?: number;
   value: boolean;
 }
 export const SET_PACK_SPOILER = 'SET_PACK_SPOILER';
 export interface SetPackSpoilerAction {
   type: typeof SET_PACK_SPOILER;
   code?: string;
-  cycle?: number;
   value: boolean;
 }
-export const NEW_CAMPAIGN = 'NEW_CAMPAIGN';
-export interface NewCampaignAction {
-  type: typeof NEW_CAMPAIGN;
-  now: Date;
-  id: number;
-  name: string;
-  difficulty: CampaignDifficulty;
-  cycleCode: CampaignCycleCode;
-  baseDeckIds: number[];
-  chaosBag: ChaosBag;
-  weaknessSet: WeaknessSet;
-  campaignLog: CustomCampaignLog;
-}
-export const SET_ALL_CAMPAIGNS = 'SET_ALL_CAMPAIGNS';
-export interface SetAllCampaignsAction {
-  type: typeof SET_ALL_CAMPAIGNS;
-  campaigns: {
-    [id: string]: Campaign;
-  };
-}
-export const UPDATE_CAMPAIGN = 'UPDATE_CAMPAIGN';
-export interface UpdateCampaignAction {
-  type: typeof UPDATE_CAMPAIGN;
-  id: number;
-  campaign: Partial<Campaign>;
-  now: Date;
-}
-export const DELETE_CAMPAIGN = 'DELETE_CAMPAIGN';
-export interface DeleteCampaignAction {
-  type: typeof DELETE_CAMPAIGN;
-  id: number;
-}
-export const ADD_CAMPAIGN_SCENARIO_RESULT = 'ADD_CAMPAIGN_SCENARIO_RESULT';
-export interface AddCampaignScenarioResultAction {
-  type: typeof ADD_CAMPAIGN_SCENARIO_RESULT;
-  id: number;
-  scenarioResult: ScenarioResult;
-  campaignNotes?: CampaignNotes;
-  now: Date;
-}
-export const EDIT_CAMPAIGN_SCENARIO_RESULT = 'EDIT_CAMPAIGN_SCENARIO_RESULT';
-export interface EditCampaignScenarioResultAction {
-  type: typeof EDIT_CAMPAIGN_SCENARIO_RESULT;
-  id: number;
-  index: number;
-  scenarioResult: ScenarioResult;
-  now: Date;
-}
-export const NEW_WEAKNESS_SET = 'NEW_WEAKNESS_SET';
-export const EDIT_WEAKNESS_SET = 'EDIT_WEAKNESS_SET';
-export const DELETE_WEAKNESS_SET = 'DELETE_WEAKNESS_SET';
 
 export const LOGIN_STARTED = 'LOGIN_STARTED';
 interface LoginStartedAction {
@@ -513,13 +313,3 @@ export type DecksActions =
   UpdateDeckAction |
   ClearDecksAction |
   ReplaceLocalDeckAction;
-
-export type CampaignActions =
-  LogoutAction |
-  ReplaceLocalDeckAction |
-  NewCampaignAction |
-  UpdateCampaignAction |
-  DeleteCampaignAction |
-  AddCampaignScenarioResultAction |
-  EditCampaignScenarioResultAction |
-  SetAllCampaignsAction

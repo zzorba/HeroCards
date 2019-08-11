@@ -19,11 +19,10 @@ import DeviceInfo from 'react-native-device-info';
 import { msgid, ngettext, t } from 'ttag';
 
 import AppIcon from '../../assets/AppIcon';
-import { Campaign, Deck, DeckMeta, DeckProblem, InvestigatorData, Slots, Trauma } from '../../actions/types';
+import { Deck, DeckMeta, DeckProblem, Slots } from '../../actions/types';
 import { CardId, ParsedDeck, SplitCards } from '../parseDeck';
 import { showCard, showCardSwipe } from '../navHelper';
 import InvestigatorImage from '../core/InvestigatorImage';
-import DeckProgressModule from './DeckProgressModule';
 import InvestigatorOptionsModule from './InvestigatorOptionsModule';
 import CardSectionHeader, { CardSectionHeaderData } from './CardSectionHeader';
 import CardSearchResult from '../CardSearchResult';
@@ -37,7 +36,6 @@ const SMALL_EDIT_ICON_SIZE = 18 * sizeScale * DeviceInfo.getFontScale();
 
 interface SectionCardId extends CardId {
   special: boolean;
-  hasUpgrades: boolean;
 }
 
 interface CardSection extends CardSectionHeaderData {
@@ -45,59 +43,17 @@ interface CardSection extends CardSectionHeaderData {
   data: SectionCardId[];
 }
 
-function hasUpgrades(
-  code: string,
-  cards: CardsMap,
-  cardsByName: { [name: string]: Card[] },
-  validation: DeckValidation
-) {
-  const card = cards[code];
-  return !!(
-    card &&
-    card.has_upgrades &&
-    find(cardsByName[card.real_name] || [], upgradeCard => (
-      upgradeCard.code !== code &&
-      validation.canIncludeCard(upgradeCard, false) &&
-      (card.xp || 0) < (upgradeCard.xp || 0)
-    )));
-
-}
-
 function deckToSections(
   halfDeck: SplitCards,
-  cards: CardsMap,
-  cardsByName: { [name: string]: Card[] },
-  validation: DeckValidation,
   special: boolean
 ): CardSection[] {
   const result: CardSection[] = [];
-  if (halfDeck.Assets) {
-    const assetCount = sum(halfDeck.Assets.map(subAssets =>
-      sum(subAssets.data.map(c => c.quantity))));
-    result.push({
-      id: `assets${special ? '-special' : ''}`,
-      title: t`Assets (${assetCount})`,
-      data: [],
-    });
-    forEach(halfDeck.Assets, (subAssets, idx) => {
-      result.push({
-        id: `asset${special ? '-special' : ''}-${idx}`,
-        subTitle: subAssets.type,
-        data: map(subAssets.data, c => {
-          return {
-            ...c,
-            special,
-            hasUpgrades: hasUpgrades(c.id, cards, cardsByName, validation),
-          };
-        }),
-      });
-    });
-  }
   forEach({
+    [t`Ally`]: halfDeck.Ally,
     [t`Event`]: halfDeck.Event,
-    [t`Skill`]: halfDeck.Skill,
-    [t`Enemy`]: halfDeck.Enemy,
-    [t`Treachery`]: halfDeck.Treachery,
+    [t`Resource`]: halfDeck.Resource,
+    [t`Support`]: halfDeck.Support,
+    [t`Upgrade`]: halfDeck.Upgrade,
   }, (cardSplitGroup, localizedName) => {
     if (cardSplitGroup) {
       const count = sumBy(cardSplitGroup, c => c.quantity);
@@ -108,49 +64,12 @@ function deckToSections(
           return {
             ...c,
             special,
-            hasUpgrades: hasUpgrades(c.id, cards, cardsByName, validation),
           };
         }),
       });
     }
   });
   return result;
-}
-
-
-function bondedSections(
-  slots: Slots,
-  cards: CardsMap,
-  bondedCardsByName: { [name: string]: Card[] }
-): CardSection[] {
-  const bondedCards: Card[] = [];
-  forEach(keys(slots), code => {
-    const card = cards[code];
-    if (slots[code] > 0 && card) {
-      const possibleBondedCards = bondedCardsByName[card.real_name];
-      if (possibleBondedCards && possibleBondedCards.length) {
-        forEach(possibleBondedCards, bonded => {
-          bondedCards.push(bonded);
-        });
-      }
-    }
-  });
-  if (!bondedCards.length) {
-    return [];
-  }
-  const count = sumBy(bondedCards, card => card.quantity || 0);
-  return [{
-    id: 'bonded-cards',
-    title: t`Bonded Cards (${count})`,
-    data: map(bondedCards, c => {
-      return {
-        id: c.code,
-        quantity: c.quantity || 0,
-        special: true,
-        hasUpgrades: false,
-      };
-    }),
-  }];
 }
 
 const DECK_PROBLEM_MESSAGES = {
@@ -165,27 +84,16 @@ const DECK_PROBLEM_MESSAGES = {
 interface Props {
   componentId: string;
   deck: Deck;
-  campaign?: Campaign;
   parsedDeck: ParsedDeck;
   meta: DeckMeta;
   hasPendingEdits?: boolean;
   cards: CardsMap;
-  cardsByName: {
-    [name: string]: Card[];
-  };
-  bondedCardsByName: {
-    [name: string]: Card[];
-  };
   isPrivate: boolean;
   buttons?: ReactNode;
   showEditSpecial?: () => void;
   showEditNameDialog: () => void;
-  showTraumaDialog: (investigator: Card, traumaData: Trauma) => void;
-  showCardUpgradeDialog: (card: Card) => void;
-  investigatorDataUpdates?: InvestigatorData;
   deckName: string;
   singleCardView: boolean;
-  xpAdjustment: number;
   signedIn: boolean;
   login: () => void;
   deleteDeck: (allVersions: boolean) => void;
@@ -246,11 +154,11 @@ export default class DeckViewTab extends React.Component<Props> {
       );
     } else {
       Alert.alert(
-        t`Visit ArkhamDB to delete?`,
+        t`Visit MarvelCDB to delete?`,
         t`Unfortunately to delete decks you have to visit ArkhamDB at this time.`,
         [
           {
-            text: t`Visit ArkhamDB`,
+            text: t`Visit MarvelCDB`,
             onPress: () => {
               Linking.openURL(`https://marvelcdb.com/deck/view/${deck.id}`);
             },
@@ -264,7 +172,7 @@ export default class DeckViewTab extends React.Component<Props> {
     }
   };
 
-  _uploadToArkhamDB = () => {
+  _uploadToMarvelCDB = () => {
     const {
       signedIn,
       login,
@@ -284,7 +192,7 @@ export default class DeckViewTab extends React.Component<Props> {
       );
     } else if (!signedIn) {
       Alert.alert(
-        t`Sign in to ArkhamDB`,
+        t`Sign in to MarvelCDB`,
         t`ArkhamDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.`,
         [
           { text: 'Sign In', onPress: login },
@@ -293,8 +201,8 @@ export default class DeckViewTab extends React.Component<Props> {
       );
     } else {
       Alert.alert(
-        t`Upload to ArkhamDB`,
-        t`You can upload your deck to ArkhamDB to share with others.\n\nAfter doing this you will need network access to make changes to the deck.`,
+        t`Upload to MarvelCDB`,
+        t`You can upload your deck to MarvelCDB to share with others.\n\nAfter doing this you will need network access to make changes to the deck.`,
         [
           { text: 'Upload', onPress: uploadLocalDeck },
           { text: 'Cancel', style: 'cancel' },
@@ -307,7 +215,7 @@ export default class DeckViewTab extends React.Component<Props> {
     Linking.openURL(`https://marvelcdb.com/deck/view/${this.props.deck.id}`);
   };
 
-  _showInvestigator = () => {
+  _showHero = () => {
     const {
       parsedDeck: {
         investigator,
@@ -391,12 +299,7 @@ export default class DeckViewTab extends React.Component<Props> {
     const {
       parsedDeck: {
         ignoreDeckLimitSlots,
-        deck: {
-          previous_deck,
-          next_deck,
-        },
       },
-      showCardUpgradeDialog,
     } = this.props;
     const card = this.props.cards[item.id];
     if (!card) {
@@ -406,13 +309,11 @@ export default class DeckViewTab extends React.Component<Props> {
       ignoreDeckLimitSlots[item.id] :
       (item.quantity - (ignoreDeckLimitSlots[item.id] || 0));
     const id = `${section.id}.${index}`;
-    const upgradeEnabled = previous_deck && !next_deck && item.hasUpgrades;
     return (
       <CardSearchResult
         key={id}
         card={card}
         id={id}
-        onUpgrade={upgradeEnabled ? showCardUpgradeDialog : undefined}
         onPressId={this._showSwipeCard}
         count={count}
       />
@@ -430,18 +331,17 @@ export default class DeckViewTab extends React.Component<Props> {
     if (!problem) {
       return null;
     }
-    const isSurvivor = investigator.faction_code === 'survivor';
     return (
       <View style={[styles.problemBox,
-        { backgroundColor: isSurvivor ? COLORS.yellow : COLORS.red },
+        { backgroundColor: COLORS.red },
       ]}>
         <View style={styles.problemRow}>
           <View style={styles.warningIcon}>
-            <AppIcon name="warning" size={14 * DeviceInfo.getFontScale()} color={isSurvivor ? COLORS.black : COLORS.white} />
+            <AppIcon name="warning" size={14 * DeviceInfo.getFontScale()} color={COLORS.white} />
           </View>
           <Text
             numberOfLines={2}
-            style={[styles.problemText, { color: isSurvivor ? COLORS.black : COLORS.white }]}
+            style={[styles.problemText, { color: COLORS.white }]}
           >
             { head(problem.problems) || DECK_PROBLEM_MESSAGES[problem.reason] }
           </Text>
@@ -461,41 +361,20 @@ export default class DeckViewTab extends React.Component<Props> {
       meta,
       showEditSpecial,
       cards,
-      cardsByName,
-      bondedCardsByName,
     } = this.props;
 
     const validation = new DeckValidation(investigator, meta);
 
     return [
-      ...deckToSections(normalCards, cards, cardsByName, validation, false),
+      ...deckToSections(normalCards, false),
       {
         id: 'special',
         superTitle: t`Special Cards`,
         data: [],
         onPress: showEditSpecial,
       },
-      ...deckToSections(specialCards, cards, cardsByName, validation, true),
-      ...bondedSections(slots, cards, bondedCardsByName),
+      ...deckToSections(specialCards, true),
     ];
-  }
-
-  xpString() {
-    const {
-      parsedDeck: {
-        deck: {
-          xp,
-        },
-        changes,
-        experience,
-      },
-      xpAdjustment,
-    } = this.props;
-    if (!changes) {
-      return t`Experience required: ${experience}`;
-    }
-    const adjustedExperience = (xp || 0) + (xpAdjustment || 0);
-    return t`Available experience: ${adjustedExperience}\nSpent experience: ${changes.spentXp}`;
   }
 
   renderMetadata() {
@@ -514,9 +393,6 @@ export default class DeckViewTab extends React.Component<Props> {
             normalCardCount
           ) }
         </Text>
-        <Text style={typography.small}>
-          { this.xpString() }
-        </Text>        
       </View>
     );
   }
@@ -540,8 +416,6 @@ export default class DeckViewTab extends React.Component<Props> {
 
   render() {
     const {
-      campaign,
-      investigatorDataUpdates,
       componentId,
       deck,
       deckName,
@@ -552,8 +426,6 @@ export default class DeckViewTab extends React.Component<Props> {
       isPrivate,
       buttons,
       showEditNameDialog,
-      showTraumaDialog,
-      xpAdjustment,
     } = this.props;
 
     const sections = this.data();
@@ -586,7 +458,7 @@ export default class DeckViewTab extends React.Component<Props> {
               </Text>
             ) }
             <View style={styles.header}>
-              <TouchableOpacity onPress={this._showInvestigator}>
+              <TouchableOpacity onPress={this._showHero}>
                 <View style={styles.image}>
                   <InvestigatorImage card={investigator} componentId={componentId} />
                 </View>
@@ -617,28 +489,17 @@ export default class DeckViewTab extends React.Component<Props> {
               sections={sections}
             />
           </View>
-          <DeckProgressModule
-            componentId={componentId}
-            cards={cards}
-            deck={deck}
-            parsedDeck={this.props.parsedDeck}
-            isPrivate={isPrivate}
-            campaign={campaign}
-            showTraumaDialog={showTraumaDialog}
-            investigatorDataUpdates={investigatorDataUpdates}
-            xpAdjustment={xpAdjustment}
-          />
           { deck.local ? (
             <View style={styles.button}>
               <Button
-                title={t`Upload to ArkhamDB`}
-                onPress={this._uploadToArkhamDB}
+                title={t`Upload to MarvelCDB`}
+                onPress={this._uploadToMarvelCDB}
               />
             </View>
           ) : (
             <View style={styles.button}>
               <Button
-                title={t`View on ArkhamDB`}
+                title={t`View on MarvelCDB`}
                 onPress={this._viewDeck}
               />
             </View>

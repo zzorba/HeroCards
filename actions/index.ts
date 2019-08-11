@@ -120,26 +120,10 @@ export function setInCollection(code: string, value: boolean) {
   };
 }
 
-export function setCycleInCollection(cycle: number, value: boolean) {
-  return {
-    type: SET_IN_COLLECTION,
-    cycle,
-    value,
-  };
-}
-
 export function setPackSpoiler(code: string, value: boolean) {
   return {
     type: SET_PACK_SPOILER,
     code,
-    value,
-  };
-}
-
-export function setCyclePackSpoiler(cycle: number, value: boolean) {
-  return {
-    type: SET_PACK_SPOILER,
-    cycle,
     value,
   };
 }

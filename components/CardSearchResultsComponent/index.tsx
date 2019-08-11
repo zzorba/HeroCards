@@ -17,7 +17,7 @@ import CardSearchBox from './CardSearchBox';
 import CardResultList from './CardResultList';
 import Switch from '../core/Switch';
 import { FilterState, filterToQuery } from '../../lib/filters';
-import { MYTHOS_CARDS_QUERY, PLAYER_CARDS_QUERY } from '../../data/query';
+import { ENCOUNTER_CARDS_QUERY, PLAYER_CARDS_QUERY } from '../../data/query';
 import Card from '../../data/Card';
 import typography from '../../styles/typography';
 
@@ -172,7 +172,7 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
     const queryParts = [];
     if (mythosToggle) {
       if (mythosMode) {
-        queryParts.push(MYTHOS_CARDS_QUERY);
+        queryParts.push(ENCOUNTER_CARDS_QUERY);
       } else {
         queryParts.push(PLAYER_CARDS_QUERY);
       }

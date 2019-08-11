@@ -19,7 +19,7 @@ import {
   Slots,
 } from '../../actions/types';
 import { login } from '../../actions';
-import { saveDeck, loadDeck, upgradeDeck, newCustomDeck, UpgradeDeckResult } from '../../lib/authApi';
+import { saveDeck, loadDeck, newCustomDeck, UpgradeDeckResult } from '../../lib/authApi';
 import { AppState, getNextLocalDeckId } from '../../reducers/index';
 
 function setNewDeck(
@@ -111,9 +111,6 @@ export interface DeckChanges {
   slots?: Slots;
   ignoreDeckLimitSlots?: Slots;
   problem?: string;
-  spentXp?: number;
-  xpAdjustment?: number;
-  tabooSetId?: number;
   meta?: DeckMeta;
 }
 
@@ -124,55 +121,6 @@ function handleUpgradeDeckResult(
   dispatch(updateDeck(result.deck.id, result.deck, false));
   dispatch(setNewDeck(result.upgradedDeck.id, result.upgradedDeck));
 }
-
-export const saveDeckUpgrade: ActionCreator<
-  ThunkAction<Promise<Deck>, AppState, {}, Action>
-> = (
-  deck: Deck,
-  xp: number,
-  exileCounts: Slots,
-) => {
-  return (
-    dispatch: ThunkDispatch<AppState, {}, Action>,
-    getState: () => AppState
-  ) => {
-    return new Promise<Deck>((resolve, reject) => {
-      const exileParts: string[] = [];
-      forEach(exileCounts, (count, code) => {
-        if (count > 0) {
-          forEach(range(0, count), () => exileParts.push(code));
-        }
-      });
-      if (deck.local) {
-        const nextLocalDeckId = getNextLocalDeckId(getState());
-        const result = upgradeLocalDeck(nextLocalDeckId, deck, xp, exileParts);
-        handleUpgradeDeckResult(result, dispatch);
-        resolve(result.upgradedDeck);
-      } else {
-        const exiles = exileParts.join(',');
-        const upgradeDeckPromise = upgradeDeck(deck.id, xp, exiles);
-        handleAuthErrors(
-          upgradeDeckPromise,
-          result => {
-            handleUpgradeDeckResult(result, dispatch);
-            setTimeout(() => {
-              resolve(result.upgradedDeck);
-            }, 1000);
-          },
-          reject,
-          // retry
-          () => {
-            dispatch(saveDeckUpgrade(deck, xp, exileCounts))
-              .then(deck => resolve(deck));
-          },
-          () => {
-            dispatch(login());
-          }
-        );
-      }
-    });
-  };
-};
 
 export const saveDeckChanges: ActionCreator<
   ThunkAction<Promise<Deck>, AppState, {}, Action>
@@ -189,9 +137,6 @@ export const saveDeckChanges: ActionCreator<
           changes.slots || deck.slots,
           changes.ignoreDeckLimitSlots || deck.ignoreDeckLimitSlots || {},
           changes.problem !== undefined ? changes.problem : (deck.problem || ''),
-          changes.spentXp !== undefined ? changes.spentXp : (deck.spentXp || 0),
-          changes.xpAdjustment !== undefined ? changes.xpAdjustment : (deck.xp_adjustment || 0),
-          changes.tabooSetId !== undefined ? changes.tabooSetId : deck.taboo_id,
           changes.meta !== undefined ? changes.meta : deck.meta
         );
         dispatch(updateDeck(newDeck.id, newDeck, true));
@@ -205,9 +150,6 @@ export const saveDeckChanges: ActionCreator<
           changes.slots || deck.slots,
           changes.ignoreDeckLimitSlots || deck.ignoreDeckLimitSlots || {},
           changes.problem !== undefined ? changes.problem : (deck.problem || ''),
-          changes.spentXp !== undefined ? changes.spentXp : (deck.spentXp || 0),
-          changes.xpAdjustment !== undefined ? changes.xpAdjustment : (deck.xp_adjustment || 0),
-          changes.tabooSetId !== undefined ? changes.tabooSetId : deck.taboo_id,
           changes.meta !== undefined ? changes.meta : deck.meta
         );
         handleAuthErrors<Deck>(
@@ -235,10 +177,9 @@ export const saveDeckChanges: ActionCreator<
 export interface NewDeckParams {
   local: boolean;
   deckName: string;
-  investigatorCode: string;
+  heroCode: string;
   slots: Slots;
   ignoreDeckLimitSlots?: Slots;
-  tabooSetId?: number;
   meta?: DeckMeta;
 }
 export const saveNewDeck: ActionCreator<
@@ -256,9 +197,8 @@ export const saveNewDeck: ActionCreator<
         const deck = newLocalDeck(
           nextLocalDeckId,
           params.deckName,
-          params.investigatorCode,
+          params.heroCode,
           params.slots,
-          params.tabooSetId,
           params.meta,
         );
         dispatch(setNewDeck(deck.id, deck));
@@ -267,12 +207,11 @@ export const saveNewDeck: ActionCreator<
         }, 1000);
       } else {
         const newDeckPromise = newCustomDeck(
-          params.investigatorCode,
+          params.heroCode,
           params.deckName,
           params.slots,
           params.ignoreDeckLimitSlots || {},
           'too_few_cards',
-          params.tabooSetId,
           params.meta
         );
         handleAuthErrors<Deck>(
@@ -307,10 +246,9 @@ export const saveClonedDeck: ActionCreator<
     return dispatch(saveNewDeck({
       local,
       deckName,
-      investigatorCode: cloneDeck.investigator_code,
+      heroCode: cloneDeck.investigator_code,
       slots: cloneDeck.slots,
       ignoreDeckLimitSlots: cloneDeck.ignoreDeckLimitSlots,
-      tabooSetId: cloneDeck.taboo_id,
       meta: cloneDeck.meta,
     })).then(deck => {
       return dispatch(saveDeckChanges(
@@ -319,9 +257,6 @@ export const saveClonedDeck: ActionCreator<
           slots: cloneDeck.slots,
           ignoreDeckLimitSlots: cloneDeck.ignoreDeckLimitSlots,
           problem: cloneDeck.problem,
-          spentXp: 0,
-          xpAdjustment: 0,
-          tabooSetId: cloneDeck.taboo_id,
         }
       ));
     });

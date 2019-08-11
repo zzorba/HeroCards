@@ -132,8 +132,7 @@ export function showCard(
   componentId: string,
   code: string,
   card: Card,
-  showSpoilers?: boolean,
-  tabooSetId?: number
+  showSpoilers?: boolean
 ) {
   Navigation.push<CardDetailProps>(componentId, {
     component: {
@@ -142,7 +141,6 @@ export function showCard(
         id: code,
         pack_code: card.pack_code,
         showSpoilers: !!showSpoilers,
-        tabooSetId,
       },
       options: {
         topBar: {
@@ -160,7 +158,6 @@ export function showCardSwipe(
   cards: Card[],
   index: number,
   showSpoilers?: boolean,
-  tabooSetId?: number,
   deckCardCounts?: Slots,
   onDeckCountChange?: (code: string, count: number) => void,
   investigator?: Card,
@@ -183,7 +180,6 @@ export function showCardSwipe(
         cards,
         initialIndex: index,
         showSpoilers: !!showSpoilers,
-        tabooSetId,
         deckCardCounts,
         onDeckCountChange,
         renderFooter,
