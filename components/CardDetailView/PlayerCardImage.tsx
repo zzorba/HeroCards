@@ -107,7 +107,7 @@ export default class PlayerCardImage extends React.Component<Props> {
             <CachedImage
               style={styles.verticalContainer}
               source={{
-                uri: `https://arkhamdb.com${filename}`,
+                uri: `https://marvelcdb.com${filename}`,
               }}
               resizeMode="contain"
               loadingIndicator={null}
@@ -124,7 +124,7 @@ export default class PlayerCardImage extends React.Component<Props> {
             <CachedImage
               style={[styles.image, this.imageStyle()]}
               source={{
-                uri: `https://arkhamdb.com${filename}`,
+                uri: `https://marvelcdb.com${filename}`,
               }}
               resizeMode="contain"
               loadingIndicator={null}

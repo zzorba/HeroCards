@@ -64,7 +64,7 @@ export default class InvestigatorImage extends React.Component<Props> {
             <CachedImage
               style={styles.image}
               source={{
-                uri: `https://arkhamdb.com/${card.imagesrc}`,
+                uri: `https://marvelcdb.com/${card.imagesrc}`,
               }}
               resizeMode="contain"
             />

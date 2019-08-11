@@ -226,7 +226,7 @@ export default class App {
     Linking.addEventListener('url', this._handleUrl);
 
     // We handle scrollapp and https (universal) links
-    DeepLinking.addScheme('arkhamcards://');
+    DeepLinking.addScheme('herocards://');
 
     Linking.getInitialURL().then((url) => {
       if (url) {

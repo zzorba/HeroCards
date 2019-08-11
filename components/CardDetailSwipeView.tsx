@@ -113,7 +113,7 @@ class CardDetailSwipeView extends React.Component<Props, State> {
     } = this.props;
     const card = this.currentCard();
     if (buttonId === 'share') {
-      Linking.openURL(`https://arkhamdb.com/card/${card.code}#reviews-header`);
+      Linking.openURL(`https://marvelcdb.com/card/${card.code}#reviews-header`);
     } else if (buttonId === 'deck') {
       this._showInvestigatorCards(card.code);
     } else if (buttonId === 'faq') {

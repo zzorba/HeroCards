@@ -1,4 +1,4 @@
-package com.arkhamcards;
+package com.herocards;
 
 import android.view.View;
 

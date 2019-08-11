@@ -5,7 +5,7 @@ import { authorize, refresh, revoke, AuthorizeResult, RefreshResult } from 'reac
 const config: any = {
   clientId: Config.OAUTH_CLIENT_ID,
   clientSecret: Config.OAUTH_CLIENT_SECRET,
-  redirectUrl: 'arkhamcards://auth/redirect',
+  redirectUrl: 'herocards://auth/redirect',
   serviceConfiguration: {
     authorizationEndpoint: `${Config.OAUTH_SITE}oauth/v2/auth`,
     tokenEndpoint: `${Config.OAUTH_SITE}oauth/v2/token`,
@@ -15,7 +15,7 @@ const config: any = {
 
 function saveAuthResponse(response: AuthorizeResult | RefreshResult) {
   const serialized = JSON.stringify(response);
-  return Keychain.setGenericPassword('arkhamdb', serialized)
+  return Keychain.setGenericPassword('marveldb', serialized)
     .then(() => {
       return response.accessToken;
     });

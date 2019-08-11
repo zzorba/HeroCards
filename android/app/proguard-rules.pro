@@ -20,7 +20,7 @@
 # see https://github.com/react-native-community/react-native-svg/issues/481
 -keep public class com.horcrux.svg.** {*;}
 
--keep class com.arkhamcards.BuildConfig { *; }
+-keep class com.herocards.BuildConfig { *; }
 -keep class com.facebook.crypto.** {
    *;
 }

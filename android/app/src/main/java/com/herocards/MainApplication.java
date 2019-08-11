@@ -1,4 +1,4 @@
-package com.arkhamcards;
+package com.herocards;
 
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;

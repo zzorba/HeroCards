@@ -117,7 +117,7 @@ class CardImageView extends React.Component<Props, State> {
               style={{ height: cardHeight, width: cardWidth }}
               resizeMode="contain"
               source={{
-                uri: `https://arkhamdb.com${card.imagesrc}`,
+                uri: `https://marvelcdb.com${card.imagesrc}`,
               }}
             />
           </ViewControl>
@@ -136,7 +136,7 @@ class CardImageView extends React.Component<Props, State> {
             resizeMode="contain"
             source={{
               // @ts-ignore
-              uri: `https://arkhamdb.com${card.double_sided ? card.backimagesrc : card.linked_card.imagesrc}`,
+              uri: `https://marvelcdb.com${card.double_sided ? card.backimagesrc : card.linked_card.imagesrc}`,
             }}
           />
         </ViewControl>
@@ -155,7 +155,7 @@ class CardImageView extends React.Component<Props, State> {
           style={{ height: cardHeight, width: cardWidth }}
           resizeMode="contain"
           source={{
-            uri: `https://arkhamdb.com${card.imagesrc}`,
+            uri: `https://marvelcdb.com${card.imagesrc}`,
           }}
         />
       </ViewControl>

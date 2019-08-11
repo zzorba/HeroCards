@@ -1959,7 +1959,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.arkhamcards.ArkhamCards;
+				PRODUCT_BUNDLE_IDENTIFIER = com.herocards.HeroCards;
 				PRODUCT_NAME = ArkhamCards;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ArkhamCards-Bridging-Header.h";
@@ -2000,7 +2000,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.arkhamcards.ArkhamCards;
+				PRODUCT_BUNDLE_IDENTIFIER = com.herocards.HeroCards;
 				PRODUCT_NAME = ArkhamCards;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ArkhamCards-Bridging-Header.h";

@@ -255,7 +255,7 @@ export default class DeckViewTab extends React.Component<Props> {
           {
             text: t`Visit ArkhamDB`,
             onPress: () => {
-              Linking.openURL(`https://arkhamdb.com/deck/view/${deck.id}`);
+              Linking.openURL(`https://marvelcdb.com/deck/view/${deck.id}`);
             },
           },
           {
@@ -307,7 +307,7 @@ export default class DeckViewTab extends React.Component<Props> {
   };
 
   _viewDeck = () => {
-    Linking.openURL(`https://arkhamdb.com/deck/view/${this.props.deck.id}`);
+    Linking.openURL(`https://marvelcdb.com/deck/view/${this.props.deck.id}`);
   };
 
   _showInvestigator = () => {

@@ -25,7 +25,7 @@ export default function AboutView() {
         Feedback and bug reports are welcome by email at arkhamcards@gmail.com
         or via Twitter @ArkhamCards
         { '\n\n' }
-        Many thanks to ArkhamDB.com for providing the structured data, API
+        Many thanks to marvelcdb.com for providing the structured data, API
         access and access to card images. Without their continued support, this
         project would not have been possible.
         { '\n\n' }

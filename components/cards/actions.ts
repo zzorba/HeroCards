@@ -97,7 +97,7 @@ export function fetchPacks(
       headers.append('If-Modified-Since', lastModified);
     }
     const langPrefix = lang && lang !== 'en' ? `${lang}.` : '';
-    return fetch(`https://${langPrefix}arkhamdb.com/api/public/packs/`, {
+    return fetch(`https://${langPrefix}marvelcdb.com/api/public/packs/`, {
       method: 'GET',
       headers: headers,
     }).then(response => {

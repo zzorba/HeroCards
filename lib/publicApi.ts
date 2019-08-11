@@ -14,7 +14,7 @@ export const syncTaboos = function(
   cache?: TabooCache
 ): Promise<TabooCache | null> {
   const langPrefix = lang && lang !== 'en' ? `${lang}.` : '';
-  const uri = `https://${langPrefix}arkhamdb.com/api/public/taboos/`;
+  const uri = `https://${langPrefix}marvelcdb.com/api/public/taboos/`;
   const headers = new Headers();
   if (cache &&
     cache.lastModified &&
@@ -80,7 +80,7 @@ export const syncCards = function(
   cache?: CardCache
 ): Promise<CardCache | null> {
   const langPrefix = lang && lang !== 'en' ? `${lang}.` : '';
-  const uri = `https://${langPrefix}arkhamdb.com/api/public/cards/?encounter=1`;
+  const uri = `https://${langPrefix}marvelcdb.com/api/public/cards/?encounter=1`;
   const packsByCode: { [code: string]: Pack } = {};
   const cycleNames: { [cycle_position: number]: string } = {};
   forEach(packs, pack => {
@@ -158,7 +158,7 @@ export const getFaqEntry = function(realm: Realm, code: string) {
   if (faqEntry && faqEntry.lastModified) {
     headers.append('If-Modified-Since', faqEntry.lastModified);
   }
-  const uri = `https://arkhamdb.com/api/public/faq/${code}.json`;
+  const uri = `https://marvelcdb.com/api/public/faq/${code}.json`;
   return fetch(uri, {
     method: 'GET',
     headers: headers,

@@ -96,10 +96,10 @@ class CardFaqView extends React.Component<Props, State> {
       if (card) {
         showCard(componentId, code, card);
       }
-    } else if (url.indexOf('arkhamdb.com') !== -1) {
+    } else if (url.indexOf('marvelcdb.com') !== -1) {
       this.openUrl(url);
     } else if (startsWith(url, '/')) {
-      this.openUrl(`https://arkhamdb.com${url}`);
+      this.openUrl(`https://marvelcdb.com${url}`);
     }
   };
 

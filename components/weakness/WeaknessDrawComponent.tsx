@@ -182,7 +182,7 @@ class WeaknessDrawComponent extends React.Component<Props, State> {
 
     const card = head(cards);
     if (card && card.imagesrc) {
-      defaultImageCacheManager.downloadAndCacheUrl(`https://arkhamdb.com/${card.imagesrc}`);
+      defaultImageCacheManager.downloadAndCacheUrl(`https://marvelcdb.com/${card.imagesrc}`);
     }
     return card;
   }
@@ -325,7 +325,7 @@ class WeaknessDrawComponent extends React.Component<Props, State> {
                 <CachedImage
                   style={styles.verticalCardImage}
                   source={{
-                    uri: `https://arkhamdb.com/${nextCard.imagesrc}`,
+                    uri: `https://marvelcdb.com/${nextCard.imagesrc}`,
                   }}
                   resizeMode="contain"
                 />

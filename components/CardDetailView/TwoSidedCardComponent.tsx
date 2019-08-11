@@ -436,12 +436,12 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
           return BLURRED_AGENDA;
         }
         return {
-          uri: `https://arkhamdb.com${card.imagesrc}`,
+          uri: `https://marvelcdb.com${card.imagesrc}`,
           cache: 'force-cache',
         };
       }
       return {
-        uri: `https://arkhamdb.com${card.backimagesrc}`,
+        uri: `https://marvelcdb.com${card.backimagesrc}`,
         cache: 'force-cache',
       };
     }

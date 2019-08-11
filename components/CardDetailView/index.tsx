@@ -108,7 +108,7 @@ class CardDetailView extends React.Component<Props, State> {
       id,
     } = this.props;
     if (buttonId === 'share') {
-      Linking.openURL(`https://arkhamdb.com/card/${id}#reviews-header`);
+      Linking.openURL(`https://marvelcdb.com/card/${id}#reviews-header`);
     } else if (buttonId === 'deck') {
       this._showInvestigatorCards();
     } else if (buttonId === 'faq') {
