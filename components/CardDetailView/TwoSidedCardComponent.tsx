@@ -165,7 +165,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
   renderResourceIcons(card: BaseCard) {
     const resources = flatMap(RESOURCE_FIELDS, resource => {
       // @ts-ignore
-      const count = card[skill] || 0;
+      const count = card[resource] || 0;
       return range(0, count).map(() => resource);
     });
 
@@ -177,11 +177,11 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
         <Text style={typography.cardText}>
           { t`Resource: ` }
         </Text>
-        { map(resources, (skill, idx) => (
+        { map(resources, (resource, idx) => (
           <ArkhamIcon
             style={styles.resourceIcon}
             key={idx}
-            name={skill.substring(6)}
+            name={resource.substring(8)}
             size={SKILL_ICON_SIZE}
             color="#444"
           />))

@@ -1,0 +1,1250 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de\n"
+"mime-version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"x-generator: Poedit 2.2.3\n"
+
+#: data/BaseCard.ts:227
+msgid "Cost: -"
+msgstr "Kosten:-"
+
+#: data/BaseCard.ts:230
+msgid "Cost: ${ costString }"
+msgstr "Kosten: ${costString}"
+
+#: data/Card.ts:66
+#: data/Card.ts:109
+msgid "Weakness"
+msgstr "Schwäche"
+
+#: data/Card.ts:69
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: components/DeckDetailView/DeckViewTab.tsx:53
+#: data/Card.ts:85
+#: data/Card.ts:119
+msgid "Event"
+msgstr "Veranstaltung"
+
+#: data/Card.ts:104
+msgid "Basic Weakness"
+msgstr "Grundschwäche"
+
+#: components/ScenarioDialog.tsx:25
+#: data/Card.ts:89
+#: data/Card.ts:129
+msgid "Scenario"
+msgstr "Szenario"
+
+#: data/Card.ts:107
+msgid "Story"
+msgstr "Geschichte"
+
+#: components/CollectionEditView.tsx:53
+msgid "Second Core Set"
+msgstr "Zweites Kernset"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:291
+#: components/CardSearchResultsComponent/CardResultList.tsx:585
+#: components/CollectionEditView.tsx:31
+#: components/InvestigatorsListComponent/index.tsx:292
+#: components/settings/SettingsView.tsx:78
+msgid "Edit Collection"
+msgstr "Sammlung bearbeiten"
+
+#: components/DeckListComponent.tsx:119
+msgid "Search decks"
+msgstr "Suchdecks"
+
+#: components/DeckListComponent.tsx:149
+msgid "No matching decks for \"${ searchTerm }\"."
+msgstr "Keine passenden Decks für \"${searchTerm}\"."
+
+#: components/DeckListRow.tsx:68
+msgid "Updated ${ dateStr }"
+msgstr "Aktualisierte ${dateStr}"
+
+#: components/DeckDetailView/DeckViewTab.tsx:76
+#: components/DeckProblemRow.tsx:16
+msgid "Not enough cards."
+msgstr "Nicht genug Karten."
+
+#: components/DeckDetailView/DeckViewTab.tsx:77
+#: components/DeckProblemRow.tsx:17
+msgid "Too many cards."
+msgstr "Zu viele Karten."
+
+#: components/DeckDetailView/DeckViewTab.tsx:78
+#: components/DeckProblemRow.tsx:18
+msgid "Too many copies of a card with the same name."
+msgstr "Zu viele Kopien einer gleichnamigen Karte."
+
+#: components/DeckDetailView/DeckViewTab.tsx:79
+#: components/DeckProblemRow.tsx:19
+msgid "Contains forbidden cards (cards not permitted by Faction)"
+msgstr "Enthält verbotene Karten (Karten, die nicht durch Faction erlaubt sind)"
+
+#: components/DeckDetailView/DeckViewTab.tsx:80
+#: components/DeckProblemRow.tsx:20
+msgid "Contains too many limited cards."
+msgstr "Enthält zu viele limitierte Karten."
+
+#: components/CardDetailSwipeView.tsx:55
+#: components/CardDetailSwipeView.tsx:97
+#: components/CardDetailSwipeView.tsx:168
+#: components/CardDetailView/TwoSidedCardComponent.tsx:131
+#: components/CardDetailView/index.tsx:76
+#: components/CardDetailView/index.tsx:165
+#: components/DeckDetailView/index.tsx:375
+#: components/PackListComponent/PackRow.tsx:48
+#: components/core/ChooserButton.tsx:41
+#: components/filter/CardEnemyFilterView.tsx:19
+#: components/filter/PackFilterView.tsx:30
+#: components/navHelper.ts:27
+#: components/navHelper.ts:145
+#: components/navHelper.ts:168
+msgid "Back"
+msgstr "Zurück"
+
+#: components/CopyDeckDialog/index.tsx:283
+#: components/DeckDetailView/DeckViewTab.tsx:145
+#: components/DeckDetailView/DeckViewTab.tsx:166
+#: components/DeckDetailView/EditDeckDetailsDialog.tsx:97
+#: components/DeckDetailView/index.tsx:318
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:354
+#: components/NewDeckView/index.tsx:39
+#: components/authHelper.ts:32
+#: components/core/CountEditDialog.tsx:114
+#: components/core/DialogPicker.tsx:97
+#: components/core/TextEditDialog.tsx:204
+#: components/settings/LoginButton.tsx:41
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: components/DeckDetailView/index.tsx:262
+#: components/DeckDetailView/index.tsx:265
+#: components/DeckDetailView/index.tsx:797
+msgid "Save"
+msgstr "Speichern"
+
+#: components/CardSortDialog/index.tsx:99
+#: components/InvestigatorSortDialog.tsx:58
+msgid "Sort by"
+msgstr "Sortieren nach"
+
+#: components/CardSortDialog/index.tsx:50
+#: components/InvestigatorSortDialog.tsx:22
+msgid "Title"
+msgstr "Titel"
+
+#: components/CardSortDialog/index.tsx:44
+#: components/InvestigatorSortDialog.tsx:23
+msgid "Faction"
+msgstr "Fraktion"
+
+#: components/CardSortDialog/index.tsx:48
+#: components/InvestigatorSortDialog.tsx:24
+msgid "Pack"
+msgstr "Paket"
+
+#: app/App.js:118
+#: app/App.js:157
+#: components/MyDecksView.tsx:38
+msgid "Decks"
+msgstr "Decks"
+
+#: app/App.js:124
+#: components/CopyDeckDialog/index.tsx:178
+#: components/MyDecksView.tsx:44
+#: components/MyDecksView.tsx:125
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:186
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:348
+#: components/NewDeckView/index.tsx:33
+msgid "New Deck"
+msgstr "Neues Deck"
+
+#: components/authHelper.ts:18
+msgid "Authorization error"
+msgstr "Autorisierungsfehler"
+
+#: components/authHelper.ts:21
+msgid "Try again"
+msgstr "Versuchen Sie es erneut"
+
+#: components/authHelper.ts:26
+msgid "Reauthorize"
+msgstr "Erneut autorisieren"
+
+#: components/navHelper.ts:20
+#: components/navHelper.ts:112
+msgid "Deck"
+msgstr "Deck"
+
+#: components/DeckDetailView/DeckViewTab.tsx:52
+#: data/Card.ts:84
+#: data/Card.ts:117
+msgid "Ally"
+msgstr "Verbündeter"
+
+#: components/CopyDeckDialog/index.tsx:277
+#: components/DeckDetailView/index.tsx:756
+msgid "Saving"
+msgstr "Speichern"
+
+#: components/filter/CardFilterView/index.tsx:390
+msgid "Traits"
+msgstr "Merkmale"
+
+#: components/settings/DiagnosticsView.tsx:78
+msgid "Backup"
+msgstr "Backup"
+
+#: components/settings/DiagnosticsView.tsx:82
+msgid "Caches"
+msgstr "Zwischenspeicher"
+
+#: components/settings/DiagnosticsView.tsx:85
+msgid "Clear image cache"
+msgstr "Klarer Bildspeicher"
+
+#: components/settings/DiagnosticsView.tsx:86
+msgid "Clear cache"
+msgstr "Cache leeren"
+
+#: components/settings/LoginButton.tsx:36
+msgid "Are you sure you want to sign out?"
+msgstr "Möchtest Du dich wirklich abmelden?"
+
+#: components/settings/LoginButton.tsx:39
+msgid "Sign Out"
+msgstr "Abmelden"
+
+#: components/settings/LoginButton.tsx:40
+msgid "Reconnect Account"
+msgstr "Rücknahmekonto"
+
+#: components/settings/SettingsView.tsx:82
+msgid "Edit Spoilers"
+msgstr "Spoiler bearbeiten"
+
+#: components/settings/SettingsView.tsx:86
+#: components/settings/SettingsView.tsx:169
+msgid "Diagnostics"
+msgstr "Diagnose"
+
+#: components/settings/SettingsView.tsx:90
+#: components/settings/SettingsView.tsx:171
+#: components/settings/SettingsView.tsx:174
+msgid "About Arkham Cards"
+msgstr "Über Arkham Karten"
+
+#: components/DeckDetailView/index.tsx:134
+#: components/core/CountEditDialog.tsx:118
+#: components/core/TextEditDialog.tsx:224
+#: components/navHelper.ts:32
+#: components/settings/SettingsView.tsx:69
+msgid "Done"
+msgstr "Erledigt"
+
+#: components/settings/SettingsView.tsx:124
+msgid "Updating cards"
+msgstr "Aktualisierungskarten"
+
+#: components/settings/LanguagePicker.tsx:74
+msgid "Card Language"
+msgstr "Kartensprache"
+
+#: components/settings/SettingsView.tsx:127
+msgid "Error: Check for Cards Again"
+msgstr "Fehler: Check für Karten"
+
+#: components/settings/SettingsView.tsx:141
+msgid "Account"
+msgstr "Konto"
+
+#: components/settings/SettingsView.tsx:152
+msgid "Card Data"
+msgstr "Kartendaten"
+
+#: components/settings/SettingsView.tsx:149
+msgid "Card Collection"
+msgstr "Kartensammlung"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:307
+#: components/settings/SettingsView.tsx:150
+msgid "Spoiler Settings"
+msgstr "Spoiler-Einstellungen"
+
+#: components/filter/CardEnemyFilterView.tsx:51
+#: components/filter/CardFilterView/index.tsx:227
+msgid "Elite"
+msgstr "Elite"
+
+#: components/filter/CardEnemyFilterView.tsx:57
+#: components/filter/CardFilterView/index.tsx:233
+msgid "Hunter"
+msgstr "Akquisiteur"
+
+#: components/filter/CardEnemyFilterView.tsx:63
+#: components/filter/CardFilterView/index.tsx:245
+msgid "Alert"
+msgstr "Alarm"
+
+#: components/filter/CardEnemyFilterView.tsx:69
+#: components/filter/CardFilterView/index.tsx:248
+msgid "Spawn"
+msgstr "Laichen"
+
+#: components/filter/CardEnemyFilterView.tsx:75
+#: components/filter/CardFilterView/index.tsx:254
+msgid "Aloof"
+msgstr "Fern"
+
+#: components/filter/CardEnemyFilterView.tsx:81
+#: components/filter/CardFilterView/index.tsx:257
+msgid "Massive"
+msgstr "Massive"
+
+#: components/filter/CardEnemyFilterView.tsx:89
+#: components/filter/CardFilterView/index.tsx:230
+msgid "Non-Elite"
+msgstr "Nicht-Elite"
+
+#: components/filter/CardEnemyFilterView.tsx:95
+#: components/filter/CardFilterView/index.tsx:236
+msgid "Non-Hunter"
+msgstr "Nichtjäger"
+
+#: components/filter/CardEnemyFilterView.tsx:101
+#: components/filter/CardFilterView/index.tsx:242
+msgid "Retaliate"
+msgstr "Vergeltung"
+
+#: components/filter/CardEnemyFilterView.tsx:107
+#: components/filter/CardFilterView/index.tsx:239
+msgid "Parley"
+msgstr "Unterredung"
+
+#: components/filter/CardEnemyFilterView.tsx:113
+#: components/filter/CardFilterView/index.tsx:251
+msgid "Prey"
+msgstr "Opfer"
+
+#: components/CardDetailView/TwoSidedCardComponent.tsx:218
+#: components/filter/CardEnemyFilterView.tsx:146
+#: components/filter/CardFilterView/index.tsx:273
+msgid "Fight"
+msgstr "Kampf"
+
+#: components/CardDetailView/TwoSidedCardComponent.tsx:218
+#: components/CardDetailView/TwoSidedCardComponent.tsx:227
+#: components/filter/CardEnemyFilterView.tsx:157
+#: components/filter/CardFilterView/index.tsx:263
+msgid "Health"
+msgstr "Gesundheit"
+
+#: components/filter/CardEnemyFilterView.tsx:170
+msgid "Per Investigator"
+msgstr "Per Ermittler"
+
+#: components/CardDetailView/TwoSidedCardComponent.tsx:220
+#: components/filter/CardEnemyFilterView.tsx:178
+#: components/filter/CardFilterView/index.tsx:276
+msgid "Evade"
+msgstr "Entziehen"
+
+#: components/filter/CardEnemyFilterView.tsx:189
+#: components/filter/CardFilterView/index.tsx:267
+msgid "Damage"
+msgstr "Schaden"
+
+#: components/filter/CardEnemyFilterView.tsx:200
+#: components/filter/CardFilterView/index.tsx:270
+msgid "Horror"
+msgstr "Horror"
+
+#: components/filter/CardEnemyFilterView.tsx:23
+#: components/filter/CardEnemyFilterView.tsx:218
+msgid "Enemy Filters"
+msgstr "Feindliche Filter"
+
+#: components/filter/PackFilterView.tsx:82
+msgid "Core Set"
+msgstr "Grundspiel"
+
+#: components/filter/PackFilterView.tsx:34
+msgid "Select Packs"
+msgstr "Packs auswählen"
+
+#: components/SearchMultiSelectView/index.tsx:62
+#: components/SearchMultiSelectView/index.tsx:65
+#: components/core/ChooserButton.tsx:46
+#: components/core/ChooserButton.tsx:49
+#: components/filter/withFilterFunctions.tsx:113
+#: components/filter/withFilterFunctions.tsx:116
+msgid "Clear"
+msgstr "Zurücksetzen"
+
+#: components/filter/CardFilterView/index.tsx:57
+msgid "Filter"
+msgstr "Filter"
+
+#: components/filter/CardFilterView/index.tsx:183
+msgid "Packs: All"
+msgstr "Päckchen: Alle"
+
+#: components/filter/CardFilterView/index.tsx:195
+msgid "Packs: ${ allPacksString }"
+msgstr "Packs: ${allPacksString}"
+
+#: components/filter/CardFilterView/index.tsx:261
+msgid "HPI"
+msgstr "Hpi"
+
+#: components/filter/CardFilterView/index.tsx:280
+msgid "Enemies: All"
+msgstr "Feinde: Alles"
+
+#: components/filter/CardFilterView/index.tsx:283
+msgid "Enemies: ${ searchParts }"
+msgstr "Feinde: ${searchParts}"
+
+#: components/filter/CardFilterView/index.tsx:348
+msgid "Types"
+msgstr "Typen"
+
+#: components/filter/CardFilterView/index.tsx:358
+msgid "SubTypes"
+msgstr "Untertypen"
+
+#: components/CardSortDialog/index.tsx:46
+#: components/filter/CardFilterView/index.tsx:368
+msgid "Cost"
+msgstr "Kosten"
+
+#: components/filter/CardFilterView/index.tsx:405
+msgid "Uses"
+msgstr "Verwendet"
+
+#: components/filter/CardFilterView/index.tsx:416
+msgid "Unique"
+msgstr "Eindeutig"
+
+#: components/filter/CardFilterView/index.tsx:427
+msgid "Encounter Sets"
+msgstr "Begegnung"
+
+#: components/filter/CardFilterView/index.tsx:440
+msgid "Illustrators"
+msgstr "Zeichner"
+
+#: components/core/ChooserButton.tsx:29
+msgid "Search ${ title }"
+msgstr "Suche ${title}"
+
+#: components/core/ChooserButton.tsx:37
+msgid "Select ${ title }"
+msgstr "Select ${title}"
+
+#: components/DrawSimulatorView/index.tsx:178
+#: components/core/ChooserButton.tsx:65
+msgid "All"
+msgstr "Alle"
+
+#: components/core/TextEditDialog.tsx:180
+msgid "Note: This entry is crossed out"
+msgstr "Hinweis: Dieser Eintrag wird durchgestrichen"
+
+#: components/core/TextEditDialog.tsx:209
+msgid "Uncross Out"
+msgstr "Kreuz los"
+
+#: components/core/TextEditDialog.tsx:209
+msgid "Cross Out"
+msgstr "Cross Out"
+
+#: components/core/TextEditDialog.tsx:216
+msgid "Add Another"
+msgstr "Weiteres hinzufügen"
+
+#: components/cards/FetchCardsGate.tsx:99
+msgid "Check for updated cards?"
+msgstr "Überprüfen Sie nach aktualisierten Karten?"
+
+#: components/cards/FetchCardsGate.tsx:102
+msgid "Ask me later"
+msgstr "Fragen Sie mich später"
+
+#: components/cards/FetchCardsGate.tsx:103
+msgid "Check for updates"
+msgstr "Auf Aktualisierungen prüfen"
+
+#: components/CopyDeckDialog/index.tsx:287
+#: components/DeckDetailView/EditDeckDetailsDialog.tsx:101
+#: components/DeckDetailView/index.tsx:748
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:358
+msgid "Okay"
+msgstr "Okay"
+
+#: components/DeckDetailView/index.tsx:305
+msgid "Looks like you have made some changes that have not been saved."
+msgstr ""
+"Es sieht so aus, als hätten Sie einige Änderungen vorgenommen, die nicht "
+"gespeichert wurden."
+
+#: components/DeckDetailView/index.tsx:307
+msgid "Save Changes"
+msgstr "Änderungen speichern"
+
+#: components/DeckDetailView/index.tsx:312
+msgid "Discard Changes"
+msgstr "Änderungen verwerfen"
+
+#: components/DeckDetailView/DeckViewTab.tsx:56
+#: data/Card.ts:87
+#: data/Card.ts:125
+msgid "Upgrade"
+msgstr "Upgrade"
+
+#: components/DeckDetailView/DeckViewTab.tsx:137
+msgid "Delete"
+msgstr "Löschen"
+
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:282
+msgid "Name"
+msgstr "Name"
+
+#: components/DeckDetailView/EditDeckDetailsDialog.tsx:87
+msgid "NAME"
+msgstr "NAME"
+
+#: components/CopyDeckDialog/index.tsx:244
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:323
+msgid "You seem to be offline. Refresh Network?"
+msgstr "Sie scheinen offline zu sein. Netzwerk neu erfrischen?"
+
+#: components/InvestigatorsListComponent/InvestigatorSearchBox.tsx:84
+msgid "Search"
+msgstr "Suche"
+
+#: components/InvestigatorsListComponent/index.tsx:301
+msgid "Show ${ section.nonCollectionCount } Non-Collection Investigator"
+msgid_plural "Show ${ section.nonCollectionCount } Non-Collection Investigators"
+msgstr[0] "Show ${ section.nonCollectionCount } Non-Collection Investigator"
+msgstr[1] "Zeigen Sie ${ section.nonCollectionCount } Non-Collection Investigators"
+
+#: components/InvestigatorsListComponent/index.tsx:353
+msgid "No matching investigators for \"${ searchTerm }\"."
+msgstr "Keine passenden Ermittler für \"${ searchTerm }\"."
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:352
+#: components/InvestigatorsListComponent/index.tsx:181
+#: components/InvestigatorsListComponent/index.tsx:187
+msgid "N/A"
+msgstr "N/A"
+
+#: components/InvestigatorsListComponent/index.tsx:183
+msgid "All Investigators"
+msgstr "Alle Ermittler"
+
+#: components/DrawSimulatorView/index.tsx:167
+msgid "Draw: "
+msgstr "Zeichnen: "
+
+#: components/DrawSimulatorView/index.tsx:184
+msgid "Redraw"
+msgstr "Neuzeichnen"
+
+#: components/DrawSimulatorView/index.tsx:190
+msgid "Reshuffle"
+msgstr "Umbildung"
+
+#: components/DrawSimulatorView/index.tsx:196
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+#: components/DeckNavFooter/index.tsx:69
+msgid "Draw"
+msgstr "Unentschieden"
+
+#: components/DeckNavFooter/index.tsx:139
+msgid "${ normalCardCount } Card (${ totalCardCount } Total)"
+msgid_plural "${ normalCardCount } Cards (${ totalCardCount } Total)"
+msgstr[0] "${ normalCardCount } Card (${ totalCardCount } Total)"
+msgstr[1] "${ normalCardCount } Karten (${ totalCardCount } Total)"
+
+#: data/Card.ts:93
+msgid "Treachery"
+msgstr "Verrat"
+
+#: components/DeckDetailView/DeckViewTab.tsx:121
+msgid "Delete this upgrade (${ deck.version })"
+msgstr "Löschen Sie dieses Upgrade (${ deck.version })"
+
+#: components/DeckDetailView/DeckViewTab.tsx:128
+#: components/DeckDetailView/DeckViewTab.tsx:137
+msgid "Delete all versions"
+msgstr "Alle Versionen löschen"
+
+#: components/DeckDetailView/DeckViewTab.tsx:150
+msgid "Delete deck"
+msgstr "Verdeck löschen"
+
+#: components/DeckDetailView/DeckViewTab.tsx:151
+msgid "Are you sure you want to delete this deck?"
+msgstr "Sind Sie sicher, dass Sie dieses Deck löschen wollen?"
+
+#: components/DeckDetailView/DeckViewTab.tsx:184
+msgid "Save Local Changes"
+msgstr "Lokale Veränderungen speichern"
+
+#: components/DeckDetailView/DeckViewTab.tsx:189
+msgid "Unsupported Operation"
+msgstr "Nicht unterstützte Operation"
+
+#: components/DeckDetailView/DeckViewTab.tsx:370
+msgid "Special Cards"
+msgstr "Sonderkarten"
+
+#: components/DeckDetailView/DeckViewTab.tsx:387
+msgid "${ normalCardCount } card (${ totalCardCount } total)"
+msgid_plural "${ normalCardCount } cards (${ totalCardCount } total)"
+msgstr[0] "${ normalCardCount } card (${ totalCardCount } total)"
+msgstr[1] "${ normalCardCount } Karten (${ totalCardCount } total)"
+
+#: components/DeckDetailView/DeckViewTab.tsx:507
+msgid "Delete Deck"
+msgstr "Deckes löschen"
+
+#: components/DeckDetailView/index.tsx:304
+msgid "Save deck changes?"
+msgstr "Deck-Änderungen speichern?"
+
+#: components/DeckDetailView/index.tsx:280
+#: components/DeckDetailView/index.tsx:371
+msgid "Edit Deck"
+msgstr "Deck-Deck bearbeiten"
+
+#: components/DeckDetailView/index.tsx:211
+msgid "Deck has been deleted"
+msgstr "Deck wurde gelöscht"
+
+#: components/DeckDetailView/index.tsx:214
+msgid "OK"
+msgstr "OK"
+
+#: components/DeckDetailView/index.tsx:743
+msgid "Error"
+msgstr "Fehler"
+
+#: components/DeckDetailView/index.tsx:783
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: components/CopyDeckDialog/index.tsx:227
+msgid "Required"
+msgstr "Erforderlich"
+
+#: components/CopyDeckDialog/index.tsx:269
+msgid "Copy Deck"
+msgstr "Copy Deck"
+
+#: components/CardSortDialog/index.tsx:42
+msgid "Type"
+msgstr "Typ"
+
+#: components/CardSortDialog/index.tsx:52
+msgid "Encounter Set"
+msgstr "Begegnung Set"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:49
+msgid "Investigating for clues"
+msgstr "Ermittlungen nach Hinweisen"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:50
+msgid "Cursing at the tentacle token"
+msgstr "Fluch am Tentakel-Token"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:51
+msgid "Drawing a mythos card with surge"
+msgstr "Eine Mythen-Karte mit Aufschlag zeichnen"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:52
+msgid "Placing doom on the agenda"
+msgstr "Untergang auf die Tagesordnung"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:53
+msgid "Reticulating spines"
+msgstr "Stacheln senken"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:54
+msgid "Trying to make sense of the Time Warp FAQ"
+msgstr "Der Versuch, die Zeitware-FAQ sinnvoll zu gestalten"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:55
+msgid "Taking three damage and three horror"
+msgstr "Drei Schäden und drei Schrecken"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:594
+msgid "Show ${ section.nonCollectionCount } Non-Collection Card"
+msgid_plural "Show ${ section.nonCollectionCount } Non-Collection Cards"
+msgstr[0] "Show ${section.nonCollectionCount} Non-Collection Card"
+msgstr[1] "Show ${section.nonCollectionCount} Non-Collection Cards"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:671
+#: components/CardSearchResultsComponent/CardResultList.tsx:690
+msgid "Edit Spoiler Settings"
+msgstr "Spoiler-Einstellungen bearbeiten"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:678
+msgid "Show ${ spoilerCardsCount } Spoiler"
+msgid_plural "Show ${ spoilerCardsCount } Spoilers"
+msgstr[0] "Show ${spoilerCardsCount} Spoiler"
+msgstr[1] "Show $ {spoilerCardsCount} Spoilers"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:642
+msgid "No matching cards for \"${ searchTerm }\""
+msgstr "Keine passenden Karten für \"${searchTerm}\""
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:643
+msgid "No matching cards"
+msgstr "Keine Karten"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:342
+msgid "Cost: None"
+msgstr "Kosten: Keine"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:344
+msgid "Cost: ${ card.cost }"
+msgstr "Kosten: ${card.cost}"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:348
+#: components/CardSearchResultsComponent/CardResultList.tsx:354
+msgid "All Cards"
+msgstr "Alle Karten"
+
+#: components/CardSearchResultsComponent/CardSearchBox.tsx:133
+msgid "Search for a card"
+msgstr "Suche nach einer Karte"
+
+#: components/CardSearchResultsComponent/index.tsx:233
+msgid "Search Player Cards"
+msgstr "Suche nach Spieler-Karten"
+
+#: components/CardSearchResultsComponent/index.tsx:233
+msgid "Search Encounter Cards"
+msgstr "Suche nach Karten"
+
+#: components/CardSearchResultsComponent/index.tsx:241
+msgid "Clear Search Filters"
+msgstr "Deutliche Suchfilter"
+
+#: components/CardSearchResultsComponent/index.tsx:264
+msgid "Clear \"${ searchTerm }\" search"
+msgstr "Clear \"${searchTerm}\" search"
+
+#: components/CardSearchResultsComponent/index.tsx:271
+msgid "Search Game Text"
+msgstr "Suchspiel-Text"
+
+#: components/CardSearchResultsComponent/index.tsx:279
+msgid "Search Card Backs"
+msgstr "Suchkarten-Backen"
+
+#: components/CardSearchComponent/TuneButton.tsx:52
+#: components/CardSearchComponent/index.tsx:175
+msgid "Apply"
+msgstr "Übernehmen"
+
+#: components/CardSearchComponent/TuneButton.tsx:55
+#: components/CardSearchComponent/index.tsx:81
+#: components/CardSearchComponent/index.tsx:94
+#: components/CardSearchComponent/index.tsx:178
+#: components/filter/CardFilterView/index.tsx:460
+msgid "Filters"
+msgstr "Filter"
+
+#: app/App.js:106
+#: components/CardSearchComponent/index.tsx:192
+msgid "Player Cards"
+msgstr "Spieler-Karten"
+
+#: components/CardDetailView/SignatureCardsComponent.tsx:40
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:291
+msgid "Required Cards"
+msgstr "Benötigte Karten"
+
+#: components/CardDetailView/SignatureCardsComponent.tsx:53
+msgid "Alternate Cards"
+msgstr "Wechselkarten"
+
+#: components/CardDetailSwipeView.tsx:142
+#: components/CardDetailView/TwoSidedCardComponent.tsx:102
+#: components/CardDetailView/TwoSidedCardComponent.tsx:437
+#: components/CardDetailView/index.tsx:35
+#: components/CardDetailView/index.tsx:137
+msgid "FAQ"
+msgstr "FAQ"
+
+#: components/CardDetailSwipeView.tsx:165
+#: components/CardDetailView/TwoSidedCardComponent.tsx:128
+#: components/CardDetailView/index.tsx:162
+msgid "Allowed Cards"
+msgstr "Karten erlaubt"
+
+#: components/CardDetailView/TwoSidedCardComponent.tsx:381
+#: components/CardDetailView/TwoSidedCardComponent.tsx:532
+msgid "Show back"
+msgstr "Show zurück"
+
+#: components/CardDetailView/TwoSidedCardComponent.tsx:532
+msgid "Show front"
+msgstr "Show front"
+
+#: components/CardDetailView/CardDetailComponent.tsx:73
+#: components/CardDetailView/index.tsx:45
+msgid "Deckbuilding Cards"
+msgstr "Deckbaukarten"
+
+#: components/MyDecksComponent.tsx:113
+msgid ""
+"An unexpected error occurred (${ error }). If restarting the app doesn't "
+"fix the problem, tap here to reauthorize."
+msgstr ""
+"Es ist ein unerwarteter Fehler aufgetreten (${error}). Wenn ein Neustart "
+"der App das Problem nicht löst, tippen Sie hier, um die Möglichkeit einer "
+"erneuten Genehmigung zu erhalten."
+
+#: components/DeckDetailView/DeckViewTab.tsx:81
+#: components/DeckProblemRow.tsx:21
+msgid "Doesn't comply with the Investigator requirements."
+msgstr "Erhält nicht die Anforderungen des Ermittlers."
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:56
+msgid "Up by 5, hope I don't draw the tentacle"
+msgstr "Bis 5, hoffe ich, ich ziehe nicht den Tentakel"
+
+#: app/App.js:147
+msgid "Cards"
+msgstr "Karten"
+
+#: app/App.js:136
+#: app/App.js:167
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: components/settings/LanguagePicker.tsx:76
+msgid "Note: not all cards have translations available."
+msgstr "Hinweis: Nicht alle Karten haben Übersetzungen."
+
+#: components/settings/SettingsView.tsx:146
+msgid "Card Settings"
+msgstr "Karteneinstellungen"
+
+#: components/cards/FetchCardsGate.tsx:120
+msgid "Error loading cards, make sure your network is working."
+msgstr ""
+"Fehler beim Laden von Karten, stellen Sie sicher, dass Ihr Netzwerk "
+"funktioniert."
+
+#: components/cards/FetchCardsGate.tsx:126
+msgid "Try Again"
+msgstr "Versuchen Sie es erneut"
+
+#: components/cards/FetchCardsGate.tsx:135
+msgid "Loading latest cards..."
+msgstr "Laden Sie die neuesten Karten ..."
+
+#: components/DeckNavFooter/index.tsx:50
+msgid "Charts"
+msgstr "Charts"
+
+#: components/DeckDetailView/EditDeckDetailsDialog.tsx:81
+msgid "Deck Details"
+msgstr "Deck-Details"
+
+#: components/DeckDetailView/index.tsx:806
+msgid "Discard Edits"
+msgstr "Abwerfen"
+
+#: components/DeckChartsView/CostChart.tsx:96
+msgid "Card Costs"
+msgstr "Kartenkosten"
+
+#: components/DeckChartsView/FactionChart.tsx:125
+msgid "Card Factions"
+msgstr "Kartenaktionen"
+
+#: components/DeckListComponent.tsx:139
+msgid ""
+"No decks yet.\n"
+"\n"
+"Use the + button to create a new one."
+msgstr ""
+"Noch keine Decks\n"
+"\n"
+"Mit dem +-Button können Sie einen neuen erstellen."
+
+#: components/NewDeckView/index.tsx:45
+msgid "Sort"
+msgstr "Sortieren"
+
+#: components/DeckDetailView/index.tsx:272
+msgid "Clone Deck"
+msgstr "Klon-Deck"
+
+#: components/CardSearchResultsComponent/CardSearchBox.tsx:78
+msgid ""
+"Game\n"
+"Text"
+msgstr "Spieltext"
+
+#: components/CardSearchResultsComponent/CardSearchBox.tsx:85
+msgid ""
+"Flavor\n"
+"Text"
+msgstr ""
+"Geschmack\n"
+"text"
+
+#: components/CardSearchResultsComponent/CardSearchBox.tsx:92
+msgid ""
+"Card\n"
+"Backs"
+msgstr "Kartenrückseiten"
+
+#: components/CardSearchComponent/index.tsx:106
+msgid "Show Encounter Cards"
+msgstr "Encounter Cards anzeigen"
+
+#: components/CardDetailView/TwoSidedCardComponent.tsx:462
+msgid "${ card.quantity } copy."
+msgid_plural "${ card.quantity } copies."
+msgstr[0] "${card.quantity} copy."
+msgstr[1] "${card.quantity} copies."
+
+#: components/CardDetailView/index.tsx:30
+msgid "Share"
+msgstr "Aktie"
+
+#: components/CardImageView/index.tsx:60
+msgid "Flip Card"
+msgstr "Flip Card"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:708
+msgid "In Deck"
+msgstr "In Deck"
+
+#: components/CardSearchResultsComponent/CardResultList.tsx:715
+msgid "All Eligible Cards"
+msgstr "Alle berechtigten Karten"
+
+#: components/CardDetailView/CardDetailComponent.tsx:68
+msgid "Deckbuilding"
+msgstr "Deckbaukarten"
+
+#: components/CardDetailView/CardDetailComponent.tsx:104
+msgid "Warning: this card contains possible spoilers for '${ card.pack_name }'."
+msgstr "Warnung: Diese Karte enthält mögliche Spoiler für ‘${card.pack_name}’."
+
+#: components/filter/PackFilterView.tsx:99
+msgid "Pack Filters"
+msgstr "Packfilter"
+
+#: components/filter/withFilterFunctions.tsx:119
+msgid "${ count } Card"
+msgid_plural "${ count } Cards"
+msgstr[0] "${count} Karten"
+msgstr[1] "${count} Karten"
+
+#: data/DeckOption.ts:43
+msgid "Secondary Class"
+msgstr "Sekundärklasse"
+
+#: components/settings/SettingsView.tsx:161
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: components/settings/SettingsView.tsx:165
+msgid "Swipe between card results"
+msgstr "Wischen zwischen den Kartenergebnissen"
+
+#: components/DeckDetailView/FactionSelectPicker.tsx:35
+#: components/DeckDetailView/InvestigatorOption.tsx:41
+msgid "Select Faction"
+msgstr "Wählen Sie Fraktion"
+
+#: data/Card.ts:28
+#: data/Card.ts:41
+#: data/Card.ts:83
+#: data/Card.ts:113
+msgid "Hero"
+msgstr ""
+
+#: data/Card.ts:29
+#: data/Card.ts:43
+msgid "Aggression"
+msgstr ""
+
+#: data/Card.ts:30
+#: data/Card.ts:45
+msgid "Justice"
+msgstr ""
+
+#: data/Card.ts:31
+#: data/Card.ts:47
+msgid "Leadership"
+msgstr ""
+
+#: data/Card.ts:32
+#: data/Card.ts:49
+msgid "Protection"
+msgstr ""
+
+#: data/Card.ts:33
+#: data/Card.ts:51
+msgid "Basic"
+msgstr ""
+
+#: data/Card.ts:34
+#: data/Card.ts:53
+#: data/Card.ts:61
+msgid "Encounter"
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:55
+#: data/Card.ts:86
+#: data/Card.ts:123
+msgid "Support"
+msgstr ""
+
+#: data/Card.ts:88
+#: data/Card.ts:127
+msgid "Obligation"
+msgstr ""
+
+#: data/Card.ts:90
+msgid "Main Scheme"
+msgstr ""
+
+#: data/Card.ts:91
+msgid "Side Scheme"
+msgstr ""
+
+#: data/Card.ts:92
+msgid "Minion"
+msgstr ""
+
+#: data/Card.ts:94
+msgid "Attachment"
+msgstr ""
+
+#: data/Card.ts:115
+msgid "Alter-Ego"
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:54
+#: data/Card.ts:121
+msgid "Resource"
+msgstr ""
+
+#: components/MyDecksComponent.tsx:96
+msgid "Unable to update: you appear to be offline."
+msgstr ""
+
+#: components/MyDecksComponent.tsx:105
+msgid ""
+"We're having trouble updating your decks at this time. If the problem "
+"persists tap here to reauthorize."
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:195
+#: components/MyDecksComponent.tsx:143
+msgid ""
+"MarvelCDB is a popular deck building site where you can manage and share "
+"decks with others.\n"
+"\n"
+"Sign in to access your decks or share decks you have created with others."
+msgstr ""
+
+#: components/MyDecksComponent.tsx:145
+msgid "Connect to MarvelCDB"
+msgstr ""
+
+#: components/MyDecksView.tsx:111
+msgid "Hide MarvelCDB Decks"
+msgstr ""
+
+#: components/authHelper.ts:19
+msgid ""
+"We are having trouble talking to MarvelCDB.\n"
+"\n"
+"If the problem persists, please try to reauthorize."
+msgstr ""
+
+#: components/settings/LoginButton.tsx:37
+msgid ""
+"Data on MarvelCDB and local decks will be preserved.\n"
+"\n"
+"If you are having trouble with your account you can also reconnect."
+msgstr ""
+
+#: components/settings/LoginButton.tsx:66
+#: components/settings/LoginButton.tsx:69
+msgid "Sign out of MarvelCDB"
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:194
+#: components/settings/LoginButton.tsx:75
+#: components/settings/LoginButton.tsx:78
+msgid "Sign in to MarvelCDB"
+msgstr ""
+
+#: components/settings/SettingsView.tsx:128
+msgid "Check for New Cards on MarvelCDB"
+msgstr ""
+
+#: components/DeckChartsView/ResourceIconChart.tsx:88
+#: components/filter/CardFilterView/ResourceChooser.tsx:46
+msgid "Resources"
+msgstr ""
+
+#: components/filter/CardFilterView/ResourceChooser.tsx:46
+msgid "Resources: All"
+msgstr ""
+
+#: components/cards/FetchCardsGate.tsx:100
+msgid ""
+"It has been more than a week since you checked for new cards.\n"
+"Check for new cards from MarvelCDB?"
+msgstr ""
+
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:216
+msgid "The Adventures of ${ hero.name }"
+msgstr ""
+
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:218
+msgid "${ hero.name } Investigates"
+msgstr ""
+
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:220
+msgid "The ${ hero.name } Mysteries"
+msgstr ""
+
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:222
+msgid "The ${ hero.name } Job"
+msgstr ""
+
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:224
+msgid "${ hero.name } on the Road"
+msgstr ""
+
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:226
+msgid "${ hero.name } Does It All"
+msgstr ""
+
+#: components/CopyDeckDialog/index.tsx:232
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:306
+msgid "Deck Type"
+msgstr ""
+
+#: components/CopyDeckDialog/index.tsx:235
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:309
+msgid "Create on MarvelCDB"
+msgstr ""
+
+#: components/NewDeckView/NewDeckOptionsDialog.tsx:317
+msgid "Visit Settings to sign in to MarvelCDB."
+msgstr ""
+
+#: components/InvestigatorsListComponent/InvestigatorRow.tsx:56
+msgid "${ investigator.deck_requirements.size } Cards"
+msgstr ""
+
+#: components/InvestigatorsListComponent/InvestigatorRow.tsx:63
+msgid "Unknown card: ${ req.code }"
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:156
+msgid "Visit MarvelCDB to delete?"
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:157
+msgid "Unfortunately to delete decks you have to visit MarvelCDB at this time."
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:160
+msgid "Visit MarvelCDB"
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:185
+msgid "Please save any local edits to this deck before sharing to MarvelCDB"
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:190
+msgid ""
+"This deck contains next/previous versions with upgrades, so we cannot "
+"upload it to MarvelCDB at this time. If you would like to upload it, you "
+"can use Copy to upload a clone of the current deck."
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:203
+#: components/DeckDetailView/DeckViewTab.tsx:492
+msgid "Upload to MarvelCDB"
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:204
+msgid ""
+"You can upload your deck to MarvelCDB to share with others.\n"
+"\n"
+"After doing this you will need network access to make changes to the deck."
+msgstr ""
+
+#: components/DeckDetailView/DeckViewTab.tsx:499
+msgid "View on MarvelCDB"
+msgstr ""
+
+#: components/DeckDetailView/index.tsx:212
+msgid "It looks like you deleted this deck from MarvelCDB."
+msgstr ""
+
+#: components/CopyDeckDialog/index.tsx:222
+msgid "New Name"
+msgstr ""
+
+#: components/CopyDeckDialog/index.tsx:278
+msgid "Make a copy of a deck."
+msgstr ""
+
+#: components/CardSearchResultsComponent/CardSearchBox.tsx:78
+msgid "Game Text"
+msgstr ""
+
+#: components/CardSearchResultsComponent/CardSearchBox.tsx:85
+msgid "Flavor Text"
+msgstr ""
+
+#: components/CardSearchResultsComponent/CardSearchBox.tsx:92
+msgid "Card Backs"
+msgstr ""
+
+#: components/CardSearchComponent/index.tsx:192
+msgid "Encounter Cards"
+msgstr ""
+
+#: components/CardDetailView/TwoSidedCardComponent.tsx:178
+msgid "Resource: "
+msgstr ""
+
+#: components/CardDetailView/TwoSidedCardComponent.tsx:205
+msgid "Threat: ${ threat }"
+msgstr ""

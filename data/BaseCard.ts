@@ -31,7 +31,7 @@ export default class BaseCard {
     hand_size: 'int?',
     boost: 'int?',
     boost_text: 'string?',
-    scheme: 'number?',
+    scheme: 'int?',
     encounter_name: 'string?',
     encounter_position: 'int?',
     renderName: 'string',
