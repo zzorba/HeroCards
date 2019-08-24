@@ -11,7 +11,7 @@ import { bindActionCreators, Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 
 import { t } from 'ttag';
-import { Campaign, Deck, DecksMap } from '../actions/types';
+import { Deck, DecksMap } from '../actions/types';
 import Card from '../data/Card';
 import { searchMatchesText } from './searchHelpers';
 import SearchBox from './SearchBox';
@@ -27,7 +27,6 @@ interface OwnProps {
   deckClicked: (deck: Deck, investigator?: Card) => void;
   onRefresh?: () => void;
   refreshing?: boolean;
-  deckToCampaign?: { [id: number]: Campaign };
   customHeader?: ReactNode;
   customFooter?: ReactNode;
   isEmpty?: boolean;
@@ -90,7 +89,6 @@ class DeckListComponent extends React.Component<Props, State> {
       investigators,
       decks,
       cards,
-      deckToCampaign,
     } = this.props;
 
     const deck = decks[deckId];
@@ -103,7 +101,6 @@ class DeckListComponent extends React.Component<Props, State> {
         deck={deck}
         previousDeck={deck.previous_deck ? decks[deck.previous_deck] : undefined}
         cards={cards}
-        deckToCampaign={deckToCampaign}
         investigator={deck ? investigators[deck.investigator_code] : undefined}
         onPress={this._deckClicked}
       />

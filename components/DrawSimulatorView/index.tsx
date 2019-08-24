@@ -128,8 +128,7 @@ class DrawSimulatorView extends React.Component<Props, State> {
         Object.keys(slots),
         cardId => {
           const card = cards[cardId];
-          // DUKE=02014
-          if (card.permanent || card.double_sided || card.code === '02014') {
+          if (card.double_sided) {
             return [];
           }
           return map(range(0, slots[cardId]), copy => `${cardId}-${copy}`);

@@ -34,7 +34,6 @@ export interface FilterProps {
 
 export interface CardFilterProps {
   filterId: string;
-  tabooSetId?: number;
   modal?: boolean;
   baseQuery?: string;
 }
@@ -144,7 +143,6 @@ export default function withFilterFunctions<P>(
       const {
         componentId,
         filterId,
-        tabooSetId,
         baseQuery,
         modal,
       } = this.props;
@@ -153,7 +151,6 @@ export default function withFilterFunctions<P>(
           name: screenName,
           passProps: {
             filterId,
-            tabooSetId,
             baseQuery,
             modal,
           },
@@ -247,8 +244,8 @@ export default function withFilterFunctions<P>(
         ): RealmProps {
           return {
             cards: props.baseQuery ?
-              results.cards.filtered(`((${props.baseQuery}) and (${Card.tabooSetQuery(props.tabooSetId)}))`) :
-              results.cards.filtered(Card.tabooSetQuery(props.tabooSetId)),
+              results.cards.filtered(`(${props.baseQuery})`) :
+              results.cards,
           };
         },
       })

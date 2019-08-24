@@ -1,4 +1,4 @@
-import { ChaosBag, FactionCodeType } from '../constants';
+import { FactionCodeType } from '../constants';
 import { FilterState } from '../lib/filters';
 
 export const SORT_BY_TYPE = 'Type';
@@ -103,11 +103,6 @@ export interface CardCache {
   lastModified?: string;
 }
 
-export interface TabooCache {
-  tabooCount: number;
-  lastModified?: string;
-}
-
 export const PACKS_CACHE_HIT = 'PACKS_CACHE_HIT';
 export interface PacksCacheHitAction {
   type: typeof PACKS_CACHE_HIT;
@@ -122,7 +117,6 @@ export const CARD_FETCH_SUCCESS = 'CARD_FETCH_SUCCESS';
 export interface CardFetchSuccessAction {
   type: typeof CARD_FETCH_SUCCESS;
   cache?: CardCache;
-  tabooCache?: TabooCache;
   lang: string;
 }
 

@@ -1,9 +1,8 @@
-import { forEach, range } from 'lodash';
 import Config from 'react-native-config';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { Action, ActionCreator } from 'redux';
 
-import { newLocalDeck, updateLocalDeck, upgradeLocalDeck } from './localHelper';
+import { newLocalDeck, updateLocalDeck } from './localHelper';
 import { handleAuthErrors } from '../authHelper';
 import {
   NEW_DECK_AVAILABLE,
@@ -19,7 +18,7 @@ import {
   Slots,
 } from '../../actions/types';
 import { login } from '../../actions';
-import { saveDeck, loadDeck, newCustomDeck, UpgradeDeckResult } from '../../lib/authApi';
+import { saveDeck, loadDeck, newCustomDeck } from '../../lib/authApi';
 import { AppState, getNextLocalDeckId } from '../../reducers/index';
 
 function setNewDeck(
@@ -112,14 +111,6 @@ export interface DeckChanges {
   ignoreDeckLimitSlots?: Slots;
   problem?: string;
   meta?: DeckMeta;
-}
-
-function handleUpgradeDeckResult(
-  result: UpgradeDeckResult,
-  dispatch: ThunkDispatch<AppState, {}, Action>
-) {
-  dispatch(updateDeck(result.deck.id, result.deck, false));
-  dispatch(setNewDeck(result.upgradedDeck.id, result.upgradedDeck));
 }
 
 export const saveDeckChanges: ActionCreator<
@@ -286,7 +277,6 @@ export default {
   replaceLocalDeck,
   removeDeck,
   saveDeckChanges,
-  saveDeckUpgrade,
   saveNewDeck,
   saveClonedDeck,
   uploadLocalDeck,

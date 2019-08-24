@@ -34,7 +34,7 @@ class LoginButton extends React.Component<Props> {
   _logOutPressed = () => {
     Alert.alert(
       t`Are you sure you want to sign out?`,
-      t`Data on ArkhamDB will be preserved, but all Campaign data and any edits made without internet might be lost.\n\n If you are having trouble with your account you can also reconnect.`,
+      t`Data on MarvelCDB and local decks will be preserved.\n\nIf you are having trouble with your account you can also reconnect.`,
       [
         { text: t`Sign Out`, style: 'destructive', onPress: this.props.logout },
         { text: t`Reconnect Account`, onPress: this.props.login },

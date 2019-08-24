@@ -6,7 +6,7 @@ import { connectRealm, CardResults } from 'react-native-realm';
 
 import { queryForInvestigator } from '../lib/InvestigatorRequirements';
 import Card from '../data/Card';
-import { AppState, getTabooSet } from '../reducers';
+import { AppState } from '../reducers';
 import { NavigationProps } from './types';
 import CardSearchComponent from './CardSearchComponent';
 
@@ -14,15 +14,11 @@ export interface InvestigatorCardsProps {
   investigatorCode: string;
 }
 
-interface ReduxProps {
-  tabooSetId?: number;
-}
-
 interface RealmProps {
   investigator?: Card;
 }
 
-type Props = NavigationProps & ReduxProps & InvestigatorCardsProps & RealmProps;
+type Props = NavigationProps & InvestigatorCardsProps & RealmProps;
 class InvestigatorCardsView extends React.Component<Props> {
   render() {
     const {
@@ -38,27 +34,18 @@ class InvestigatorCardsView extends React.Component<Props> {
   }
 }
 
-function mapStateToProps(state: AppState): ReduxProps {
-  return {
-    tabooSetId: getTabooSet(state),
-  };
-}
-
-export default connect<ReduxProps, {}, NavigationProps & InvestigatorCardsProps, AppState>(
-  mapStateToProps
-)(connectRealm<NavigationProps & InvestigatorCardsProps & ReduxProps, RealmProps, Card>(
+export default connectRealm<NavigationProps & InvestigatorCardsProps, RealmProps, Card>(
   InvestigatorCardsView, {
     schemas: ['Card'],
     mapToProps(
       results: CardResults<Card>,
       realm: Realm,
-      props: NavigationProps & InvestigatorCardsProps & ReduxProps
+      props: NavigationProps & InvestigatorCardsProps
     ): RealmProps {
       const investigator =
-        head(results.cards.filtered(`(code == "${props.investigatorCode}") and ${Card.tabooSetQuery(props.tabooSetId)}`));
+        head(results.cards.filtered(`(code == "${props.investigatorCode}")`));
       return {
         investigator,
       };
     },
-  })
-);
+  });

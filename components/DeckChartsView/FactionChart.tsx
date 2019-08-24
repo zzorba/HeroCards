@@ -80,7 +80,7 @@ export default class FactionChart extends React.PureComponent<Props> {
             top: y(0) + 4,
             width: width / barData.length,
           }]}>
-            { value.faction === 'neutral' ? (
+            { value.faction === 'basic' ? (
               <ArkhamIcon
                 name="elder_sign"
                 size={32}
@@ -113,15 +113,14 @@ export default class FactionChart extends React.PureComponent<Props> {
       ))
     );
     const keys: (FactionCodeType | 'dual')[] = [
-      'mystic',
-      'seeker',
-      'guardian',
-      'rogue',
-      'survivor',
-      'neutral',
+      'aggression',
+      'justice',
+      'leadership',
+      'protection',
+      'basic',
       'dual',
     ];
-    const colors = map(keys, key => key === 'neutral' ? '#444' : FACTION_COLORS[key]);
+    const colors = map(keys, key => key === 'basic' ? '#444' : FACTION_COLORS[key]);
     return (
       <View style={styles.wrapper}>
         <Text style={[typography.bigLabel, typography.center]}>

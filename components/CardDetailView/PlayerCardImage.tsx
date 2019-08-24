@@ -49,11 +49,11 @@ export default class PlayerCardImage extends React.Component<Props> {
       card,
     } = this.props;
     switch (card.type_code) {
-      case 'enemy': return styles.enemyImage;
-      case 'hero': return styles.investigatorImage;
-      case 'agenda': return styles.agendaImage;
-      case 'act': return styles.actImage;
-      case 'location': return styles.locationImage;
+      case 'minion': return styles.enemyImage;
+      case 'hero': return styles.heroImage;
+      case 'main_scheme':
+      case 'side_scheme':
+        return styles.agendaImage;
       default: return {};
     }
   }
@@ -85,7 +85,7 @@ export default class PlayerCardImage extends React.Component<Props> {
     const {
       card,
     } = this.props;
-    const filename = (card.type_code === 'location' && card.double_sided) ?
+    const filename = (card.double_sided) ?
       card.backimagesrc :
       card.imagesrc;
 
@@ -96,9 +96,8 @@ export default class PlayerCardImage extends React.Component<Props> {
         </View>
       );
     }
-    const horizontal = card.type_code === 'act' ||
-      card.type_code === 'hero' ||
-      card.type_code === 'agenda';
+    const horizontal = card.type_code === 'main_scheme' ||
+      card.type_code === 'side_scheme';
 
     if (isBig && !horizontal) {
       return (
@@ -169,7 +168,7 @@ const styles = StyleSheet.create({
     width: 142 * 1.4 * SCALE_FACTOR,
     height: 198 * 1.4 * SCALE_FACTOR,
   },
-  investigatorImage: {
+  heroImage: {
     top: -17 * SCALE_FACTOR,
     left: -10 * SCALE_FACTOR,
     width: (166 + 44) * SCALE_FACTOR,

@@ -55,25 +55,6 @@ class PackFilterView extends React.Component<Props> {
     );
   };
 
-  _setCycleChecked = (cycle_position: number, value: boolean) => {
-    const {
-      onFilterChange,
-      filters: {
-        packs,
-      },
-      allPacks,
-    } = this.props;
-    const deltaPacks = map(
-      filter(allPacks, pack => pack.cycle_position === cycle_position),
-      pack => pack.name
-    );
-
-    onFilterChange(
-      'packs',
-      value ? union(packs, deltaPacks) : difference(packs, deltaPacks)
-    );
-  };
-
   render() {
     const {
       componentId,
@@ -103,7 +84,6 @@ class PackFilterView extends React.Component<Props> {
         packs={allPacks}
         checkState={selected}
         setChecked={this._setChecked}
-        setCycleChecked={this._setCycleChecked}
       />
     );
   }

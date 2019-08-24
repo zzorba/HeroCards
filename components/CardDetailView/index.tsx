@@ -18,7 +18,7 @@ import { CardFaqProps } from '../CardFaqView';
 import { NavigationProps } from '../types';
 import { iconsMap } from '../../app/NavIcons';
 import { COLORS } from '../../styles/colors';
-import { getShowSpoilers, getTabooSet, AppState } from '../../reducers';
+import { getShowSpoilers, AppState } from '../../reducers';
 import Card from '../../data/Card';
 
 
@@ -54,14 +54,12 @@ interface RealmProps {
 
 interface ReduxProps {
   showSpoilers: boolean;
-  tabooSetId?: number;
 }
 
 export interface CardDetailProps {
   id: string;
   pack_code: string;
   showSpoilers?: boolean;
-  tabooSetId?: number;
 }
 
 type Props = NavigationProps & DimensionsProps & CardDetailProps & ReduxProps & RealmProps;
@@ -184,7 +182,6 @@ class CardDetailView extends React.Component<Props, State> {
       componentId,
       card,
       showSpoilers,
-      tabooSetId,
       width,
     } = this.props;
     if (!card) {
@@ -197,7 +194,6 @@ class CardDetailView extends React.Component<Props, State> {
           componentId={componentId}
           card={card}
           showSpoilers={showSpoilers || this.state.showSpoilers}
-          tabooSetId={tabooSetId}
           toggleShowSpoilers={this._toggleShowSpoilers}
           showInvestigatorCards={this._showInvestigatorCards}
         />
@@ -212,7 +208,6 @@ function mapStateToProps(
 ): ReduxProps {
   return {
     showSpoilers: props.showSpoilers || getShowSpoilers(state, props.pack_code),
-    tabooSetId: getTabooSet(state, props.tabooSetId),
   };
 }
 
@@ -226,7 +221,7 @@ connect<ReduxProps, {}, NavigationProps & CardDetailProps, AppState>(mapStateToP
         realm: Realm,
         props: NavigationProps & CardDetailProps & ReduxProps
       ) {
-        const card = head(results.cards.filtered(`(code == '${props.id}') and ${Card.tabooSetQuery(props.tabooSetId)}`));
+        const card = head(results.cards.filtered(`(code == '${props.id}')`));
         return {
           realm,
           card,

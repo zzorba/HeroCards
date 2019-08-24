@@ -18,7 +18,7 @@ import { FilterState } from '../../lib/filters';
 import { addFilterSet, removeFilterSet, clearFilters, syncFilterSet, toggleMythosMode } from '../filter/actions';
 import { CardFilterProps } from '../filter/withFilterFunctions';
 import { iconsMap } from '../../app/NavIcons';
-import { getTabooSet, getFilterState, getMythosMode, getCardSort, AppState } from '../../reducers';
+import { getFilterState, getMythosMode, getCardSort, AppState } from '../../reducers';
 import { COLORS } from '../../styles/colors';
 
 interface RealmProps {
@@ -26,7 +26,6 @@ interface RealmProps {
 }
 
 interface ReduxProps {
-  tabooSetId?: number;
   filters?: FilterState;
   mythosMode: boolean;
   selectedSort?: SortType;
@@ -45,7 +44,6 @@ interface OwnProps {
   baseQuery?: string;
   mythosToggle?: boolean;
   showNonCollection?: boolean;
-  tabooSetOverride?: number;
   sort?: SortType;
 
   investigator?: Card;
@@ -236,7 +234,6 @@ class CardSearchComponent extends React.Component<Props, State> {
       showNonCollection,
       mythosToggle,
       baseQuery,
-      tabooSetOverride,
       investigator,
       filters,
       defaultFilterState,
@@ -255,7 +252,6 @@ class CardSearchComponent extends React.Component<Props, State> {
         showNonCollection={showNonCollection}
         selectedSort={selectedSort}
         filters={this.state.filters || filters || defaultFilterState}
-        tabooSetOverride={tabooSetOverride}
         toggleMythosMode={this._toggleMythosMode}
         clearSearchFilters={this._clearSearchFilters}
         investigator={investigator}
@@ -272,7 +268,6 @@ class CardSearchComponent extends React.Component<Props, State> {
 
 function mapStateToProps(state: AppState, props: OwnProps): ReduxProps {
   return {
-    tabooSetId: getTabooSet(state, props.tabooSetOverride),
     filters: getFilterState(state, props.componentId),
     mythosMode: getMythosMode(state, props.componentId),
     selectedSort: getCardSort(state, props.componentId),
@@ -301,8 +296,8 @@ export default connect<ReduxProps, ReduxActionProps, OwnProps, AppState>(
       props: OwnProps & ReduxProps
     ) {
       const cards = props.baseQuery ?
-        results.cards.filtered(`(${props.baseQuery}) and ${Card.tabooSetQuery(props.tabooSetId)}`) :
-        results.cards.filtered(Card.tabooSetQuery(props.tabooSetId));
+        results.cards.filtered(`(${props.baseQuery})`) :
+        results.cards;
 
       return {
         defaultFilterState: calculateDefaultFilterState(cards),

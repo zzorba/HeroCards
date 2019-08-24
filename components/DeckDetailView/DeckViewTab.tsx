@@ -90,7 +90,6 @@ interface Props {
   cards: CardsMap;
   isPrivate: boolean;
   buttons?: ReactNode;
-  showEditSpecial?: () => void;
   showEditNameDialog: () => void;
   deckName: string;
   singleCardView: boolean;
@@ -359,7 +358,6 @@ export default class DeckViewTab extends React.Component<Props> {
         slots,
       },
       meta,
-      showEditSpecial,
       cards,
     } = this.props;
 
@@ -371,7 +369,6 @@ export default class DeckViewTab extends React.Component<Props> {
         id: 'special',
         superTitle: t`Special Cards`,
         data: [],
-        onPress: showEditSpecial,
       },
       ...deckToSections(specialCards, true),
     ];

@@ -47,7 +47,7 @@ export function getDeckOptions(
       },
       background: {
         color: FACTION_DARK_GRADIENTS[
-          (investigator ? investigator.faction_code : null) || 'neutral'
+          (investigator ? investigator.faction_code : null) || 'basic'
         ][0],
       },
     },
@@ -62,8 +62,7 @@ export function getDeckOptions(
 export function showDeckModal(
   componentId: string,
   deck: Deck,
-  investigator?: Card,
-  campaignId?: number
+  investigator?: Card
 ) {
   /* if (Platform.OS === 'ios' && Platform.isPad && false) {
     Navigation.showModal({
@@ -92,7 +91,6 @@ export function showDeckModal(
                     id: deck.id,
                     isPrivate: true,
                     modal: true,
-                    campaignId,
                     title: investigator.name,
                   },
                   options: getDeckOptions(investigator),
@@ -111,7 +109,6 @@ export function showDeckModal(
     id: deck.id,
     isPrivate: true,
     modal: true,
-    campaignId,
     title: investigator ? investigator.name : t`Deck`,
   };
 

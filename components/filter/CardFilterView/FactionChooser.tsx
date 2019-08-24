@@ -9,7 +9,7 @@ import ArkhamIcon from '../../../assets/ArkhamIcon';
 import { FACTION_COLORS, FactionCodeType } from '../../../constants';
 
 function factionToIconName(faction: FactionCodeType) {
-  if (faction === 'neutral') {
+  if (faction === 'basic') {
     return 'elder_sign';
   }
   if (faction === 'mythos') {

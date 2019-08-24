@@ -25,9 +25,9 @@ export default function DeckTitleBarComponent({
   button,
 }: Props) {
   const hasFactionColor = !!(investigator && investigator.faction_code);
-  const faction_code = (investigator && investigator.faction_code) || 'neutral';
+  const faction_code = (investigator && investigator.faction_code) || 'basic';
   const iconName = investigator &&
-    (investigator.faction_code === 'neutral' ? 'elder_sign' : investigator.faction_code);
+    (investigator.faction_code === 'basic' ? 'elder_sign' : investigator.faction_code);
   return (
     <FactionGradient
       faction_code={faction_code}

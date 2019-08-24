@@ -13,7 +13,6 @@ import typography from '../../styles/typography';
 import AppIcon from '../../assets/AppIcon';
 import Button from '../core/Button';
 import Card from '../../data/Card';
-import BondedCardsComponent from './BondedCardsComponent';
 import TwoSidedCardComponent from './TwoSidedCardComponent';
 import SignatureCardsComponent from './SignatureCardsComponent';
 
@@ -22,7 +21,6 @@ interface Props {
   card: Card;
   width: number;
   showSpoilers: boolean;
-  tabooSetId?: number;
   toggleShowSpoilers: (code: string) => void;
   showInvestigatorCards: (code: string) => void;
 }
@@ -117,11 +115,6 @@ export default class CardDetailComponent extends React.Component<Props> {
     return (
       <View key={card.code} style={[styles.viewContainer, { width }]}>
         <TwoSidedCardComponent
-          componentId={componentId}
-          card={card}
-          width={width}
-        />
-        <BondedCardsComponent
           componentId={componentId}
           card={card}
           width={width}

@@ -6,7 +6,7 @@ import { t } from 'ttag';
 
 import { ParsedDeck } from '../parseDeck';
 import ArkhamIcon from '../../assets/ArkhamIcon';
-import { RESOURCES, SKILL_COLORS, ResourceCodeType } from '../../constants';
+import { RESOURCES, RESOURCE_COLORS, ResourceCodeType } from '../../constants';
 import typography from '../../styles/typography';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 }
 
 interface Item {
-  skill: ResourceCodeType;
+  resource: ResourceCodeType;
   value: number;
   svg: {
     fill: string;
@@ -28,13 +28,13 @@ interface LabelData {
   data: Item[];
 }
 
-export default class SkillIconChart extends React.PureComponent<Props> {
-  getSkillData(skill: ResourceCodeType): Item {
+export default class ResourceIconChart extends React.PureComponent<Props> {
+  getResourceData(resource: ResourceCodeType): Item {
     return {
-      skill,
-      value: this.props.parsedDeck.skillIconCounts[skill] || 0,
+      resource,
+      value: this.props.parsedDeck.resourceCounts[resource] || 0,
       svg: {
-        fill: SKILL_COLORS[skill],
+        fill: RESOURCE_COLORS[resource],
       },
     };
   }
@@ -44,7 +44,7 @@ export default class SkillIconChart extends React.PureComponent<Props> {
   };
 
   render() {
-    const barData = map(RESOURCES, skill => this.getSkillData(skill));
+    const barData = map(RESOURCES, resource => this.getResourceData(resource));
     const CUT_OFF = Math.min(
       4,
       (maxBy(map(barData, barData => barData.value)) || 0)
@@ -60,9 +60,9 @@ export default class SkillIconChart extends React.PureComponent<Props> {
             width: bandwidth,
           }]}>
             <ArkhamIcon
-              name={value.skill}
+              name={value.resource}
               size={32}
-              color={SKILL_COLORS[value.skill]}
+              color={RESOURCE_COLORS[value.resource]}
             />
           </View>
           { value.value > 0 && (
@@ -85,7 +85,7 @@ export default class SkillIconChart extends React.PureComponent<Props> {
     return (
       <View style={styles.wrapper}>
         <Text style={[typography.bigLabel, typography.center]}>
-          { t`Skill Icons` }
+          { t`Resources` }
         </Text>
         <View style={styles.chart}>
           <BarChart

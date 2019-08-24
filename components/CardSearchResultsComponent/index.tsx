@@ -32,7 +32,6 @@ interface Props {
   visible: boolean;
   toggleMythosMode: () => void;
   clearSearchFilters: () => void;
-  tabooSetOverride?: number;
 
   investigator?: Card;
   originalDeckSlots?: Slots;
@@ -300,7 +299,6 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
       selectedSort,
       mythosMode,
       visible,
-      tabooSetOverride,
       investigator,
     } = this.props;
     const {
@@ -312,7 +310,6 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
         <View style={styles.container}>
           <CardResultList
             componentId={componentId}
-            tabooSetOverride={tabooSetOverride}
             query={this.query()}
             termQuery={this.termQuery()}
             searchTerm={searchTerm}

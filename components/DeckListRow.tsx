@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { ngettext, msgid, t } from 'ttag';
 
-import { Campaign, Deck } from '../actions/types';
+import { Deck } from '../actions/types';
 import Card, { CardsMap } from '../data/Card';
 import InvestigatorImage from './core/InvestigatorImage';
 import FactionGradient from './core/FactionGradient';
@@ -22,7 +22,6 @@ import { s } from '../styles/space';
 interface Props {
   deck: Deck;
   previousDeck?: Deck;
-  deckToCampaign?: { [deck_id: number]: Campaign };
   cards: CardsMap;
   investigator?: Card;
   onPress?: (deck: Deck, investigator?: Card) => void;
@@ -43,27 +42,11 @@ export default class DeckListRow extends React.Component<Props> {
     onPress && onPress(deck, investigator);
   };
 
-  static xpString(parsedDeck: ParsedDeck) {
-    const xp = (parsedDeck.deck.xp || 0) + (parsedDeck.deck.xp_adjustment || 0);
-    if (xp > 0) {
-      if (parsedDeck.changes && parsedDeck.changes.spentXp > 0) {
-        return t`${xp} available experience, ${parsedDeck.changes.spentXp} spent`;
-      }
-      return t`${xp} available experience`;
-    }
-    if (parsedDeck.experience > 0) {
-      return t`${parsedDeck.experience} experience required`;
-    }
-    return null;
-  }
-
   renderDeckDetails() {
     const {
       deck,
-      previousDeck,
       cards,
       details,
-      deckToCampaign,
     } = this.props;
     if (details) {
       return details;
@@ -71,36 +54,12 @@ export default class DeckListRow extends React.Component<Props> {
     if (!deck) {
       return null;
     }
-    const parsedDeck = parseDeck(
-      deck,
-      deck.slots,
-      deck.ignoreDeckLimitSlots || {},
-      cards,
-      previousDeck
-    );
-    const xpString = DeckListRow.xpString(parsedDeck);
 
     const date: undefined | string = deck.date_update || deck.date_creation;
     const parsedDate: number | undefined = date ? Date.parse(date) : undefined;
-    const scenarioCount = deck.scenarioCount || 0;
     const dateStr = parsedDate ? toRelativeDateString(new Date(parsedDate)) : undefined;
     return (
       <View>
-        <Text style={typography.small}>
-          { deckToCampaign && deckToCampaign[deck.id] ?
-            deckToCampaign[deck.id].name :
-            ngettext(
-              msgid`${scenarioCount} scenario completed`,
-              `${scenarioCount} scenarios completed`,
-              scenarioCount
-            )
-          }
-        </Text>
-        { !!xpString && (
-          <Text style={typography.small}>
-            { xpString }
-          </Text>
-        ) }
         { !!deck.problem && (
           <DeckProblemRow problem={{ reason: deck.problem }} color="#222" />
         ) }

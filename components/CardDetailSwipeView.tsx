@@ -18,7 +18,7 @@ import CardDetailComponent from './CardDetailView/CardDetailComponent';
 import { rightButtonsForCard } from './CardDetailView';
 import withDimensions, { DimensionsProps } from './core/withDimensions';
 import Card from '../data/Card';
-import { getTabooSet, AppState } from '../reducers';
+import { AppState } from '../reducers';
 import { InvestigatorCardsProps } from './InvestigatorCardsView';
 import { CardFaqProps } from './CardFaqView';
 import { NavigationProps } from './types';
@@ -26,7 +26,6 @@ import { COLORS } from '../styles/colors';
 
 interface ReduxProps {
   showSpoilers: { [pack_code: string]: boolean };
-  tabooSetId?: number;
   hasSecondCore: boolean;
 }
 
@@ -34,7 +33,6 @@ export interface CardDetailSwipeProps {
   cards: Card[];
   initialIndex: number;
   showSpoilers?: boolean;
-  tabooSetId?: number;
   deckCardCounts?: Slots;
   onDeckCountChange?: (code: string, count: number) => void;
   renderFooter?: (slots?: Slots, controls?: React.ReactNode) => React.ReactNode;
@@ -259,7 +257,6 @@ class CardDetailSwipeView extends React.Component<Props, State> {
   _renderItem = (card: Card, itemIndex: number) => {
     const {
       componentId,
-      tabooSetId,
       width,
     } = this.props;
     return (
@@ -273,7 +270,6 @@ class CardDetailSwipeView extends React.Component<Props, State> {
           componentId={componentId}
           card={card}
           showSpoilers={this.showSpoilers(card)}
-          tabooSetId={tabooSetId}
           toggleShowSpoilers={this._toggleShowSpoilers}
           showInvestigatorCards={this._showInvestigatorCards}
           width={width}
@@ -329,7 +325,6 @@ function mapStateToProps(
 ): ReduxProps {
   return {
     showSpoilers: state.packs.show_spoilers || EMPTY_SPOILERS,
-    tabooSetId: getTabooSet(state, props.tabooSetId),
     hasSecondCore: (state.packs.in_collection || {}).core || false,
   };
 }

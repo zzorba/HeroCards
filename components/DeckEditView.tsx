@@ -14,9 +14,6 @@ import { NavigationProps } from './types';
 
 export interface EditDeckProps {
   deck: Deck;
-  previousDeck?: Deck;
-  tabooSetId?: number;
-  xpAdjustment?: number;
   storyOnly?: boolean;
   slots: Slots;
   meta: DeckMeta;
@@ -82,16 +79,13 @@ class DeckEditView extends React.Component<Props, State> {
       componentId,
       deck,
       ignoreDeckLimitSlots,
-      previousDeck,
       cards,
-      xpAdjustment,
       meta,
     } = this.props;
     const deckCardCounts = updatedDeckCardCounts || this.state.deckCardCounts;
     const cardsInDeck: CardsMap = {};
     cards.forEach(card => {
-      if (deckCardCounts[card.code] || deck.investigator_code === card.code ||
-        (previousDeck && previousDeck.slots[card.code])) {
+      if (deckCardCounts[card.code] || deck.investigator_code === card.code) {
         cardsInDeck[card.code] = card;
       }
     });
@@ -99,8 +93,7 @@ class DeckEditView extends React.Component<Props, State> {
       deck,
       deckCardCounts,
       ignoreDeckLimitSlots,
-      cardsInDeck,
-      previousDeck
+      cardsInDeck
     );
     return (
       <DeckNavFooter
@@ -108,7 +101,6 @@ class DeckEditView extends React.Component<Props, State> {
         meta={meta}
         parsedDeck={pDeck}
         cards={cardsInDeck}
-        xpAdjustment={xpAdjustment || 0}
         controls={controls}
       />
     );
@@ -131,7 +123,6 @@ class DeckEditView extends React.Component<Props, State> {
   render() {
     const {
       componentId,
-      tabooSetId,
       cards,
       deck,
     } = this.props;
@@ -143,7 +134,6 @@ class DeckEditView extends React.Component<Props, State> {
     return (
       <CardSearchComponent
         componentId={componentId}
-        tabooSetOverride={tabooSetId}
         baseQuery={this.baseQuery()}
         originalDeckSlots={deck.slots}
         investigator={investigator}
@@ -167,8 +157,8 @@ export default connectRealm<NavigationProps & EditDeckProps, RealmProps, Card>(
     ) {
       return {
         realm,
-        investigator: head(results.cards.filtered(`(code == '${props.deck.investigator_code}') and ${Card.tabooSetQuery(props.tabooSetId)}`)),
-        cards: results.cards.filtered(Card.tabooSetQuery(props.tabooSetId)),
+        investigator: head(results.cards.filtered(`(code == '${props.deck.investigator_code}')`)),
+        cards: results.cards,
       };
     },
   },

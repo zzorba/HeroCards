@@ -21,7 +21,6 @@ import {
   PacksAvailableAction,
   Pack,
   CardCache,
-  TabooCache,
 } from '../../actions/types';
 import { AppState } from '../../reducers/index';
 import { syncCards } from '../../lib/publicApi';
@@ -32,10 +31,6 @@ function shouldFetchCards(state: AppState) {
 
 function cardsCache(state: AppState, lang: string): undefined | CardCache {
   return (state.cards.lang || 'en') === lang ? state.cards.cache : undefined;
-}
-
-function taboosCache(state: AppState, lang: string): undefined | TabooCache {
-  return (state.cards.lang || 'en') === lang ? state.cards.tabooCache : undefined;
 }
 
 export function fetchCards(

@@ -32,7 +32,6 @@ interface Props {
   parsedDeck: ParsedDeck;
   cards: CardsMap;
   meta: DeckMeta;
-  xpAdjustment: number;
   controls?: React.ReactNode;
 }
 
@@ -104,24 +103,6 @@ export default class DeckNavFooter extends React.Component<Props> {
     );
   }
 
-  xpString() {
-    const {
-      parsedDeck: {
-        deck: {
-          xp,
-        },
-        changes,
-        experience,
-      },
-      xpAdjustment,
-    } = this.props;
-    if (!changes) {
-      return t`XP: ${experience}`;
-    }
-    const adjustedExperience = (xp || 0) + (xpAdjustment || 0);
-    return t`XP: ${changes.spentXp} of ${adjustedExperience}`;
-  }
-
   renderControls() {
     const {
       controls,
@@ -160,7 +141,6 @@ export default class DeckNavFooter extends React.Component<Props> {
       `${normalCardCount} Cards (${totalCardCount} Total)`,
       normalCardCount
     );
-    const xpString = this.xpString();
     return (
       <LinearGradient
         style={styles.wrapper}
@@ -172,7 +152,7 @@ export default class DeckNavFooter extends React.Component<Props> {
               TINY_PHONE ? typography.small : typography.text,
               styles.whiteText,
             ]} allowFontScaling={false}>
-              { `${cardCountString} - ${xpString}` }
+              { cardCountString }
             </Text>
           </View>
           { this.renderProblem() }

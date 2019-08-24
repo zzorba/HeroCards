@@ -18,14 +18,13 @@ import { Navigation, EventSubscription } from 'react-native-navigation';
 import { msgid, ngettext, t } from 'ttag';
 
 import { SORT_BY_FACTION, SORT_BY_TITLE, SORT_BY_PACK, SortType } from '../../actions/types';
-import { RANDOM_BASIC_WEAKNESS } from '../../constants';
 import Card, { CardsMap } from '../../data/Card';
 import { searchMatchesText } from '../searchHelpers';
 import InvestigatorSearchBox from './InvestigatorSearchBox';
 import ShowNonCollectionFooter, { ROW_NON_COLLECTION_HEIGHT } from '../CardSearchResultsComponent/ShowNonCollectionFooter';
 import InvestigatorRow from './InvestigatorRow';
 import InvestigatorSectionHeader from './InvestigatorSectionHeader';
-import { getTabooSet, getPacksInCollection, AppState } from '../../reducers';
+import { getPacksInCollection, AppState } from '../../reducers';
 import typography from '../../styles/typography';
 
 const SCROLL_DISTANCE_BUFFER = 50;
@@ -39,7 +38,6 @@ interface OwnProps {
 
 interface ReduxProps {
   in_collection: { [code: string]: boolean };
-  tabooSetId?: number;
 }
 
 interface RealmProps {
@@ -390,7 +388,6 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
 function mapStateToProps(state: AppState): ReduxProps {
   return {
     in_collection: getPacksInCollection(state),
-    tabooSetId: getTabooSet(state),
   };
 }
 
@@ -409,7 +406,7 @@ export default connect<ReduxProps, {}, OwnProps, AppState>(
       const names: { [name: string]: boolean } = {};
       forEach(
         results.cards.filtered(
-          `(type_code == "investigator" AND encounter_code == null) and ${Card.tabooSetQuery(props.tabooSetId)}`)
+          `(type_code == "investigator" AND encounter_code == null)`)
           .sorted('code', false),
         card => {
           if (!names[card.name]) {
@@ -420,7 +417,7 @@ export default connect<ReduxProps, {}, OwnProps, AppState>(
 
       const cards: CardsMap = {};
       forEach(
-        results.cards.filtered(`(has_restrictions == true OR code == "${RANDOM_BASIC_WEAKNESS}") and ${Card.tabooSetQuery(props.tabooSetId)}`),
+        results.cards.filtered(`(has_restrictions == true)`),
         card => {
           cards[card.code] = card;
         });

@@ -27,13 +27,13 @@ export default class DeckValidation {
   }
 
   getPhysicalDrawDeck(cards: Card[]) {
-    return filter(cards, card => card && !card.permanent && !card.double_sided);
+    return filter(cards, card => card && !card.double_sided);
   }
 
   getDrawDeck(cards: Card[]) {
     return filter(
       this.getPhysicalDrawDeck(cards),
-      card => card && card.xp !== null
+      card => card
     );
   }
 
@@ -88,7 +88,7 @@ export default class DeckValidation {
           }
   			});
   			if (req_met_count < req_count) {
-  				return 'hero';
+  				return 'investigator';
   			}
   		}
   	} else {
@@ -120,7 +120,7 @@ export default class DeckValidation {
   				if (option.error) {
   					this.problem_list.push(option.error);
   				}
-  				return 'hero';
+  				return 'investigator';
   			}
   		}
       const atleast = option.atleast;
@@ -136,7 +136,7 @@ export default class DeckValidation {
   					if (option.error){
   						this.problem_list.push(option.error);
   					}
-  					return 'hero';
+  					return 'investigator';
   				}
   			}
   		}
@@ -172,10 +172,10 @@ export default class DeckValidation {
     const investigator = this.investigator;
 
   	// hide investigators
-  	if (card.type_code === "investigator") {
+  	if (card.type_code === 'hero' || card.type_code === 'alter_ego') {
   		return false;
   	}
-  	if (card.faction_code === "mythos") {
+  	if (card.faction_code === 'encounter') {
   		return false;
   	}
 
@@ -297,15 +297,6 @@ export default class DeckValidation {
   				// needs to match at least one faction
   				var level_valid = false;
   				//console.log(option.level, card.xp, card.xp >= option.level.min, card.xp <= option.level.max);
-
-  				if (card.xp !== null && option.level){
-  					if (card.xp >= option.level.min && card.xp <= option.level.max){
-  						level_valid = true;
-  					} else {
-  						continue;
-  					}
-  				}
-  				//console.log("level valid");
   			}
 
   			if (option.not){

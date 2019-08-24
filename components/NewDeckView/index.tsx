@@ -21,7 +21,7 @@ type Props = NewDeckProps & NavigationProps;
 interface State {
   saving: boolean;
   viewRef?: View;
-  activeInvestigatorId?: string;
+  activeHeroId?: string;
   selectedSort: SortType;
 }
 
@@ -88,7 +88,6 @@ export default class NewDeckView extends React.Component<Props, State> {
     });
   };
 
-
   _captureViewRef = (ref: View) => {
     this.setState({
       viewRef: ref,
@@ -97,7 +96,7 @@ export default class NewDeckView extends React.Component<Props, State> {
 
   _closeDialog = () => {
     this.setState({
-      activeInvestigatorId: undefined,
+      activeHeroId: undefined,
     });
   };
 
@@ -113,9 +112,9 @@ export default class NewDeckView extends React.Component<Props, State> {
   }
 
   _onPress = (investigator: Card) => {
-    if (!this.state.activeInvestigatorId) {
+    if (!this.state.activeHeroId) {
       this.setState({
-        activeInvestigatorId: investigator.code,
+        activeHeroId: investigator.code,
       });
     }
   };
@@ -128,7 +127,7 @@ export default class NewDeckView extends React.Component<Props, State> {
     } = this.props;
     const {
       viewRef,
-      activeInvestigatorId,
+      activeHeroId,
       selectedSort,
     } = this.state;
     return (
@@ -146,7 +145,7 @@ export default class NewDeckView extends React.Component<Props, State> {
           viewRef={viewRef}
           onCreateDeck={onCreateDeck}
           toggleVisible={this._closeDialog}
-          investigatorId={activeInvestigatorId}
+          heroId={activeHeroId}
         />
       </View>
     );

@@ -18,7 +18,6 @@ import { SettingsCategoryHeader, SettingsSwitch } from 'react-native-settings-co
 import { t } from 'ttag';
 
 import LanguagePicker from './LanguagePicker';
-import TabooPicker from './TabooPicker';
 import { clearDecks } from '../../actions';
 import { fetchCards } from '../cards/actions';
 import { setSingleCardView } from './actions';
@@ -149,7 +148,6 @@ class SettingsView extends React.Component<Props> {
           />
           <SettingsItem navigation onPress={this._myCollectionPressed} text={t`Card Collection`} />
           <SettingsItem navigation onPress={this._editSpoilersPressed} text={t`Spoiler Settings`} />
-          <TabooPicker />
           <SettingsCategoryHeader
             title={t`Card Data`}
             titleStyle={Platform.OS === 'android' ? styles.androidCategory : undefined}

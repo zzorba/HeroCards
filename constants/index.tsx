@@ -44,7 +44,7 @@ export const PLAYER_FACTION_CODES: FactionCodeType[] = [
 
 export const FACTION_CODES: string[] = [
   ...CORE_FACTION_CODES,
-  'neutral',
+  'basic',
   'dual',
 ];
 
@@ -116,7 +116,7 @@ export function createFactionIcons(
   return mapValues(FACTION_COLORS, (color, faction) => {
     return (
       <ArkhamIcon
-        name={(faction === 'neutral' || faction === 'dual') ? 'elder_sign' : faction}
+        name={(faction === 'basic' || faction === 'dual') ? 'elder_sign' : faction}
         size={size}
         color={defaultColor || color}
       />

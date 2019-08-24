@@ -1,6 +1,5 @@
 import React from 'react';
 import { head, startsWith } from 'lodash';
-import { connect } from 'react-redux';
 import {
   RefreshControl,
   ScrollView,
@@ -20,16 +19,11 @@ import { showCard } from './navHelper';
 import { NavigationProps } from './types';
 import { WebViewProps } from './WebViewWrapper';
 import { getFaqEntry } from '../lib/publicApi';
-import { getTabooSet, AppState } from '../reducers';
 import typography from '../styles/typography';
 import { m } from '../styles/space';
 
 export interface CardFaqProps {
   id: string;
-}
-
-interface ReduxProps {
-  tabooSetId?: number;
 }
 
 interface RealmProps {
@@ -38,7 +32,7 @@ interface RealmProps {
   faqEntries: Results<FaqEntry>;
 }
 
-type Props = NavigationProps & CardFaqProps & ReduxProps & RealmProps;
+type Props = NavigationProps & CardFaqProps & RealmProps;
 
 interface State {
   faqLoading: boolean;
@@ -182,28 +176,20 @@ class CardFaqView extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: AppState): ReduxProps {
-  return {
-    tabooSetId: getTabooSet(state),
-  };
-}
-
-export default connect<ReduxProps, {}, NavigationProps & CardFaqProps, AppState>(
-  mapStateToProps
-)(connectRealm<NavigationProps & CardFaqProps & ReduxProps, RealmProps, Card, FaqEntry>(CardFaqView, {
+export default connectRealm<NavigationProps & CardFaqProps, RealmProps, Card, FaqEntry>(CardFaqView, {
   schemas: ['Card', 'FaqEntry'],
   mapToProps(
     results: CardAndFaqResults<Card, FaqEntry>,
     realm: Realm,
-    props: NavigationProps & CardFaqProps & ReduxProps
+    props: NavigationProps & CardFaqProps
   ): RealmProps {
     return {
       realm,
-      cards: results.cards.filtered(Card.tabooSetQuery(props.tabooSetId)),
+      cards: results.cards,
       faqEntries: results.faqEntries.filtered(`code == '${props.id}'`),
     };
   },
-}));
+});
 
 const styles = StyleSheet.create({
   container: {

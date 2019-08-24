@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 import { t } from 'ttag';
 import { Pack } from '../actions/types';
-import { setInCollection, setCycleInCollection } from '../actions';
+import { setInCollection } from '../actions';
 import PackListComponent from './PackListComponent';
 import { getAllPacks, getPacksInCollection, AppState } from '../reducers';
 import { NavigationProps } from './types';
@@ -20,7 +20,6 @@ interface ReduxProps {
 
 interface ReduxActionProps {
   setInCollection: (code: string, value: boolean) => void;
-  setCycleInCollection: (cycle: number, value: boolean) => void;
 }
 type Props = NavigationProps & ReduxProps & ReduxActionProps;
 
@@ -41,7 +40,6 @@ class CollectionEditView extends React.Component<Props> {
       packs,
       in_collection,
       setInCollection,
-      setCycleInCollection,
     } = this.props;
     if (!packs.length) {
       return (
@@ -57,7 +55,6 @@ class CollectionEditView extends React.Component<Props> {
         packs={packs}
         checkState={in_collection}
         setChecked={setInCollection}
-        setCycleChecked={setCycleInCollection}
       />
     );
   }
@@ -73,7 +70,6 @@ function mapStateToProps(state: AppState) {
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
   return bindActionCreators({
     setInCollection,
-    setCycleInCollection,
   }, dispatch);
 }
 

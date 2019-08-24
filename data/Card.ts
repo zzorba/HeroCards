@@ -16,10 +16,6 @@ export default class Card extends BaseCard {
     properties: BaseCard.SCHEMA,
   };
 
-  public static tabooSetQuery(tabooSetId?: number) {
-    return `(taboo_set_id == null || taboo_set_id == ${tabooSetId || 0})`;
-  }
-
   static parseRestrictions(json?: { investigator?: { [key: string]: string} }) {
     if (json && json.investigator && keys(json.investigator).length) {
       return CardRestrictions.parse(json);

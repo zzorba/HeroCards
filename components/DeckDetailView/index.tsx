@@ -18,13 +18,10 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Results } from 'realm';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 // @ts-ignore
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
-// @ts-ignore
-import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 import { Navigation, EventSubscription } from 'react-native-navigation';
 import DialogComponent from 'react-native-dialog';
 import DeviceInfo from 'react-native-device-info';
@@ -49,11 +46,8 @@ import { Deck, DeckMeta, Slots } from '../../actions/types';
 import withPlayerCards, { PlayerCardProps } from '../withPlayerCards';
 import DeckValidation from '../../lib/DeckValidation';
 import { FACTION_DARK_GRADIENTS } from '../../constants';
-import Card from '../../data/Card';
 import { parseDeck, ParsedDeck } from '../parseDeck';
 import { EditDeckProps } from '../DeckEditView';
-import { EditSpecialCardsProps } from '../EditSpecialDeckCards';
-import { UpgradeDeckProps } from '../DeckUpgradeDialog';
 import EditDeckDetailsDialog from './EditDeckDetailsDialog';
 import DeckViewTab from './DeckViewTab';
 import DeckNavFooter from '../DeckNavFooter';
@@ -69,7 +63,6 @@ import typography from '../../styles/typography';
 export interface DeckDetailProps {
   id: number;
   title?: string;
-  campaignId?: number;
   isPrivate?: boolean;
   modal?: boolean;
 }
@@ -77,7 +70,6 @@ export interface DeckDetailProps {
 interface ReduxProps {
   singleCardView: boolean;
   deck?: Deck;
-  previousDeck?: Deck;
 }
 
 interface ReduxActionProps {
@@ -183,7 +175,6 @@ class DeckDetailView extends React.Component<Props, State> {
       fetchPublicDeck,
       fetchPrivateDeck,
       deck,
-      previousDeck,
       modal,
     } = this.props;
     if (modal) {
@@ -197,15 +188,7 @@ class DeckDetailView extends React.Component<Props, State> {
       }
     }
     if (deck && deck.investigator_code) {
-      if (deck && deck.previous_deck && !previousDeck) {
-        if (isPrivate) {
-          fetchPrivateDeck(deck.previous_deck);
-        } else {
-          fetchPublicDeck(deck.previous_deck, false);
-        }
-      } else {
-        this.loadCards(deck, previousDeck);
-      }
+      this.loadCards(deck);
     }
   }
 
@@ -220,17 +203,13 @@ class DeckDetailView extends React.Component<Props, State> {
     const {
       deck,
       id,
-      isPrivate,
-      previousDeck,
-      fetchPrivateDeck,
-      fetchPublicDeck,
     } = this.props;
     if (deck !== prevProps.deck) {
       if (!deck) {
         if (!this.state.deleting && id > 0) {
           Alert.alert(
             t`Deck has been deleted`,
-            t`It looks like you deleted this deck from ArkhamDB.\n\n If it was part of a campaign you can add the same investigator back to restore your campaign data.`,
+            t`It looks like you deleted this deck from MarvelCDB.`,
             [{
               text: t`OK`,
               onPress: () => {
@@ -239,19 +218,11 @@ class DeckDetailView extends React.Component<Props, State> {
             }],
           );
         }
-      } else if (deck.previous_deck && !previousDeck) {
-        if (isPrivate) {
-          fetchPrivateDeck(deck.previous_deck);
-        } else {
-          fetchPublicDeck(deck.previous_deck, false);
-        }
       }
     }
-    if (deck && (!deck.previous_deck || previousDeck)) {
-      if (deck !== prevProps.deck ||
-        previousDeck !== prevProps.previousDeck
-      ) {
-        this.loadCards(deck, previousDeck);
+    if (deck) {
+      if (deck !== prevProps.deck) {
+        this.loadCards(deck);
       }
     }
   }
@@ -300,14 +271,6 @@ class DeckDetailView extends React.Component<Props, State> {
         color: 'white',
         testID: t`Clone Deck`,
       });
-      if (editable) {
-        rightButtons.push({
-          id: 'upgrade',
-          icon: iconsMap['arrow-up-bold'],
-          color: 'white',
-          testID: t`Upgrade Deck`,
-        });
-      }
     }
     if (editable) {
       rightButtons.push({
@@ -369,67 +332,10 @@ class DeckDetailView extends React.Component<Props, State> {
       this._handleBackPress();
     } else if (buttonId === 'save') {
       this._saveEdits();
-    } else if (buttonId === 'upgrade') {
-      this._onUpgradePressed();
     } else if (buttonId === 'copy') {
       this._toggleCopyDialog();
     }
   }
-
-  _onEditSpecialPressed = () => {
-    const {
-      componentId,
-      deck,
-      previousDeck,
-      cards,
-    } = this.props;
-    const {
-      meta,
-      slots,
-      ignoreDeckLimitSlots,
-    } = this.state;
-    if (!deck) {
-      return;
-    }
-    const investigator = cards[deck.investigator_code];
-    const addedWeaknesses = this.addedBasicWeaknesses(
-      deck,
-      slots,
-      ignoreDeckLimitSlots);
-
-    Navigation.push<EditSpecialCardsProps>(componentId, {
-      component: {
-        name: 'Deck.EditSpecial',
-        passProps: {
-          deck,
-          meta,
-          slots,
-          ignoreDeckLimitSlots,
-          updateSlots: this._updateSlots,
-          updateIgnoreDeckLimitSlots: this._updateIgnoreDeckLimitSlots,
-          assignedWeaknesses: addedWeaknesses,
-        },
-        options: {
-          statusBar: {
-            style: 'light',
-          },
-          topBar: {
-            title: {
-              text: t`Edit Special Cards`,
-              color: 'white',
-            },
-            backButton: {
-              title: t`Back`,
-              color: 'white',
-            },
-            background: {
-              color: FACTION_DARK_GRADIENTS[investigator ? investigator.factionCode() : 'neutral'][0],
-            },
-          },
-        },
-      },
-    });
-  };
 
   _onEditPressed = () => {
     const {
@@ -470,49 +376,7 @@ class DeckDetailView extends React.Component<Props, State> {
               color: 'white',
             },
             background: {
-              color: FACTION_DARK_GRADIENTS[investigator ? investigator.factionCode() : 'neutral'][0],
-            },
-          },
-        },
-      },
-    });
-  };
-
-  _onUpgradePressed = () => {
-    const {
-      componentId,
-      deck,
-      campaign,
-    } = this.props;
-    const {
-      parsedDeck,
-    } = this.state;
-    if (!deck) {
-      return;
-    }
-    Navigation.push<UpgradeDeckProps>(componentId, {
-      component: {
-        name: 'Deck.Upgrade',
-        passProps: {
-          id: deck.id,
-          showNewDeck: true,
-          campaignId: campaign ? campaign.id : undefined,
-        },
-        options: {
-          statusBar: {
-            style: 'light',
-          },
-          topBar: {
-            title: {
-              text: t`Upgrade Deck`,
-              color: 'white',
-            },
-            subtitle: {
-              text: parsedDeck ? parsedDeck.investigator.name : '',
-              color: 'white',
-            },
-            background: {
-              color: FACTION_DARK_GRADIENTS[parsedDeck ? parsedDeck.investigator.factionCode() : 'neutral'][0],
+              color: FACTION_DARK_GRADIENTS[investigator ? investigator.factionCode() : 'basic'][0],
             },
           },
         },
@@ -536,7 +400,7 @@ class DeckDetailView extends React.Component<Props, State> {
       this.setState({
         saving: true,
       });
-      uploadLocalDeck(deck).then(newDeck => {
+      uploadLocalDeck(deck).then(() => {
         this.setState({
           saving: false,
           hasPendingEdits: false,
@@ -563,30 +427,6 @@ class DeckDetailView extends React.Component<Props, State> {
     });
   };
 
-  updateCampaignWeaknessSet(newAssignedCards: string[]) {
-    const {
-      campaign,
-      updateCampaign,
-    } = this.props;
-    if (campaign) {
-      const assignedCards = Object.assign(
-        {},
-        (campaign.weaknessSet && campaign.weaknessSet.assignedCards) || {});
-      forEach(newAssignedCards, code => {
-        assignedCards[code] = (assignedCards[code] || 0) + 1;
-      });
-      updateCampaign(
-        campaign.id,
-        {
-          weaknessSet: {
-            ...(campaign.weaknessSet || {}),
-            assignedCards,
-          },
-        },
-      );
-    }
-  }
-
   saveEdits(dismissAfterSave: boolean, isRetry?: boolean) {
     const {
       deck,
@@ -608,12 +448,6 @@ class DeckDetailView extends React.Component<Props, State> {
       const problemObj = this.getProblem();
       const problem = problemObj ? problemObj.reason : '';
 
-      const addedBasicWeaknesses = this.addedBasicWeaknesses(
-        deck,
-        slots,
-        ignoreDeckLimitSlots
-      );
-
       this.setState({
         saving: true,
       });
@@ -627,7 +461,6 @@ class DeckDetailView extends React.Component<Props, State> {
           meta,
         }
       ).then(() => {
-        this.updateCampaignWeaknessSet(addedBasicWeaknesses);
         if (dismissAfterSave) {
           Navigation.dismissAllModals();
         } else {
@@ -746,27 +579,9 @@ class DeckDetailView extends React.Component<Props, State> {
     }, this._syncNavigationButtons);
   };
 
-  _updateXp = (newXp: number) => {
-    const {
-      deck,
-    } = this.props;
-    if (!deck) {
-      return;
-    }
-    const xpAdjustment = newXp - (deck.xp || 0);
-    this.setState({
-      hasPendingEdits: this.hasPendingEdits(
-        this.state.slots,
-        this.state.ignoreDeckLimitSlots,
-        this.state.meta,
-        this.state.nameChange),
-    }, this._syncNavigationButtons);
-  };
-
   _updateIgnoreDeckLimitSlots = (newIgnoreDeckLimitSlots: Slots) => {
     const {
       deck,
-      previousDeck,
       cards,
     } = this.props;
     const {
@@ -775,7 +590,7 @@ class DeckDetailView extends React.Component<Props, State> {
     if (!deck) {
       return;
     }
-    const parsedDeck = parseDeck(deck, slots, newIgnoreDeckLimitSlots, cards, previousDeck);
+    const parsedDeck = parseDeck(deck, slots, newIgnoreDeckLimitSlots, cards);
     this.setState({
       ignoreDeckLimitSlots: newIgnoreDeckLimitSlots,
       parsedDeck,
@@ -804,7 +619,6 @@ class DeckDetailView extends React.Component<Props, State> {
   _updateSlots = (newSlots: Slots, resetIgnoreDeckLimitSlots?: boolean) => {
     const {
       deck,
-      previousDeck,
       cards,
     } = this.props;
     if (!deck) {
@@ -813,7 +627,7 @@ class DeckDetailView extends React.Component<Props, State> {
     const ignoreDeckLimitSlots = resetIgnoreDeckLimitSlots ?
       (deck.ignoreDeckLimitSlots || {}) :
       this.state.ignoreDeckLimitSlots;
-    const parsedDeck = parseDeck(deck, newSlots, ignoreDeckLimitSlots, cards, previousDeck);
+    const parsedDeck = parseDeck(deck, newSlots, ignoreDeckLimitSlots, cards);
     this.setState({
       slots: newSlots,
       ignoreDeckLimitSlots: ignoreDeckLimitSlots,
@@ -826,7 +640,7 @@ class DeckDetailView extends React.Component<Props, State> {
     }, this._syncNavigationButtons);
   };
 
-  loadCards(deck: Deck, previousDeck?: Deck) {
+  loadCards(deck: Deck) {
     const {
       cards,
     } = this.props;
@@ -835,12 +649,11 @@ class DeckDetailView extends React.Component<Props, State> {
     } = this.state;
     if (findIndex(keys(slots), code => deck.slots[code] !== slots[code]) !== -1 ||
       findIndex(keys(deck.slots), code => deck.slots[code] !== slots[code]) !== -1) {
-      const parsedDeck = parseDeck(deck, deck.slots, deck.ignoreDeckLimitSlots || {}, cards, previousDeck);
+      const parsedDeck = parseDeck(deck, deck.slots, deck.ignoreDeckLimitSlots || {}, cards);
       this.setState({
         slots: deck.slots,
         meta: deck.meta || {},
         ignoreDeckLimitSlots: deck.ignoreDeckLimitSlots || {},
-        xpAdjustment: deck.xp_adjustment || 0,
         parsedDeck,
         hasPendingEdits: false,
         loaded: true,
@@ -898,7 +711,7 @@ class DeckDetailView extends React.Component<Props, State> {
     }, this._syncNavigationButtons);
   };
 
-  renderEditDetailsDialog(deck: Deck, parsedDeck: ParsedDeck) {
+  renderEditDetailsDialog(deck: Deck) {
     const {
       viewRef,
     } = this.props;
@@ -974,18 +787,7 @@ class DeckDetailView extends React.Component<Props, State> {
               onPress={this._onEditPressed}
             />
           </View>
-          { !hasPendingEdits && (
-            <View style={styles.halfColumn}>
-              <Button
-                text={t`Upgrade Deck`}
-                color="yellow"
-                grow
-                size="small"
-                icon={<MaterialCommunityIcons size={20 * iconSizeScale * DeviceInfo.getFontScale()} color="#FFFFFF" name="arrow-up-bold" />}
-                onPress={this._onUpgradePressed}
-              />
-            </View>
-          ) }
+
         </View>
         { hasPendingEdits && (
           <View style={[styles.twoColumn, styles.topSpace]}>
@@ -1062,7 +864,6 @@ class DeckDetailView extends React.Component<Props, State> {
         parsedDeck={parsedDeck}
         meta={meta}
         cards={cards}
-        xpAdjustment={xpAdjustment}
         controls={controls}
       />
     );
@@ -1115,7 +916,6 @@ class DeckDetailView extends React.Component<Props, State> {
             isPrivate={!!isPrivate}
             buttons={this.renderButtons()}
             showEditNameDialog={this._showEditDetailsVisible}
-            showEditSpecial={deck.next_deck ? undefined : this._onEditSpecialPressed}
             signedIn={signedIn}
             login={login}
             deleteDeck={this._deleteDeck}
@@ -1125,7 +925,7 @@ class DeckDetailView extends React.Component<Props, State> {
           />
           { this._renderFooter() }
         </View>
-        { this.renderEditDetailsDialog(deck, parsedDeck) }
+        { this.renderEditDetailsDialog(deck) }
         { this.renderSavingDialog() }
         { this.renderCopyDialog() }
       </View>

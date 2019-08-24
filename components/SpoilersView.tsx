@@ -8,7 +8,7 @@ import { bindActionCreators, Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 
 import { Pack } from '../actions/types';
-import { setPackSpoiler, setCyclePackSpoiler } from '../actions';
+import { setPackSpoiler } from '../actions';
 import PackListComponent from './PackListComponent';
 import { getAllPacks, getPackSpoilers, AppState } from '../reducers';
 import { NavigationProps } from './types';
@@ -20,7 +20,6 @@ interface ReduxProps {
 
 interface ReduxActionProps {
   setPackSpoiler: (code: string, value: boolean) => void;
-  setCyclePackSpoiler: (cycle: number, value: boolean) => void;
 }
 
 type Props = NavigationProps & ReduxProps & ReduxActionProps;
@@ -43,7 +42,6 @@ class SpoilersView extends React.Component<Props> {
       packs,
       show_spoilers,
       setPackSpoiler,
-      setCyclePackSpoiler,
     } = this.props;
     if (!packs.length) {
       return (
@@ -59,7 +57,6 @@ class SpoilersView extends React.Component<Props> {
         renderHeader={this._renderHeader}
         checkState={show_spoilers}
         setChecked={setPackSpoiler}
-        setCycleChecked={setCyclePackSpoiler}
       />
     );
   }
@@ -75,7 +72,6 @@ function mapStateToProps(state: AppState): ReduxProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): ReduxActionProps {
   return bindActionCreators({
     setPackSpoiler,
-    setCyclePackSpoiler,
   }, dispatch);
 }
 

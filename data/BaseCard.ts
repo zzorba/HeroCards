@@ -170,9 +170,19 @@ export default class BaseCard {
     return this.faction_code || 'basic';
   }
 
-  costString(linked?: boolean) {
-    if (this.type_code !== 'ally' &&
-      this.type_code !== 'event') {
+  isPlayerDeckCard(): boolean {
+    return this.hasCost() || this.type_code === 'resource';
+  }
+
+  hasCost(): boolean {
+    return this.type_code === 'ally' ||
+      this.type_code === 'event' ||
+      this.type_code === 'upgrade' ||
+      this.type_code === 'support';
+  }
+
+  costString(linked?: boolean): string {
+    if (!this.hasCost()) {
       return '';
     }
     if (this.double_sided ||

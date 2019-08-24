@@ -16,7 +16,6 @@ interface Props {
   packs: Pack[];
   checkState?: { [pack_code: string]: boolean};
   setChecked: (pack_code: string, checked: boolean) => void;
-  setCycleChecked?: (cycle_number: number, checked: boolean) => void;
   renderHeader?: () => React.ReactElement;
   renderFooter?: () => React.ReactElement;
   whiteBackground?: boolean;
@@ -34,24 +33,17 @@ export default class PackListComponent extends React.Component<Props> {
       packs,
       checkState,
       setChecked,
-      setCycleChecked,
       whiteBackground,
       baseQuery,
       compact,
       coreSetName,
     } = this.props;
-    const cyclePacks: Pack[] = item.position === 1 ? filter(packs, pack => {
-      return (pack.cycle_position === item.cycle_position &&
-        pack.id !== item.id);
-    }) : [];
     return (
       <PackRow
         componentId={this.props.componentId}
         pack={item}
         nameOverride={item.code === 'core' ? coreSetName : undefined}
-        cycle={cyclePacks}
         setChecked={setChecked}
-        setCycleChecked={setCycleChecked}
         checked={checkState && checkState[item.code]}
         whiteBackground={whiteBackground}
         baseQuery={baseQuery}

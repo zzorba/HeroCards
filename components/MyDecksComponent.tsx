@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { t } from 'ttag';
 
 import withNetworkStatus, { NetworkStatusProps } from './core/withNetworkStatus';
-import { Campaign, Deck, DecksMap } from '../actions/types';
+import { Deck, DecksMap } from '../actions/types';
 import { refreshMyDecks } from '../actions';
 import Card from '../data/Card';
 import withDimensions, { DimensionsProps } from './core/withDimensions';
@@ -21,7 +21,7 @@ import withLoginState, { LoginStateProps } from './withLoginState';
 import { COLORS } from '../styles/colors';
 import typography from '../styles/typography';
 import space, { m, s, xs } from '../styles/space';
-import { getAllDecks, getMyDecksState, getDeckToCampaignMap, AppState } from '../reducers';
+import { getAllDecks, getMyDecksState, AppState } from '../reducers';
 
 interface OwnProps {
   componentId: string;
@@ -35,7 +35,6 @@ interface OwnProps {
 
 interface ReduxProps {
   decks: DecksMap;
-  deckToCampaign: { [id: number]: Campaign };
   myDecks: number[];
   myDecksUpdated?: Date;
   refreshing: boolean;
@@ -173,7 +172,6 @@ class MyDecksComponent extends React.Component<Props> {
       decks,
       refreshing,
       onlyDeckIds,
-      deckToCampaign,
       signedIn,
     } = this.props;
 
@@ -191,7 +189,6 @@ class MyDecksComponent extends React.Component<Props> {
         customFooter={this.renderFooter()}
         deckIds={deckIds}
         deckClicked={deckClicked}
-        deckToCampaign={deckToCampaign}
         onRefresh={signedIn ? this._onRefresh : undefined}
         refreshing={refreshing}
         isEmpty={myDecks.length === 0}
@@ -200,11 +197,9 @@ class MyDecksComponent extends React.Component<Props> {
   }
 }
 
-const EMPTY_DECKS_TO_CAMPAIGN = {};
 function mapStateToProps(state: AppState): ReduxProps {
   return {
     decks: getAllDecks(state),
-    deckToCampaign: getDeckToCampaignMap(state) || EMPTY_DECKS_TO_CAMPAIGN,
     ...getMyDecksState(state),
   };
 }

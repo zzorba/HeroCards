@@ -1,5 +1,5 @@
 import React from 'react';
-import { keys, forEach, filter, indexOf, map, partition } from 'lodash';
+import { keys, forEach, filter, indexOf, map } from 'lodash';
 import {
   ActivityIndicator,
   ScrollView,
@@ -183,40 +183,13 @@ class CardFilterView extends React.Component<Props, State> {
       return t`Packs: All`;
     }
     const selectedPackNames = new Set(packs);
-    const cyclePackCounts: { [code: string]: number } = {};
-    const selectedCyclePackCounts: { [code: string]: number } = {};
-    const cycleNames: { [code: string]: string } = {};
     const selectedPacks = filter(
       allPacks,
-      pack => {
-        if (pack.cycle_position > 1 && pack.cycle_position < 50) {
-          if (pack.position === 1) {
-            cycleNames[pack.cycle_position] = pack.name;
-          }
-          cyclePackCounts[pack.cycle_position] =
-            (cyclePackCounts[pack.cycle_position] || 0) + 1;
-        }
-        if (selectedPackNames.has(pack.name)) {
-          selectedCyclePackCounts[pack.cycle_position] =
-            (selectedCyclePackCounts[pack.cycle_position] || 0) + 1;
-          return true;
-        }
-        return false;
-      }
+      pack => selectedPackNames.has(pack.name)
     );
-    const [completeCycles, partialCycles] = partition(
-      keys(selectedCyclePackCounts),
-      cycle_position => selectedCyclePackCounts[cycle_position] === cyclePackCounts[cycle_position]);
-
     const parts: string[] = [];
-    forEach(completeCycles, cycle_position => {
-      parts.push(t`${cycleNames[cycle_position]} Cycle`);
-    });
-    const partialCyclesSet = new Set(partialCycles);
     forEach(selectedPacks, pack => {
-      if (partialCyclesSet.has(`${pack.cycle_position}`)) {
-        parts.push(pack.name);
-      }
+      parts.push(pack.name);
     });
     const allPacksString = parts.join(', ');
     return t`Packs: ${allPacksString}`;
@@ -310,38 +283,6 @@ class CardFilterView extends React.Component<Props, State> {
     return t`Enemies: ${searchParts}`;
   }
 
-  locationFilterText() {
-    const {
-      filters: {
-        shroud,
-        shroudEnabled,
-        clues,
-        cluesEnabled,
-        cluesFixed,
-        hauntedEnabled,
-      },
-    } = this.props;
-    const parts = [];
-    if (cluesEnabled) {
-      if (cluesFixed) {
-        parts.push(CardFilterView.rangeText(t`Fixed Clues`, clues));
-      } else {
-        parts.push(CardFilterView.rangeText(t`Clues`, clues));
-      }
-    }
-    if (shroudEnabled) {
-      parts.push(CardFilterView.rangeText(t`Shroud`, shroud));
-    }
-    if (hauntedEnabled) {
-      parts.push(t`Haunted`);
-    }
-
-    if (parts.length === 0) {
-      return t`Locations: All`;
-    }
-    const searchParts = parts.join(', ');
-    return t`Locations: ${searchParts}`;
-  }
 
   render() {
     const {
@@ -355,23 +296,13 @@ class CardFilterView extends React.Component<Props, State> {
         types,
         subTypes,
         packs,
-        slots,
         encounters,
         illustrators,
-        victory,
-        vengeance,
         resources,
         resourceEnabled,
-        level,
-        levelEnabled,
-        exceptional,
-        nonExceptional,
         cost,
         costEnabled,
         unique,
-        permanent,
-        fast,
-        exile,
       },
       onToggleChange,
       onFilterChange,
@@ -467,9 +398,6 @@ class CardFilterView extends React.Component<Props, State> {
           { indexOf(allTypeCodes, 'enemy') !== -1 && (
             <NavButton text={this.enemyFilterText()} onPress={this._onEnemyPress} />
           ) }
-          { indexOf(allTypeCodes, 'location') !== -1 && (
-            <NavButton text={this.locationFilterText()} onPress={this._onLocationPress} />
-          ) }
         </View>
         { (uses.length > 0 || allUses.length > 0) && (
           <FilterChooserButton
@@ -485,41 +413,9 @@ class CardFilterView extends React.Component<Props, State> {
           <View style={styles.toggleRow}>
             <View style={styles.toggleColumn}>
               <ToggleFilter
-                label={t`Fast`}
-                setting="fast"
-                value={fast}
-                onChange={onToggleChange}
-              />
-              <ToggleFilter
-                label={t`Permanent`}
-                setting="permanent"
-                value={permanent}
-                onChange={onToggleChange}
-              />
-              <ToggleFilter
-                label={t`Victory`}
-                setting="victory"
-                value={victory}
-                onChange={onToggleChange}
-              />
-            </View>
-            <View style={styles.toggleColumn}>
-              <ToggleFilter
-                label={t`Exile`}
-                setting="exile"
-                value={exile}
-                onChange={onToggleChange}
-              />
-              <ToggleFilter
                 label={t`Unique`}
                 setting="unique"
                 value={unique}
-                onChange={onToggleChange}
-              />
-              <ToggleFilter
-                label={t`Vengeance`}
-                setting="vengeance"
-                value={vengeance}
                 onChange={onToggleChange}
               />
             </View>

@@ -16,18 +16,15 @@ export default function withPlayerCards<Props, ExtraProps={}>(
   WrappedComponent: React.ComponentType<Props & PlayerCardProps & ExtraProps>,
   computeExtraProps?: (cards: Results<Card>) => ExtraProps
 ): React.ComponentType<Props> {
-  interface ReduxProps {
-    tabooSetId?: number;
-  }
-  const result = connectRealm<Props & ReduxProps, PlayerCardProps & ExtraProps, Card, FaqEntry>(
+  const result = connectRealm<Props, PlayerCardProps & ExtraProps, Card, FaqEntry>(
     WrappedComponent, {
-      schemas: ['Card', 'TabooSet'],
+      schemas: ['Card'],
       mapToProps(
         results: CardResults<Card>,
         realm: Realm
       ): PlayerCardProps & ExtraProps {
         const playerCards = results.cards.filtered(
-          `((type_code == "investigator" AND encounter_code == null) OR deck_limit > 0 OR bonded_name != null)`
+          `((type_code == "hero" or type_code == 'alter_ego') OR deck_limit > 0)`
         );
         const investigators: CardsMap = {};
         const cards: CardsMap = {};

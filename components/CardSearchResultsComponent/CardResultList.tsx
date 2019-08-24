@@ -31,7 +31,7 @@ import {
   SortType,
   Slots,
 } from '../../actions/types';
-import { getPackSpoilers, getPacksInCollection, getTabooSet, AppState } from '../../reducers';
+import { getPackSpoilers, getPacksInCollection, AppState } from '../../reducers';
 import Card from '../../data/Card';
 import { showCard, showCardSwipe } from '../navHelper';
 import { isSpecialCard } from '../parseDeck';
@@ -66,7 +66,6 @@ interface OwnProps {
   investigator?: Card;
   originalDeckSlots?: Slots;
   deckCardCounts?: Slots;
-  tabooSetOverride?: number;
   onDeckCountChange?: (code: string, count: number) => void;
   limits?: Slots;
   cardPressed?: (card: Card) => void;
@@ -87,7 +86,6 @@ interface ReduxProps {
     [code: string]: boolean;
   };
   hasSecondCore: boolean;
-  tabooSetId?: number;
 }
 
 interface RealmProps {
@@ -232,8 +230,7 @@ class CardResultList extends React.Component<Props, State> {
         prevProps.sort !== this.props.sort ||
         prevProps.searchTerm !== this.props.searchTerm ||
         prevProps.show_spoilers !== this.props.show_spoilers ||
-        prevProps.in_collection !== this.props.in_collection ||
-        prevProps.tabooSetId !== this.props.tabooSetId
+        prevProps.in_collection !== this.props.in_collection
     ) {
       if (visible) {
         /* eslint-disable react/no-did-update-set-state */
@@ -446,7 +443,6 @@ class CardResultList extends React.Component<Props, State> {
     const {
       realm,
       originalDeckSlots,
-      tabooSetId,
       searchTerm,
       termQuery,
     } = this.props;
@@ -462,7 +458,7 @@ class CardResultList extends React.Component<Props, State> {
         (deckCardCounts && deckCardCounts[code] > 0));
     const query = map(codes, code => ` (code == '${code}')`).join(' OR ');
     const possibleDeckCards: Results<Card> = realm.objects<Card>('Card')
-      .filtered(`(${query}) and ${Card.tabooSetQuery(tabooSetId)}`);
+      .filtered(`(${query})`);
     const deckCards: Results<Card> = termQuery ?
       possibleDeckCards.filtered(termQuery, searchTerm) :
       possibleDeckCards;
@@ -483,7 +479,6 @@ class CardResultList extends React.Component<Props, State> {
       termQuery,
       searchTerm,
       show_spoilers,
-      tabooSetId,
     } = this.props;
     this.setState({
       loadingMessage: CardResultList.randomLoadingMessage(),
@@ -491,11 +486,9 @@ class CardResultList extends React.Component<Props, State> {
     const resultsKey = this.resultsKey();
     const queryCards: Results<Card> = (query ?
       realm.objects<Card>('Card').filtered(
-        `(${query}) and ${Card.tabooSetQuery(tabooSetId)}`,
+        `(${query})`,
         searchTerm
-      ) : realm.objects<Card>('Card').filtered(
-        Card.tabooSetQuery(tabooSetId)
-      )
+      ) : realm.objects<Card>('Card')
     );
     const cards: Results<Card> = (termQuery ?
       queryCards.filtered(termQuery, searchTerm) :
@@ -526,7 +519,6 @@ class CardResultList extends React.Component<Props, State> {
     const {
       cardPressed,
       componentId,
-      tabooSetOverride,
       onDeckCountChange,
       investigator,
       renderFooter,
@@ -538,7 +530,6 @@ class CardResultList extends React.Component<Props, State> {
         card.code,
         card,
         true,
-        tabooSetOverride
       );
       return;
     }
@@ -564,7 +555,6 @@ class CardResultList extends React.Component<Props, State> {
       cards,
       index,
       showSpoilerCards,
-      tabooSetOverride,
       deckCardCounts,
       onDeckCountChange,
       investigator,
@@ -825,7 +815,6 @@ function mapStateToProps(state: AppState, props: OwnProps): ReduxProps {
     in_collection,
     show_spoilers: getPackSpoilers(state),
     hasSecondCore: in_collection.core || false,
-    tabooSetId: getTabooSet(state, props.tabooSetOverride),
   };
 }
 

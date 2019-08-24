@@ -1,6 +1,3 @@
-import { forEach } from 'lodash';
-
-import { UpgradeDeckResult } from '../../lib/authApi';
 import { Deck, DeckMeta, Slots } from '../../actions/types';
 
 export function newLocalDeck(
@@ -8,7 +5,6 @@ export function newLocalDeck(
   name: string,
   investigator_code: string,
   slots: Slots,
-  tabooSetId?: number,
   meta?: DeckMeta
 ): Deck {
   const timestamp = (new Date()).toISOString();

@@ -14,7 +14,6 @@ import {
   CORE_FACTION_CODES,
   FACTION_COLORS,
   FACTION_BACKGROUND_COLORS,
-  RANDOM_BASIC_WEAKNESS,
 } from '../../constants';
 import typography from '../../styles/typography';
 import space, { isBig, xs, s } from '../../styles/space';
@@ -28,12 +27,9 @@ import Button from '../core/Button';
 import CardCostIcon from '../core/CardCostIcon';
 import BaseCard from '../../data/BaseCard';
 import { CardFaqProps } from '../CardFaqView';
-import { CardTabooProps } from '../CardTabooView';
 
 import PlayerCardImage from './PlayerCardImage';
 
-const BLURRED_ACT = require('../../assets/blur-act.jpeg');
-const BLURRED_AGENDA = require('../../assets/blur-agenda.jpeg');
 const PLAYER_BACK = require('../../assets/player-back.png');
 const ENCOUNTER_BACK = require('../../assets/encounter-back.png');
 const PER_HERO_ICON = (
@@ -43,12 +39,11 @@ const ICON_SIZE = isBig ? 44 : 28;
 const SMALL_ICON_SIZE = isBig ? 26 : 16;
 const SKILL_ICON_SIZE = isBig ? 26 : 16;
 
-const SKILL_FIELDS = [
-  'skill_willpower',
-  'skill_intellect',
-  'skill_combat',
-  'skill_agility',
-  'skill_wild',
+const RESOURCE_FIELDS = [
+  'resource_physical',
+  'resource_mental',
+  'resource_energy',
+  'resource_wild',
 ];
 
 function num(value: number | null) {
@@ -89,31 +84,6 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
       },
     });
   }
-
-  _showTaboo = () => {
-    const {
-      componentId,
-      card,
-    } = this.props;
-    Navigation.push<CardTabooProps>(componentId, {
-      component: {
-        name: 'Card.Taboo',
-        passProps: {
-          id: card.code,
-        },
-        options: {
-          topBar: {
-            title: {
-              text: card.name,
-            },
-            subtitle: {
-              text: `Taboos`,
-            },
-          },
-        },
-      },
-    });
-  };
 
   _showFaq = () => {
     const {
@@ -180,7 +150,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
             { card.subtype_name ?
               `${card.type_name}. ${card.subtype_name}` :
               card.type_name }
-            { (card.type_code === 'agenda' || card.type_code === 'act') ? ` ${card.stage}` : '' }
+            { (card.type_code === 'main_scheme' || card.type_code === 'villain') ? ` ${card.stage}` : '' }
           </Text>
         ) }
         { !!card.traits && (
@@ -192,35 +162,24 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     );
   }
 
-  renderTestIcons(card: BaseCard) {
-    if (card.type_code === 'hero') {
-      /* eslint-disable no-irregular-whitespace */
-      return (
-        <Text style={typography.cardText}>
-          { `${card.skill_willpower} ` }<ArkhamIcon name="willpower" size={SMALL_ICON_SIZE} color="#000" />.
-          { `  ${card.skill_intellect} ` }<ArkhamIcon name="intellect" size={SMALL_ICON_SIZE} color="#000" />.
-          { `  ${card.skill_combat} ` }<ArkhamIcon name="combat" size={SMALL_ICON_SIZE} color="#000" />.
-          { `  ${card.skill_agility} ` } <ArkhamIcon name="agility" size={SMALL_ICON_SIZE} color="#000" />.
-        </Text>
-      );
-    }
-    const skills = flatMap(SKILL_FIELDS, skill => {
+  renderResourceIcons(card: BaseCard) {
+    const resources = flatMap(RESOURCE_FIELDS, resource => {
       // @ts-ignore
       const count = card[skill] || 0;
-      return range(0, count).map(() => skill);
+      return range(0, count).map(() => resource);
     });
 
-    if (skills.length === 0) {
+    if (resources.length === 0) {
       return null;
     }
     return (
-      <View style={styles.testIconRow}>
+      <View style={styles.resourceIconRow}>
         <Text style={typography.cardText}>
-          { t`Test Icons: ` }
+          { t`Resource: ` }
         </Text>
-        { map(skills, (skill, idx) => (
+        { map(resources, (skill, idx) => (
           <ArkhamIcon
-            style={styles.testIcon}
+            style={styles.resourceIcon}
             key={idx}
             name={skill.substring(6)}
             size={SKILL_ICON_SIZE}
@@ -231,77 +190,41 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     );
   }
 
-  renderSlot(card: BaseCard) {
-    if (!card.slot) {
-      return null;
-    }
-    return (
-      <View style={styles.slotBlock}>
-        <Text style={typography.cardText}>
-          { t`Slot: ${card.slot}` }
-        </Text>
-      </View>
-    );
-  }
-
-
   renderPlaydata(card: BaseCard) {
-    if (card.type_code === 'scenario') {
-      return null;
-    }
     const costString = card.costString(this.props.linked);
-    const doom = num(card.doom);
-    const shroud = num(card.shroud);
-    const clues = num(card.clues);
-    const perInvestigatorClues = card.clues && card.clues > 0 && !card.clues_fixed && PER_HERO_ICON;
+    const threat = num(card.threat);
     return (
       <View style={styles.statsBlock}>
-        { !!(card.xp || costString) && (
+        { !!(costString) && (
           <Text style={typography.cardText}>
-            { card.xp ?
-              (`${costString}${costString ? '. ' : ''}${t`Level: ${card.xp}.`}`) :
-              costString
-            }
+            { costString }
           </Text>
         ) }
-        { card.type_code === 'agenda' && (
+        { (card.type_code === 'main_scheme' || card.type_code === 'side_scheme') && (
           <Text style={typography.cardText}>
-            { t`Doom: ${doom}` }
+            { t`Threat: ${threat}` }
           </Text>
         ) }
-        { card.type_code === 'act' && card.clues && card.clues > 0 && (
-          <Text style={typography.cardText}>
-            { jt`Clues: ${clues}${perInvestigatorClues}` }
-          </Text>
-        ) }
-        { this.renderTestIcons(card) }
-        { this.renderSlot(card) }
+        { this.renderResourceIcons(card) }
         { this.renderHealthAndSanity(card) }
-        { card.type_code === 'location' && (
-          <Text style={typography.cardText}>
-            { jt`Shroud: ${shroud}. Clues: ${clues}${perInvestigatorClues}.` }
-          </Text>)
-        }
       </View>
     );
   }
 
   renderHealthAndSanity(card: BaseCard) {
-    if (card.type_code === 'enemy') {
+    if (card.type_code === 'minion' || card.type_code === 'villain') {
       return (
         <Text style={typography.cardText}>
           { `${t`Fight`}: ${num(card.enemy_fight)}. ${t`Health`}: ${num(card.health)}` }
-          { !!card.health_per_investigator && PER_HERO_ICON }
+          { !!card.health_per_hero && PER_HERO_ICON }
           { `. ${t`Evade`}: ${num(card.enemy_evade)}. ` }
-          { '\n' }
-          { `${t`Damage`}: ${num(card.enemy_damage)}. ${t`Horror`}: ${num(card.enemy_horror)}. ` }
         </Text>
       );
     }
-    if ((card.health && card.health > 0) || (card.sanity && card.sanity > 0)) {
+    if (card.health && card.health > 0) {
       return (
         <Text style={typography.cardText}>
-          { `${t`Health`}: ${num(card.health)}. ${t`Sanity`}: ${num(card.sanity)}.` }
+          { `${t`Health`}: ${num(card.health)}.` }
         </Text>
       );
     }
@@ -309,14 +232,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
   }
 
   renderFactionIcon(card: BaseCard) {
-    const color = (
-      card.type_code === 'asset' ||
-      card.type_code === 'event' ||
-      card.type_code === 'skill' ||
-      card.type_code === 'hero' ||
-      card.subtype_code === 'weakness' ||
-      card.subtype_code === 'basicweakness'
-    ) ? '#FFF' : '#222';
+    const color = card.isPlayerDeckCard() ? '#FFF' : '#222';
 
     if (card.spoiler) {
       const encounter_code = card.encounter_code ||
@@ -333,18 +249,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
         </View>
       );
     }
-    if (card.subtype_code &&
-      (card.subtype_code === 'weakness' || card.subtype_code === 'basicweakness')
-    ) {
-      return (
-        <View style={styles.factionIcon}>
-          <ArkhamIcon name="weakness" size={ICON_SIZE} color={color} />
-        </View>
-      );
-    }
-
-    if (card.type_code !== 'scenario' && card.type_code !== 'location' &&
-      card.type_code !== 'act' && card.type_code !== 'agenda') {
+    if (card.isPlayerDeckCard()) {
       if (card.faction2_code) {
         return (
           <React.Fragment>
@@ -380,7 +285,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     return (
       <React.Fragment>
         <View style={styles.titleRow}>
-          { (card.type_code === 'skill' || card.type_code === 'asset' || card.type_code === 'event') && (
+          { card.hasCost() && (
             <View style={styles.costIcon}>
               <CardCostIcon card={card} inverted linked={this.props.linked} />
             </View>
@@ -429,12 +334,6 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
   backSource(card: BaseCard, isHorizontal: boolean) {
     if (card.double_sided) {
       if (isHorizontal) {
-        if (card.type_code === 'act') {
-          return BLURRED_ACT;
-        }
-        if (card.type_code === 'agenda') {
-          return BLURRED_AGENDA;
-        }
         return {
           uri: `https://marvelcdb.com${card.imagesrc}`,
           cache: 'force-cache',
@@ -476,7 +375,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
       return null;
     }
 
-    if (!backFirst && card.spoiler && !this.state.showBack && card.type_code !== 'scenario') {
+    if (!backFirst && card.spoiler && !this.state.showBack) {
       return (
         <View style={[styles.buttonContainer, { width }]}>
           <Button grow text={t`Show back`} onPress={this._toggleShowBack} />
@@ -498,7 +397,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
               <View style={styles.metadataBlock}>
                 <Text style={[typography.cardText, styles.typeText]}>
                   { card.type_name }
-                  { (card.type_code === 'act' || card.type_code === 'agenda') ?
+                  { card.type_code === 'main_scheme' ?
                     ` ${card.stage}` :
                     '' }
                 </Text>
@@ -528,18 +427,6 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
           </View>
         </View>
       </View>
-    );
-  }
-
-  renderTabooButton() {
-    return (
-      <Button
-        grow
-        color="purple"
-        text={t`Taboo`}
-        onPress={this._showTaboo}
-        icon={<ArkhamIcon name="tablet" size={20 * DeviceInfo.getFontScale()} color="white" />}
-      />
     );
   }
 
@@ -587,20 +474,12 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
           <View style={[styles.halfColumn, { paddingRight: s }]}>
             { this.renderFaqButton() }
           </View>
-          <View style={[styles.halfColumn, { paddingLeft: s }]}>
-            { (card.taboo_set_id === 0) && (
-              this.renderTabooButton()
-            ) }
-          </View>
         </View>
       </React.Fragment>
     );
   }
 
   renderImage(card: BaseCard) {
-    if (card.type_code === 'story' || card.type_code === 'scenario') {
-      return null;
-    }
     return (
       <View style={styles.column}>
         <View style={styles.playerImage}>
@@ -630,41 +509,9 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
             <CardTextComponent text={card.text} />
           </View>)
         }
-        { ('victory' in card && card.victory !== null) &&
-          <Text style={[typography.cardText, styles.typeText]}>
-            { t`Victory: ${card.victory}.` }
-          </Text>
-        }
-        { ('vengeance' in card && card.vengeance !== null) &&
-          <Text style={[typography.cardText, styles.typeText]}>
-            { t`Vengeance: ${card.vengeance}.` }
-          </Text>
-        }
         { !!card.flavor && !flavorFirst &&
           <CardFlavorTextComponent text={card.flavor} />
         }
-        { !!(card.taboo_set_id && card.taboo_set_id > 0) && (
-          <View style={[styles.gameTextBlock, {
-            borderColor: 'purple',
-          }]}>
-            <View style={styles.tabooRow}>
-              <View style={styles.tabooIcon}>
-                <ArkhamIcon name="tablet" size={SMALL_ICON_SIZE} color="purple" />
-              </View>
-              <Text style={typography.cardText}>
-                { t`Taboo List Changes` }
-              </Text>
-            </View>
-            { !!card.extra_xp && (
-              <Text style={typography.cardText}>
-                { t`Additional XP: ${card.extra_xp}.` }
-              </Text>
-            ) }
-            { !!card.taboo_text_change && (
-              <CardTextComponent text={card.taboo_text_change} />
-            ) }
-          </View>
-        ) }
       </React.Fragment>
     );
   }
@@ -732,16 +579,13 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
       notFirst,
     } = this.props;
 
-    const isHorizontal = card.type_code === 'act' ||
-      card.type_code === 'agenda' ||
-      card.type_code === 'hero';
-    const flavorFirst = card.type_code === 'story' ||
-      card.type_code === 'act' ||
-      card.type_code === 'agenda';
+    const isHorizontal = card.type_code === 'side_scheme' ||
+      card.type_code === 'main_scheme';
+    const flavorFirst = card.type_code === 'side_scheme' ||
+      card.type_code === 'main_scheme';
     const backFirst = !linked &&
       (!!card.double_sided || (card.linked_card && !card.linked_card.hidden)) &&
-      !(isHorizontal || !card.spoiler) &&
-      card.type_code !== 'scenario';
+      !(isHorizontal || !card.spoiler);
 
     const sideA = backFirst && this.renderCardBack(card, backFirst, isHorizontal, flavorFirst, !notFirst);
     const sideB = this.renderCardFront(card, !!backFirst, isHorizontal, flavorFirst, !notFirst && !sideA);
@@ -874,19 +718,12 @@ const styles = StyleSheet.create({
   costIcon: {
     marginLeft: xs,
   },
-  testIconRow: {
+  resourceIconRow: {
     flexDirection: 'row',
   },
-  testIcon: {
+  resourceIcon: {
     marginLeft: 2,
   },
   factionIcon: {
-  },
-  tabooRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  tabooIcon: {
-    marginRight: xs,
   },
 });

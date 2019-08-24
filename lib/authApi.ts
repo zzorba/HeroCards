@@ -100,10 +100,9 @@ export function newCustomDeck(
   slots: { [code: string]: number },
   ignoreDeckLimitSlots: { [code: string]: number },
   problem: string,
-  tabooSetId?: number,
   meta?: DeckMeta
 ) {
-  return newDeck(investigator, name, tabooSetId)
+  return newDeck(investigator, name)
     .then(deck => saveDeck(
       deck.id,
       deck.name,
@@ -114,7 +113,7 @@ export function newCustomDeck(
     );
 }
 
-export function newDeck(investigator: string, name: string, tabooSetId?: number) {
+export function newDeck(investigator: string, name: string) {
   return getAccessToken().then(accessToken => {
     if (!accessToken) {
       throw new Error('badAccessToken');
@@ -124,9 +123,6 @@ export function newDeck(investigator: string, name: string, tabooSetId?: number)
       investigator: investigator,
       name: name,
     };
-    if (tabooSetId) {
-      params.taboo = tabooSetId;
-    }
     return fetch(uri, {
       method: 'POST',
       headers: {

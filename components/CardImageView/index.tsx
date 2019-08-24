@@ -14,7 +14,7 @@ import { t } from 'ttag';
 import withDimensions, { DimensionsProps } from '../core/withDimensions';
 import { iconsMap } from '../../app/NavIcons';
 import Card from '../../data/Card';
-import { getTabooSet, AppState } from '../../reducers';
+import { AppState } from '../../reducers';
 import { HEADER_HEIGHT } from '../../styles/sizes';
 import { COLORS } from '../../styles/colors';
 import { NavigationProps } from '../types';
@@ -25,10 +25,6 @@ interface RealmProps {
 
 export interface CardImageProps {
   id: string;
-}
-
-interface ReduxProps {
-  tabooSetId?: number;
 }
 
 type Props = CardImageProps & NavigationProps & DimensionsProps & ReduxProps & RealmProps;
@@ -171,30 +167,21 @@ class CardImageView extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: AppState): ReduxProps {
-  return {
-    tabooSetId: getTabooSet(state),
-  };
-}
-
-export default connect<ReduxProps, {}, NavigationProps & CardImageProps, AppState>(
-  mapStateToProps
-)(connectRealm<CardImageProps & NavigationProps & ReduxProps, RealmProps, Card>(
+export default connectRealm<CardImageProps & NavigationProps, RealmProps, Card>(
   withDimensions(CardImageView), {
     schemas: ['Card'],
     mapToProps(
       results: CardResults<Card>,
       realm: Realm,
-      props: CardImageProps & NavigationProps & ReduxProps
+      props: CardImageProps & NavigationProps
     ) {
       const card =
-        head(results.cards.filtered(`(code == "${props.id}") and ${Card.tabooSetQuery(props.tabooSetId)}`));
+        head(results.cards.filtered(`(code == "${props.id}")`));
       return {
         card,
       };
     },
-  })
-);
+  });
 
 const styles = StyleSheet.create({
   container: {

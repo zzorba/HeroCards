@@ -40,7 +40,7 @@ interface ReduxActionProps {
 }
 
 type Props = OwnProps &
-  PlayerCardProps & ReduxProps & ReduxActionProps &
+  PlayerCardProps & ReduxActionProps &
   NetworkStatusProps & LoginStateProps;
 
 interface State {

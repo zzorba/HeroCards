@@ -12,15 +12,14 @@ export default function AboutView() {
   return (
     <ScrollView style={styles.container}>
       <Text style={typography.text}>
-        The information presented in this app about Arkham Horror: The Card
+        The information presented in this app about Marvel Champions: The Card
         Game, both literal and graphical, is copyrighted by Fantasy Flight
         Games. This app is not produced, endorsed, supported, or affiliated
         with Fantasy Flight Games.
         { '\n\n' }
         This application was created by Daniel Salinas as a fan project to
-        help support the Arkham Horror: The Card Game community. If you find
-        yourself managing lots of decks and campaigns, I'm hoping it proves
-        useful.
+        help support the Marvel Champions: The Card Game community. If you find
+        yourself managing lots of decks, I'm hoping it proves useful.
         { '\n\n' }
         Feedback and bug reports are welcome by email at arkhamcards@gmail.com
         or via Twitter @ArkhamCards

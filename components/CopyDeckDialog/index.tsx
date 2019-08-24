@@ -196,56 +196,6 @@ class CopyDeckDialog extends React.Component<Props, State> {
     return deck && investigators[deck.investigator_code];
   }
 
-  renderDeckSelector() {
-    const {
-      deck,
-      baseDeck,
-      latestDeck,
-      cards,
-    } = this.props;
-    const {
-      selectedDeckId,
-    } = this.state;
-    const parsedCurrentDeck = deck && parseDeck(deck, deck.slots, deck.ignoreDeckLimitSlots || {}, cards);
-    const parsedBaseDeck = baseDeck && parseDeck(baseDeck, baseDeck.slots, baseDeck.ignoreDeckLimitSlots || {}, cards);
-    const parsedLatestDeck = latestDeck && parseDeck(latestDeck, latestDeck.slots, latestDeck.ignoreDeckLimitSlots || {}, cards);
-    if (parsedCurrentDeck && !parsedBaseDeck && !parsedLatestDeck) {
-      // Only one deck, no need to show a selector.
-      return null;
-    }
-    return (
-      <React.Fragment>
-        <DialogComponent.Description style={[typography.smallLabel, space.marginBottomS]}>
-          { t`SELECT DECK VERSION TO COPY` }
-        </DialogComponent.Description>
-        { parsedBaseDeck ? (
-          <SelectDeckSwitch
-            deckId={parsedBaseDeck.deck.id}
-            label={t`Base Version\n${parsedBaseDeck.experience} XP`}
-            value={selectedDeckId === parsedBaseDeck.deck.id}
-            onValueChange={this._selectedDeckIdChanged}
-          />
-        ) : null }
-        { parsedCurrentDeck ? (
-          <SelectDeckSwitch
-            deckId={parsedCurrentDeck.deck.id}
-            label={t`Current Version ${parsedCurrentDeck.deck.version}\n${parsedCurrentDeck.experience} XP`}
-            value={selectedDeckId === parsedCurrentDeck.deck.id}
-            onValueChange={this._selectedDeckIdChanged}
-          />
-        ) : null }
-        { parsedLatestDeck ? (
-          <SelectDeckSwitch
-            deckId={parsedLatestDeck.deck.id}
-            label={t`Latest Version ${parsedLatestDeck.deck.version}\n${parsedLatestDeck.experience} XP`}
-            value={selectedDeckId === parsedLatestDeck.deck.id}
-            onValueChange={this._selectedDeckIdChanged}
-          />
-        ) : null }
-      </React.Fragment>
-    );
-  }
-
   renderFormContent() {
     const {
       signedIn,
@@ -278,7 +228,6 @@ class CopyDeckDialog extends React.Component<Props, State> {
           onChangeText={this._onDeckNameChange}
           returnKeyType="done"
         />
-        { this.renderDeckSelector() }
         <DialogComponent.Description style={[typography.dialogLabel, space.marginBottomS]}>
           { t`Deck Type` }
         </DialogComponent.Description>
@@ -326,7 +275,7 @@ class CopyDeckDialog extends React.Component<Props, State> {
         >
           { saving ?
             t`Saving` :
-            t`Make a copy of a deck so that you can use it in a different campaign or choose different upgrades.`
+            t`Make a copy of a deck.`
           }
         </DialogComponent.Description>
         { this.renderFormContent() }

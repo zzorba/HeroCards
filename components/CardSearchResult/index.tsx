@@ -24,7 +24,6 @@ import CardQuantityComponent from './CardQuantityComponent';
 import typography from '../../styles/typography';
 import { isBig, s, xs } from '../../styles/space';
 
-const TABOO_ICON_SIZE = (isBig ? 18 : 14) * DeviceInfo.getFontScale();
 const SKILL_ICON_SIZE = (isBig ? 26 : 16) * DeviceInfo.getFontScale();
 const SMALL_ICON_SIZE = (isBig ? 38 : 26) * DeviceInfo.getFontScale();
 const SMALL_FACTION_ICONS = createFactionIcons(SMALL_ICON_SIZE);
@@ -122,7 +121,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     if (card.type_code === 'skill') {
       return '';
     }
-    if (card.permanent || card.double_sided) {
+    if (card.double_sided) {
       return '-';
     }
     return `${card.cost !== null ? card.cost : 'X'}`;
@@ -133,11 +132,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       return this.renderIcon(card.linked_card);
     }
 
-    const showCost = card.type_code === 'asset' ||
-      card.type_code === 'event' ||
-      card.type_code === 'skill';
-
-    if (showCost) {
+    if (card.hasCost()) {
       return (
         <View style={styles.factionIcon}>
           <CardCostIcon card={card} />
@@ -151,12 +146,12 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     );
   }
 
-  static skillIcon(skill: ResourceCodeType, count: number): ReactNode[] {
+  static resourceIcon(skill: ResourceCodeType, count: number): ReactNode[] {
     if (count === 0) {
       return [];
     }
     return map(range(0, count), key => (
-      <View key={`${skill}-${key}`} style={styles.skillIcon}>
+      <View key={`${skill}-${key}`} style={styles.resourceIcon}>
         <ArkhamIcon
           name={skill}
           size={SKILL_ICON_SIZE}
@@ -175,14 +170,14 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     }
     return (
       <View style={styles.dualFactionIcons}>
-        <View style={styles.skillIcon}>
+        <View style={styles.resourceIcon}>
           <ArkhamIcon
             name={card.factionCode()}
             size={15}
             color={FACTION_COLORS[card.factionCode()]}
           />
         </View>
-        <View style={styles.skillIcon}>
+        <View style={styles.resourceIcon}>
           <ArkhamIcon
             name={card.faction2_code}
             size={15}
@@ -193,43 +188,17 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     );
   }
 
-  renderSkillIcons() {
+  renderResourceIcons() {
     const {
       card,
     } = this.props;
-    if (card.type_code === 'hero' || (
-      card.skill_willpower === null &&
-      card.skill_intellect === null &&
-      card.skill_combat === null &&
-      card.skill_agility === null &&
-      card.skill_wild === null)) {
+    if (!card.isPlayerDeckCard()) {
       return null;
     }
     return (
       <View style={styles.resources}>
-        { flatMap(RESOURCES, (skill: ResourceCodeType) =>
-          CardSearchResult.skillIcon(skill, card.skillCount(skill))) }
-      </View>
-    );
-  }
-
-  renderTabooBlock() {
-    const {
-      card,
-    } = this.props;
-    if (!card.taboo_set_id || card.taboo_set_id === 0) {
-      return null;
-    }
-    return (
-      <View style={styles.tabooBlock}>
-        { !!(card.extra_xp && card.extra_xp > 0) && (
-          <Text style={[typography.small, styles.extraXp]} numberOfLines={1} ellipsizeMode="clip">
-            { repeat('•', card.extra_xp) }
-          </Text>
-        ) }
-        { !!(card.taboo_set_id && card.taboo_set_id > 0) && (
-          <ArkhamIcon name="tablet" size={TABOO_ICON_SIZE} color="purple" />
-        ) }
+        { flatMap(RESOURCES, (resource: ResourceCodeType) =>
+          CardSearchResult.resourceIcon(resource, card.resourceCount(resource))) }
       </View>
     );
   }
@@ -247,10 +216,9 @@ export default class CardSearchResult extends React.PureComponent<Props> {
           <Text style={[typography.text, { color }]} numberOfLines={1} ellipsizeMode="clip">
             { card.renderName }
           </Text>
-          { this.renderTabooBlock() }
         </View>
         <View style={styles.row}>
-          { this.renderSkillIcons() }
+          { this.renderResourceIcons() }
           { !!card.renderSubname && (
             <View style={styles.row}>
               <Text style={[typography.small, styles.subname, { color }]} numberOfLines={1} ellipsizeMode="clip">
@@ -424,7 +392,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     flexDirection: 'row',
   },
-  skillIcon: {
+  resourceIcon: {
     marginRight: 2,
   },
   subname: {
@@ -452,12 +420,6 @@ const styles = StyleSheet.create({
     marginRight: s,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tabooBlock: {
-    marginLeft: s,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   extraXp: {

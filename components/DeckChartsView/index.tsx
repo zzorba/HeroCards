@@ -8,8 +8,7 @@ import { ParsedDeck } from '../parseDeck';
 
 import FactionChart from './FactionChart';
 import CostChart from './CostChart';
-import SlotsChart from './SlotsChart';
-import SkillIconChart from './SkillIconChart';
+import ResourceIconChart from './ResourceIconChart';
 
 const INCLUDE_SLOTS_CHART = false;
 
@@ -27,9 +26,8 @@ export default class DeckChartsView extends React.Component<Props> {
     }
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <SkillIconChart parsedDeck={parsedDeck} />
+        <ResourceIconChart parsedDeck={parsedDeck} />
         <CostChart parsedDeck={parsedDeck} />
-        { INCLUDE_SLOTS_CHART && <SlotsChart parsedDeck={parsedDeck} /> }
         <FactionChart parsedDeck={parsedDeck} />
       </ScrollView>
     );

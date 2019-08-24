@@ -5,33 +5,6 @@ declare module 'react-native-realm' {
 
   export type Sort = [string, boolean];
 
-  export interface TabooSetResults<TabooSet> {
-    tabooSets: Results<TabooSet>;
-  }
-
-  export interface TabooSetOptions<OwnProps, RealmProps, TabooSet> {
-    schemas: ['TabooSet'];
-    mapToProps: (
-      results: TabooSetResults<TabooSet>,
-      realm: Realm,
-      props: OwnProps
-    ) => RealmProps;
-  }
-
-  export interface CardAndTabooSetResults<Card, TabooSet> {
-    cards: Results<Card>;
-    tabooSets: Results<TabooSet>;
-  }
-
-  export interface CardAndTabooSetOptions<OwnProps, RealmProps, Card, TabooSet> {
-    schemas: ['Card', 'TabooSet'];
-    mapToProps: (
-      results: CardAndTabooSetResults<Card, TabooSet>,
-      realm: Realm,
-      props: OwnProps
-    ) => RealmProps;
-  }
-
   export interface CardResults<Card> {
     cards: Results<Card>;
   }
@@ -67,12 +40,10 @@ declare module 'react-native-realm' {
     ) => RealmProps;
   }
 
-  export function connectRealm<OwnProps, RealmProps, Card, FaqEntry={}, TabooSet={}>(
+  export function connectRealm<OwnProps, RealmProps, Card, FaqEntry={}>(
     component: React.ComponentType<OwnProps & RealmProps>,
     options: CardOptions<OwnProps, RealmProps, Card> |
       Options<OwnProps, RealmProps> |
-      CardAndFaqOptions<OwnProps, RealmProps, Card, FaqEntry> |
-      CardAndTabooSetOptions<OwnProps, RealmProps, Card, TabooSet> |
-      TabooSetOptions<OwnProps, RealmProps, TabooSet>
+      CardAndFaqOptions<OwnProps, RealmProps, Card, FaqEntry>
   ): React.ComponentType<OwnProps>;
 }

@@ -27,10 +27,10 @@ export default class CardCostIcon extends React.Component<Props> {
       card,
       linked,
     } = this.props;
-    if (card.type_code === 'skill') {
+    if (!card.hasCost()) {
       return '';
     }
-    if (card.permanent || card.double_sided || linked || card.linked_card) {
+    if (card.double_sided || linked || card.linked_card) {
       return '-';
     }
     if (card.cost === null && (
@@ -46,7 +46,7 @@ export default class CardCostIcon extends React.Component<Props> {
     if (card.faction2_code) {
       return 'elder_sign';
     }
-    if (card.faction_code === 'neutral') {
+    if (card.faction_code === 'basic') {
       if (card.subtype_code === 'weakness' || card.subtype_code === 'basicweakness') {
         return 'weakness';
       }
@@ -77,19 +77,17 @@ export default class CardCostIcon extends React.Component<Props> {
       inverted,
     } = this.props;
     const color = this.color();
-    const level = (card.xp === null || card.xp === undefined) ?
-      'none' : `${card.xp}`;
     return (
       <View style={styles.level}>
         <View style={styles.levelIcon}>
           <AppIcon
-            name={`${inverted ? 'inverted_' : ''}level_${level}`}
+            name={`${inverted ? 'inverted_' : ''}level_none`}
             size={ICON_SIZE}
             color={inverted ? '#FFF' : color}
           />
         </View>
         <View style={[styles.levelIcon, styles.cost]}>
-          { card.type_code === 'skill' ? (
+          { card.type_code === 'resource' ? (
             <View style={styles.factionIcon}>
               <ArkhamIcon
                 name={CardCostIcon.factionIcon(card)}
