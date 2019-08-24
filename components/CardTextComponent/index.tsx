@@ -190,7 +190,7 @@ export default function CardText({ text, onLinkPress }: Props) {
           uTag: UnderlineHtmlTagRule,
           emTag: EmphasisHtmlTagRule,
           iTag: ItalicHtmlTagRule,
-        }, onLinkPress ? {} : { arkhamIcon: ArkhamIconRule })
+        }, onLinkPress ? {} : { MarvelIcon: ArkhamIconRule })
       }
       styles={{
         list: {

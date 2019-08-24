@@ -18,8 +18,7 @@ import {
 import typography from '../../styles/typography';
 import space, { isBig, xs, s } from '../../styles/space';
 import AppIcon from '../../assets/AppIcon';
-import ArkhamIcon from '../../assets/ArkhamIcon';
-import EncounterIcon from '../../assets/EncounterIcon';
+import MarvelIcon from '../../assets/MarvelIcon';
 import CardFlavorTextComponent from '../CardFlavorTextComponent';
 import { InvestigatorCardsProps } from '../InvestigatorCardsView';
 import CardTextComponent from '../CardTextComponent';
@@ -33,7 +32,7 @@ import PlayerCardImage from './PlayerCardImage';
 const PLAYER_BACK = require('../../assets/player-back.png');
 const ENCOUNTER_BACK = require('../../assets/encounter-back.png');
 const PER_HERO_ICON = (
-  <ArkhamIcon name="per_investigator" size={isBig ? 22 : 12} color="#000000" />
+  <MarvelIcon name="per_investigator" size={isBig ? 22 : 12} color="#000000" />
 );
 const ICON_SIZE = isBig ? 44 : 28;
 const SMALL_ICON_SIZE = isBig ? 26 : 16;
@@ -178,10 +177,10 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
           { t`Resource: ` }
         </Text>
         { map(resources, (resource, idx) => (
-          <ArkhamIcon
+          <MarvelIcon
             style={styles.resourceIcon}
             key={idx}
-            name={resource.substring(8)}
+            name={resource.substring(9)}
             size={SKILL_ICON_SIZE}
             color="#444"
           />))
@@ -235,19 +234,8 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     const color = card.isPlayerDeckCard() ? '#FFF' : '#222';
 
     if (card.spoiler) {
-      const encounter_code = card.encounter_code ||
-        (card.linked_card && card.linked_card.encounter_code);
-      return (
-        <View style={styles.factionIcon}>
-          { !!encounter_code && (
-            <EncounterIcon
-              encounter_code={encounter_code}
-              size={ICON_SIZE}
-              color={color}
-            />
-          ) }
-        </View>
-      );
+      // Encounter Icon
+      return null;
     }
     if (card.isPlayerDeckCard()) {
       if (card.faction2_code) {
@@ -256,12 +244,12 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
             <View style={styles.factionIcon}>
               { !!card.faction_code &&
                 (CORE_FACTION_CODES.indexOf(card.faction_code) !== -1) &&
-                <ArkhamIcon name={card.faction_code} size={28} color="#FFF" /> }
+                <MarvelIcon name={card.faction_code} size={28} color="#FFF" /> }
             </View>
             <View style={styles.factionIcon}>
               { !!card.faction2_code &&
                 (CORE_FACTION_CODES.indexOf(card.faction2_code) !== -1) &&
-                <ArkhamIcon name={card.faction2_code} size={28} color="#FFF" /> }
+                <MarvelIcon name={card.faction2_code} size={28} color="#FFF" /> }
             </View>
           </React.Fragment>
         );
@@ -269,7 +257,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
       return (
         <View style={styles.factionIcon}>
           { (!!card.faction_code && CORE_FACTION_CODES.indexOf(card.faction_code) !== -1) &&
-            <ArkhamIcon name={card.faction_code} size={ICON_SIZE + 4} color={color} /> }
+            <MarvelIcon name={card.faction_code} size={ICON_SIZE + 4} color={color} /> }
         </View>
       );
     }

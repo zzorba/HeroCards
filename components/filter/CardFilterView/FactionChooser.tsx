@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { ButtonGroup } from 'react-native-elements';
 
-import ArkhamIcon from '../../../assets/ArkhamIcon';
+import MarvelIcon from '../../../assets/MarvelIcon';
 import { FACTION_COLORS, FactionCodeType } from '../../../constants';
 
 function factionToIconName(faction: FactionCodeType) {
@@ -54,7 +54,7 @@ export default class FactionChooser extends React.Component<Props> {
         element: () => {
           const iconName = factionToIconName(faction);
           return (
-            <ArkhamIcon
+            <MarvelIcon
               name={iconName}
               size={iconName !== faction ? 28 : 32}
               color={selected ? FACTION_COLORS[faction] : '#bdbdbd'}

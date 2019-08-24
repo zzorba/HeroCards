@@ -7,7 +7,7 @@ import {
 import DeviceInfo from 'react-native-device-info';
 
 import AppIcon from '../../assets/AppIcon';
-import ArkhamIcon from '../../assets/ArkhamIcon';
+import MarvelIcon from '../../assets/MarvelIcon';
 import { FACTION_COLORS } from '../../constants';
 import Card from '../../data/Card';
 import { isBig } from '../../styles/space';
@@ -89,7 +89,7 @@ export default class CardCostIcon extends React.Component<Props> {
         <View style={[styles.levelIcon, styles.cost]}>
           { card.type_code === 'resource' ? (
             <View style={styles.factionIcon}>
-              <ArkhamIcon
+              <MarvelIcon
                 name={CardCostIcon.factionIcon(card)}
                 color="#FFF"
                 size={ICON_SIZE / 2}

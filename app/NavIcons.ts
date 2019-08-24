@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { forEach, keys } from 'lodash';
 
 import AppIcon from '../assets/AppIcon';
-import ArkhamIcon from '../assets/ArkhamIcon';
+import MarvelIcon from '../assets/MarvelIcon';
 // @ts-ignore
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
 // @ts-ignore
@@ -14,10 +14,10 @@ import { COLORS } from '../styles/colors';
 const icons: {
   [iconName: string]: [number, string, ReactNode?];
 } = {
-  elder_sign: [30, COLORS.button, ArkhamIcon],
-  intellect: [26, COLORS.button, ArkhamIcon],
-  per_investigator: [24, COLORS.button, ArkhamIcon],
-  auto_fail: [24, COLORS.button, ArkhamIcon],
+  elder_sign: [30, COLORS.button, MarvelIcon],
+  intellect: [26, COLORS.button, MarvelIcon],
+  per_investigator: [24, COLORS.button, MarvelIcon],
+  auto_fail: [24, COLORS.button, MarvelIcon],
   edit: [26, COLORS.button],
   tune: [28, COLORS.button],
   'content-copy': [28, COLORS.button, MaterialCommunityIcons],

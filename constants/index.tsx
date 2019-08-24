@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { mapValues } from 'lodash';
 
-import ArkhamIcon from '../assets/ArkhamIcon';
+import MarvelIcon from '../assets/MarvelIcon';
 
 
 export type TypeCodeType =
@@ -114,7 +114,7 @@ export function createFactionIcons(
 ): { [faction in FactionCodeType | 'dual']?: ReactNode } {
   return mapValues(FACTION_COLORS, (color, faction) => {
     return (
-      <ArkhamIcon
+      <MarvelIcon
         name={(faction === 'basic' || faction === 'dual') ? 'elder_sign' : faction}
         size={size}
         color={defaultColor || color}

@@ -7,7 +7,7 @@ import DeviceInfo from 'react-native-device-info';
 
 import Card from '../data/Card';
 import FactionGradient from './core/FactionGradient';
-import ArkhamIcon from '../assets/ArkhamIcon';
+import MarvelIcon from '../assets/MarvelIcon';
 import typography from '../styles/typography';
 import { s, iconSizeScale } from '../styles/space';
 
@@ -34,7 +34,7 @@ export default function DeckTitleBarComponent({
       style={styles.titleBar}
       dark
     >
-      { !!iconName && <ArkhamIcon name={iconName} size={28 * iconSizeScale * DeviceInfo.getFontScale()} color="#FFFFFF" /> }
+      { !!iconName && <MarvelIcon name={iconName} size={28 * iconSizeScale * DeviceInfo.getFontScale()} color="#FFFFFF" /> }
       <Text
         style={[typography.text, styles.title, { color: hasFactionColor ? '#FFFFFF' : '#000000' }]}
         numberOfLines={compact ? 1 : 2}

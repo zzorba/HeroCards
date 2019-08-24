@@ -5,7 +5,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { t } from 'ttag';
 
 import { ParsedDeck } from '../parseDeck';
-import ArkhamIcon from '../../assets/ArkhamIcon';
+import MarvelIcon from '../../assets/MarvelIcon';
 import { RESOURCES, RESOURCE_COLORS, ResourceCodeType } from '../../constants';
 import typography from '../../styles/typography';
 
@@ -59,7 +59,7 @@ export default class ResourceIconChart extends React.PureComponent<Props> {
             top: y(0) + 4,
             width: bandwidth,
           }]}>
-            <ArkhamIcon
+            <MarvelIcon
               name={value.resource}
               size={32}
               color={RESOURCE_COLORS[value.resource]}

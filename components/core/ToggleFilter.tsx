@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import ArkhamIcon from '../../assets/ArkhamIcon';
+import MarvelIcon from '../../assets/MarvelIcon';
 import Switch from '../core/Switch';
 import typography from '../../styles/typography';
 import { s, xs } from '../../styles/space';
@@ -40,7 +40,7 @@ export default class ToggleFilter extends React.Component<Props> {
     if (icon) {
       return (
         <View style={styles.icon}>
-          <ArkhamIcon name={icon} size={ICON_SIZE} color="#000000" />
+          <MarvelIcon name={icon} size={ICON_SIZE} color="#000000" />
         </View>
       );
     }

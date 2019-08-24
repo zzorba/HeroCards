@@ -10,7 +10,6 @@ import { Navigation } from 'react-native-navigation';
 
 import { t } from 'ttag';
 import { Pack } from '../../actions/types';
-import EncounterIcon from '../../assets/EncounterIcon';
 import Switch from '../core/Switch';
 import { PackCardsProps } from '../PackCardsView';
 
@@ -86,11 +85,7 @@ export default class PackRow extends React.Component<Props> {
         <TouchableOpacity style={styles.touchable} onPress={this._onPress}>
           <View style={styles.touchableContent}>
             <View style={styles.icon}>
-              <EncounterIcon
-                encounter_code={pack.code}
-                size={iconSize}
-                color="#000000"
-              />
+              
             </View>
             <Text
               style={[styles.title, { color: textColor, fontSize }]}

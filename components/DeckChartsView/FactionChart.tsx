@@ -5,7 +5,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { t } from 'ttag';
 
 import { ParsedDeck } from '../parseDeck';
-import ArkhamIcon from '../../assets/ArkhamIcon';
+import MarvelIcon from '../../assets/MarvelIcon';
 import { PLAYER_FACTION_CODES, FACTION_COLORS, FactionCodeType } from '../../constants';
 import typography from '../../styles/typography';
 
@@ -79,13 +79,13 @@ export default class FactionChart extends React.PureComponent<Props> {
             width: width / barData.length,
           }]}>
             { value.faction === 'basic' ? (
-              <ArkhamIcon
+              <MarvelIcon
                 name="elder_sign"
                 size={32}
                 color="#444"
               />
             ) : (
-              <ArkhamIcon
+              <MarvelIcon
                 name={value.faction}
                 size={32}
                 color={FACTION_COLORS[value.faction]}

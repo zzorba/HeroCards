@@ -1,7 +1,7 @@
 import React from 'react';
 import { Node, OutputFunction, RenderState } from 'react-native-markdown-view';
 
-import ArkhamIcon from '../../assets/ArkhamIcon';
+import MarvelIcon from '../../assets/MarvelIcon';
 import { isBig } from '../../styles/space';
 
 import { WithIconName } from './types';
@@ -21,7 +21,7 @@ export default function ArkhamIconNode(
   state: RenderState
 ) {
   return (
-    <ArkhamIcon
+    <MarvelIcon
       key={state.key}
       name={BAD_ICON_NAMES[node.name] || node.name}
       size={isBig ? 24 : 16}

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { bindActionCreators, Dispatch, Action } from 'redux';
 
-import ArkhamIcon from '../../assets/ArkhamIcon';
+import MarvelIcon from '../../assets/MarvelIcon';
 import { toggleMythosMode } from '../filter/actions';
 import { AppState, getMythosMode } from '../../reducers';
 import { COLORS } from '../../styles/colors';
@@ -50,7 +50,7 @@ class MythosButton extends React.Component<Props> {
       <View style={styles.container}>
         <TouchableOpacity onPress={this._onPress}>
           <View style={styles.touchable}>
-            <ArkhamIcon
+            <MarvelIcon
               name={mythosMode ? 'auto_fail' : 'per_investigator'}
               size={24}
               color={lightButton ? 'white' : defaultColor}

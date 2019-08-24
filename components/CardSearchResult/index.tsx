@@ -11,8 +11,7 @@ import DeviceInfo from 'react-native-device-info';
 // @ts-ignore
 import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 
-import ArkhamIcon from '../../assets/ArkhamIcon';
-import EncounterIcon from '../../assets/EncounterIcon';
+import MarvelIcon from '../../assets/MarvelIcon';
 import CardCostIcon, { COST_ICON_SIZE } from '../core/CardCostIcon';
 import Button from '../core/Button';
 import Switch from '../core/Switch';
@@ -87,29 +86,11 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     }
 
     if (card.spoiler && card.encounter_code) {
-      return (
-        <EncounterIcon
-          encounter_code={card.encounter_code}
-          size={size}
-          color="#000000"
-        />
-      );
-    }
-    if (card.subtype_code &&
-      (card.subtype_code === 'weakness' || card.subtype_code === 'basicweakness')
-    ) {
-      return (
-        <ArkhamIcon name="weakness" size={size} color={FACTION_COLORS.neutral} />
-      );
-    }
+      // Encounter icons?
+      return null;
+    }    
     if (card.isEncounterCard()) {
-      return (
-        <EncounterIcon
-          encounter_code={card.pack_code}
-          size={ICON_SIZE}
-          color="#000000"
-        />
-      );
+      return null;
     }
     if (card.faction2_code) {
       return (size === ICON_SIZE ? FACTION_ICONS : SMALL_FACTION_ICONS).dual;
@@ -142,7 +123,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     }
     return map(range(0, count), key => (
       <View key={`${skill}-${key}`} style={styles.resourceIcon}>
-        <ArkhamIcon
+        <MarvelIcon
           name={skill}
           size={SKILL_ICON_SIZE}
           color="#444"
@@ -161,14 +142,14 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     return (
       <View style={styles.dualFactionIcons}>
         <View style={styles.resourceIcon}>
-          <ArkhamIcon
+          <MarvelIcon
             name={card.factionCode()}
             size={15}
             color={FACTION_COLORS[card.factionCode()]}
           />
         </View>
         <View style={styles.resourceIcon}>
-          <ArkhamIcon
+          <MarvelIcon
             name={card.faction2_code}
             size={15}
             color={FACTION_COLORS[card.faction2_code]}
