@@ -64,13 +64,12 @@ export const RESOURCES: ResourceCodeType[] = [
   'wild',
 ];
 
-export const SKILL_COLORS: { [skill: string]: string } = {
+export const RESOURCE_COLORS: { [skill: string]: string } = {
   mental: '#003961',
   energy: '#ff8f3f',
   physical: '#661e09',
   wild: '#00543a',
 };
-
 
 export const FACTION_COLORS: { [faction_code: string]: string } = {
   leadership: '#2b80c5',

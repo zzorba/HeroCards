@@ -31,7 +31,7 @@ export default class BaseCard {
     hand_size: 'int?',
     boost: 'int?',
     boost_text: 'string?',
-    scheme: 'string?',
+    scheme: 'number?',
     encounter_name: 'string?',
     encounter_position: 'int?',
     renderName: 'string',
@@ -57,7 +57,7 @@ export default class BaseCard {
     scheme_crisis: 'int?',
     scheme_hazard: 'int?',
     threat: 'int?',
-    threat_fixed: 'int?',
+    threat_fixed: 'bool?',
     health: 'int?',
     health_per_hero: 'bool?',
     deck_limit: 'int?',
@@ -107,6 +107,17 @@ export default class BaseCard {
   public faction2_code?: FactionCodeType;
   public faction2_name!: string | null;
   public position!: number;
+
+  public attack!: number | null;
+  public attack_cost!: number | null;
+  public thwart!: number | null;
+  public thwart_cost!: number | null;
+  public defense!: number | null;
+  public recover!: number | null;
+  public hand_size!: number | null;
+  public boost!: number | null;
+  public boost_text!: string | null;
+  public scheme!: number | null;
   public enemy_damage!: number | null;
   public enemy_horror!: number | null;
   public enemy_fight!: number | null;
@@ -148,6 +159,15 @@ export default class BaseCard {
   public resource_wild!: number | null;
   public linked_to_code!: string | null;
   public linked_to_name!: string | null;
+  public base_threat!: number | null;
+  public escalation_threat!: number | null;
+  public escalation_threat_fixed!: boolean | null;
+  public scheme_acceleration!: number | null;
+  public scheme_crisis!: number | null;
+  public scheme_hazard!: number | null;
+  public threat!: number | null;
+  public threat_fixed!: boolean | null;
+
 
   // Parsed data (from original)
   public restrictions?: CardRestrictions;
@@ -172,6 +192,20 @@ export default class BaseCard {
 
   isPlayerDeckCard(): boolean {
     return this.hasCost() || this.type_code === 'resource';
+  }
+
+
+  isEncounterCard(): boolean {
+    return this.isEncounterDeckCard() ||
+      this.type_code === 'villain' ||
+      this.type_code === 'main_scheme';
+  }
+
+  isEncounterDeckCard(): boolean {
+    return this.type_code === 'minion' ||
+      this.type_code === 'treachery' ||
+      this.type_code === 'side_scheme' ||
+      this.type_code === 'obligation';
   }
 
   hasCost(): boolean {

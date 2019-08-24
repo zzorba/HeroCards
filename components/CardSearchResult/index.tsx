@@ -102,7 +102,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
         <ArkhamIcon name="weakness" size={size} color={FACTION_COLORS.neutral} />
       );
     }
-    if (card.type_code === 'scenario' || card.type_code === 'story') {
+    if (card.isEncounterCard()) {
       return (
         <EncounterIcon
           encounter_code={card.pack_code}
@@ -115,16 +115,6 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       return (size === ICON_SIZE ? FACTION_ICONS : SMALL_FACTION_ICONS).dual;
     }
     return (size === ICON_SIZE ? FACTION_ICONS : SMALL_FACTION_ICONS)[card.factionCode()];
-  }
-
-  static cardCost(card: Card): string {
-    if (card.type_code === 'skill') {
-      return '';
-    }
-    if (card.double_sided) {
-      return '-';
-    }
-    return `${card.cost !== null ? card.cost : 'X'}`;
   }
 
   renderIcon(card: Card): ReactNode {

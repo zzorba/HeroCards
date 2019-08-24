@@ -4,7 +4,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { connect } from 'react-redux';
 import { CachedImage } from 'react-native-cached-image';
 import { connectRealm, CardResults } from 'react-native-realm';
 import ViewControl from 'react-native-zoom-view';
@@ -14,7 +13,6 @@ import { t } from 'ttag';
 import withDimensions, { DimensionsProps } from '../core/withDimensions';
 import { iconsMap } from '../../app/NavIcons';
 import Card from '../../data/Card';
-import { AppState } from '../../reducers';
 import { HEADER_HEIGHT } from '../../styles/sizes';
 import { COLORS } from '../../styles/colors';
 import { NavigationProps } from '../types';
@@ -27,7 +25,7 @@ export interface CardImageProps {
   id: string;
 }
 
-type Props = CardImageProps & NavigationProps & DimensionsProps & ReduxProps & RealmProps;
+type Props = CardImageProps & NavigationProps & DimensionsProps & RealmProps;
 
 interface State {
   flipped: boolean;
@@ -47,8 +45,8 @@ class CardImageView extends React.Component<Props, State> {
     this.state = {
       flipped: !!props.card && (
         props.card.type_code === 'hero' ||
-        props.card.type_code === 'act' ||
-        props.card.type_code === 'agenda' ||
+        props.card.type_code === 'alter_ego' ||
+        props.card.type_code === 'main_scheme' ||
         (doubleCard && !!props.card.hidden)),
     };
 

@@ -28,7 +28,6 @@ import CollectionEditView from '../components/CollectionEditView';
 import CardSortDialog from '../components/CardSortDialog';
 import InvestigatorSortDialog from '../components/InvestigatorSortDialog';
 import ScenarioDialog from '../components/ScenarioDialog';
-import ExileCardDialog from '../components/ExileCardDialog';
 import AboutView from '../components/AboutView';
 
 // register all screens of the app (including internal ones)
@@ -56,7 +55,6 @@ export function registerScreens(Provider: any, store: any) {
   Navigation.registerComponentWithRedux('Pack', () => PackCardsView, Provider, store);
   Navigation.registerComponentWithRedux('My.Spoilers', () => SpoilersView, Provider, store);
   Navigation.registerComponentWithRedux('WebView', () => WebViewWrapper, Provider, store);
-  Navigation.registerComponentWithRedux('Dialog.ExileCards', () => ExileCardDialog, Provider, store);
   Navigation.registerComponentWithRedux('Dialog.Sort', () => CardSortDialog, Provider, store);
   Navigation.registerComponentWithRedux('Dialog.InvestigatorSort', () => InvestigatorSortDialog, Provider, store);
   Navigation.registerComponentWithRedux('Dialog.Scenario', () => ScenarioDialog, Provider, store);

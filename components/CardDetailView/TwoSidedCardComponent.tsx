@@ -524,7 +524,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     isFirst: boolean
   ) {
     const { width } = this.props;
-    if ((card.hidden || backFirst) && (card.hidden || card.spoiler) && !this.state.showBack && card.code !== RANDOM_BASIC_WEAKNESS) {
+    if ((card.hidden || backFirst) && (card.hidden || card.spoiler) && !this.state.showBack) {
       return (
         <View style={[styles.buttonContainer, { width }]}>
           <Button

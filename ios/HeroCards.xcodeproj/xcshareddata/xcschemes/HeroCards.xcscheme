@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "ArkhamCards.app"
-               BlueprintName = "ArkhamCards"
-               ReferencedContainer = "container:ArkhamCards.xcodeproj">
+               BuildableName = "HeroCards.app"
+               BlueprintName = "HeroCards"
+               ReferencedContainer = "container:HeroCards.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "ArkhamCardsTests.xctest"
-               BlueprintName = "ArkhamCardsTests"
-               ReferencedContainer = "container:ArkhamCards.xcodeproj">
+               BuildableName = "HeroCardsTests.xctest"
+               BlueprintName = "HeroCardsTests"
+               ReferencedContainer = "container:HeroCards.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "ArkhamCardsTests.xctest"
-               BlueprintName = "ArkhamCardsTests"
-               ReferencedContainer = "container:ArkhamCards.xcodeproj">
+               BuildableName = "HeroCardsTests.xctest"
+               BlueprintName = "HeroCardsTests"
+               ReferencedContainer = "container:HeroCards.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ArkhamCards.app"
-            BlueprintName = "ArkhamCards"
-            ReferencedContainer = "container:ArkhamCards.xcodeproj">
+            BuildableName = "HeroCards.app"
+            BlueprintName = "HeroCards"
+            ReferencedContainer = "container:HeroCards.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ArkhamCards.app"
-            BlueprintName = "ArkhamCards"
-            ReferencedContainer = "container:ArkhamCards.xcodeproj">
+            BuildableName = "HeroCards.app"
+            BlueprintName = "HeroCards"
+            ReferencedContainer = "container:HeroCards.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -113,9 +113,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ArkhamCards.app"
-            BlueprintName = "ArkhamCards"
-            ReferencedContainer = "container:ArkhamCards.xcodeproj">
+            BuildableName = "HeroCards.app"
+            BlueprintName = "HeroCards"
+            ReferencedContainer = "container:HeroCards.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

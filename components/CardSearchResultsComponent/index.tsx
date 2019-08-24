@@ -179,7 +179,6 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
     if (baseQuery) {
       queryParts.push(baseQuery);
     }
-    queryParts.push('(altArtInvestigator != true)');
     queryParts.push('(back_linked != true)');
     forEach(
       this.filterQueryParts(),

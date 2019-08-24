@@ -15,13 +15,12 @@ interface Props {
 
 interface Item {
   faction: FactionCodeType;
-  guardian: number;
-  seeker: number;
-  rogue: number;
-  mystic: number;
-  survivor: number;
-  neutral: number;
-  mythos: number;
+  hero: number;
+  protection: number;
+  aggression: number;
+  leadership: number;
+  justice: number;
+  basic: number;
   dual: number;
   total: number;
 }
@@ -34,13 +33,12 @@ interface LabelData {
 }
 
 const DEFAULT_ITEM = {
-  guardian: 0,
-  seeker: 0,
-  rogue: 0,
-  mystic: 0,
-  survivor: 0,
-  neutral: 0,
-  mythos: 0,
+  hero: 0,
+  aggression: 0,
+  protection: 0,
+  justice: 0,
+  leadership: 0,
+  basic: 0,
 };
 
 export default class FactionChart extends React.PureComponent<Props> {

@@ -7,10 +7,9 @@ import DeckRequirement from './DeckRequirement';
 import RandomRequirement from './RandomRequirement';
 import DeckAtLeastOption from './DeckAtLeastOption';
 import DeckOption from './DeckOption';
-import DeckOptionLevel from './DeckOptionLevel';
 import FaqEntry from './FaqEntry';
 
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 5;
 export default new Realm({
   schema: [
     Card,
@@ -20,7 +19,6 @@ export default new Realm({
     RandomRequirement,
     DeckAtLeastOption,
     DeckOption,
-    DeckOptionLevel,
     FaqEntry,
   ],
   schemaVersion: SCHEMA_VERSION,

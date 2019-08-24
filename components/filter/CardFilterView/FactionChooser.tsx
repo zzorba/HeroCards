@@ -12,7 +12,7 @@ function factionToIconName(faction: FactionCodeType) {
   if (faction === 'basic') {
     return 'elder_sign';
   }
-  if (faction === 'mythos') {
+  if (faction === 'encounter') {
     return 'auto_fail';
   }
   return faction;

@@ -1,11 +1,11 @@
 # Uncomment the next line to define a global platform for your project
 # platform :ios, '9.0'
 
-target 'ArkhamCards' do
+target 'HeroCards' do
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
   # use_frameworks!
 
-  # Pods for ArkhamCards
+  # Pods for HeroCards
   pod 'AppAuth', '0.94'
   pod 'AppCenter/Crashes', '~> 1.13.0'
   pod 'AppCenter/Analytics', '~> 1.13.0'
@@ -13,7 +13,7 @@ target 'ArkhamCards' do
 
   platform :ios, '9.0'
 
-  target 'ArkhamCardsTests' do
+  target 'HeroCardsTests' do
     inherit! :search_paths
     # Pods for testing
   end

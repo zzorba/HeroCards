@@ -17,7 +17,6 @@ export default class DeckOption {
       text: 'string[]',
       type_code: 'string[]',
       atleast: 'DeckAtLeastOption?',
-      level: 'DeckOptionLevel?',
       limit: 'int?',
       error: 'string?',
       not: 'bool?',
@@ -32,7 +31,6 @@ export default class DeckOption {
   public trait!: string[];
   public text!: string[];
   public atleast?: DeckAtLeastOption;
-  public level?: DeckOptionLevel;
   public limit?: number;
   public error?: string;
   public not?: boolean;
@@ -117,15 +115,6 @@ export default class DeckOption {
       query += ' )';
       dirty = true;
     }
-    if (this.level) {
-      if (dirty) {
-        query += ' AND';
-      }
-      query += ' (';
-      query += ` xp >= ${this.level.min} AND xp <= ${this.level.max}`;
-      query += ' )';
-      dirty = true;
-    }
     if (this.type_code && this.type_code.length) {
       if (dirty) {
         query += ' AND';
@@ -152,13 +141,7 @@ export default class DeckOption {
       deck_option.limit = json.limit;
       deck_option.error = json.error;
       deck_option.not = json.not ? true : undefined;
-      deck_option.real_name = json.name || undefined;
-      if (json.level) {
-        const level = new DeckOptionLevel();
-        level.min = json.level.min;
-        level.max = json.level.max;
-        deck_option.level = level;
-      }
+      deck_option.real_name = json.name || undefined;      
 
       if (json.atleast) {
         const atleast = new DeckAtLeastOption();
