@@ -125,7 +125,7 @@ class SettingsView extends React.Component<Props> {
     }
     return cardsError ?
       t`Error: Check for Cards Again` :
-      t`Check for New Cards on ArkhamDB`;
+      t`Check for New Cards on MarvelCDB`;
   }
 
   _swipeBetweenCardsChanged = (value: boolean) => {

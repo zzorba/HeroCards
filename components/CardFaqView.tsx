@@ -68,7 +68,7 @@ class CardFaqView extends React.Component<Props, State> {
           options: {
             topBar: {
               title: {
-                text: 'ArkhamDB',
+                text: 'MarvelCDB',
               },
             },
           },

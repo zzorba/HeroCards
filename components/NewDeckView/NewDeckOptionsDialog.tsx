@@ -306,7 +306,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
           { t`Deck Type` }
         </DialogComponent.Description>
         <DialogComponent.Switch
-          label={t`Create on ArkhamDB`}
+          label={t`Create on MarvelCDB`}
           value={!offlineDeck}
           disabled={!signedIn || networkType === 'none'}
           onValueChange={this._onDeckTypeChange}
@@ -314,7 +314,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
         />
         { !signedIn && (
           <DialogComponent.Description style={[typography.small, space.marginBottomS, styles.networkMessage]}>
-            { t`Visit Settings to sign in to ArkhamDB.` }
+            { t`Visit Settings to sign in to MarvelCDB.` }
           </DialogComponent.Description>
         ) }
         { networkType === 'none' && (

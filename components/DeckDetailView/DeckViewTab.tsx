@@ -154,7 +154,7 @@ export default class DeckViewTab extends React.Component<Props> {
     } else {
       Alert.alert(
         t`Visit MarvelCDB to delete?`,
-        t`Unfortunately to delete decks you have to visit ArkhamDB at this time.`,
+        t`Unfortunately to delete decks you have to visit MarvelCDB at this time.`,
         [
           {
             text: t`Visit MarvelCDB`,
@@ -182,17 +182,17 @@ export default class DeckViewTab extends React.Component<Props> {
     if (hasPendingEdits) {
       Alert.alert(
         t`Save Local Changes`,
-        t`Please save any local edits to this deck before sharing to ArkhamDB`
+        t`Please save any local edits to this deck before sharing to MarvelCDB`
       );
     } else if (deck.next_deck || deck.previous_deck) {
       Alert.alert(
         t`Unsupported Operation`,
-        t`This deck contains next/previous versions with upgrades, so we cannot upload it to ArkhamDB at this time. If you would like to upload it, you can use Copy to upload a clone of the current deck.`
+        t`This deck contains next/previous versions with upgrades, so we cannot upload it to MarvelCDB at this time. If you would like to upload it, you can use Copy to upload a clone of the current deck.`
       );
     } else if (!signedIn) {
       Alert.alert(
         t`Sign in to MarvelCDB`,
-        t`ArkhamDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.`,
+        t`MarvelCDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.`,
         [
           { text: 'Sign In', onPress: login },
           { text: 'Cancel', style: 'cancel' },

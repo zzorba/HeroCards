@@ -140,9 +140,9 @@ class MyDecksComponent extends React.Component<Props> {
     return (
       <View style={[styles.signInFooter, { width }]}>
         <Text style={[typography.text, space.marginBottomM]}>
-          { t`ArkhamDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.` }
+          { t`MarvelCDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.` }
         </Text>
-        <Button onPress={login} title={t`Connect to ArkhamDB`} />
+        <Button onPress={login} title={t`Connect to MarvelCDB`} />
       </View>
     );
   }

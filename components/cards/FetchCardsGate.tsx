@@ -97,7 +97,7 @@ class FetchCardsGate extends React.Component<Props> {
     } else if (this.props.promptForUpdate && this.updateNeeded()) {
       Alert.alert(
         t`Check for updated cards?`,
-        t`It has been more than a week since you checked for new cards.\nCheck for new cards from ArkhamDB?`,
+        t`It has been more than a week since you checked for new cards.\nCheck for new cards from MarvelCDB?`,
         [
           { text: t`Ask me later`, onPress: this._ignoreUpdate },
           { text: t`Check for updates`, onPress: this._doFetch },

@@ -232,7 +232,7 @@ class CopyDeckDialog extends React.Component<Props, State> {
           { t`Deck Type` }
         </DialogComponent.Description>
         <DialogComponent.Switch
-          label={t`Create on ArkhamDB`}
+          label={t`Create on MarvelCDB`}
           value={!offlineDeck && signedIn && networkType !== 'none'}
           disabled={networkType === 'none'}
           onValueChange={this._onDeckTypeChange}
