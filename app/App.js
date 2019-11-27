@@ -42,6 +42,10 @@ export default class App {
   startApp(lang) {
     changeLocale(lang || 'en');
     YellowBox.ignoreWarnings([
+      'Warning: AsyncStorage has been extracted from react-native core and will be removed in a future release.',
+      'Warning: Failed prop type: DialogSwitch: prop type `labelStyle` is invalid;',
+      'Warning: componentWillMount is deprecated',
+      'Warning: componentWillReceiveProps is deprecated',
       'Warning: `flexWrap: `wrap`` is not supported with the `VirtualizedList` components.' +
       'Consider using `numColumns` with `FlatList` instead.',
       'Warning: Failed prop type: Invalid prop `rules.emMarkdown.order` of type `number` supplied to `MarkdownView`, expected `function`.',
@@ -49,54 +53,6 @@ export default class App {
       'Warning: isMounted(...) is deprecated',
     ]);
 
-    // const isIpad = Platform.OS === 'ios' && Platform.isPad;
-
-    /*
-    isIpad ? {
-      splitView: {
-        id: 'BROWSE_TAB',
-        master: {
-          stack: {
-            id: 'BROWSE_TAB_FILTERS_VIEW',
-            children: [
-              {
-                component: {
-                  name: 'Settings',
-                },
-              },
-            ],
-          },
-        },
-        detail: {
-          stack: {
-            id: 'BROWSE_TAB_CARD_VIEW',
-            children: [{
-              component: {
-                name: 'Browse.Cards',
-                options: {
-                  topBar: {
-                    title: {
-                      text: t`Player Cards`,
-                    },
-                  },
-                },
-              },
-            }],
-          },
-        },
-        options: {
-          splitView: {
-            displayMode: 'visible',
-            primaryEdge: 'trailing',
-            minWidth: 100,
-          },
-          bottomTab: {
-            text: t`Cards`,
-            icon: iconsMap.cards,
-          },
-        },
-      },
-    } :*/
     const browseCards = {
       component: {
         name: 'Browse.Cards',
@@ -198,7 +154,7 @@ export default class App {
     Linking.addEventListener('url', this._handleUrl);
 
     // We handle scrollapp and https (universal) links
-    DeepLinking.addScheme('herocards://');
+    DeepLinking.addScheme('herodecks://');
 
     Linking.getInitialURL().then((url) => {
       if (url) {

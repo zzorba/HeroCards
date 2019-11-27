@@ -11,17 +11,23 @@ interface Props {
   investigator: Card;
   meta: DeckMeta;
   setMeta: (key: string, value: string) => void;
+  disabled?: boolean;
 }
 
 export default class InvestigatorOptionsModule extends React.Component<Props> {
   render() {
-    const { investigator, meta, setMeta } = this.props;
-    const options = investigator.heroOptions();
+    const {
+      investigator,
+      meta,
+      setMeta,
+      disabled,
+    } = this.props;
+    const options = investigator.heroSelectOptions();
     if (!options.length) {
       return <View style={styles.placeholder} />;
     }
     return (
-      <View style={styles.container}>
+      <View>
         { map(options, (option, idx) => {
           return (
             <InvestigatorOption
@@ -30,6 +36,7 @@ export default class InvestigatorOptionsModule extends React.Component<Props> {
               option={option}
               setMeta={setMeta}
               meta={meta}
+              disabled={disabled}
             />
           );
         }) }
@@ -39,10 +46,6 @@ export default class InvestigatorOptionsModule extends React.Component<Props> {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginLeft: s,
-    marginRight: s,
-  },
   placeholder: {
     marginBottom: s,
   },

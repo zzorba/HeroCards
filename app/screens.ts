@@ -17,7 +17,7 @@ import NewDeckView from '../components/NewDeckView';
 import DrawSimulatorView from '../components/DrawSimulatorView';
 import DeckChartsView from '../components/DeckChartsView';
 import CardFilterView from '../components/filter/CardFilterView';
-import CardEnemyFilterView from '../components/filter/CardEnemyFilterView';
+import CardMinionFilterView from '../components/filter/CardMinionFilterView';
 import PackFilterView from '../components/filter/PackFilterView';
 import WebViewWrapper from '../components/WebViewWrapper';
 import SettingsView from '../components/settings/SettingsView';
@@ -48,7 +48,7 @@ export function registerScreens(Provider: any, store: any) {
   Navigation.registerComponentWithRedux('Settings', () => SettingsView, Provider, store);
   Navigation.registerComponentWithRedux('Settings.Diagnostics', () => DiagnosticsView, Provider, store);
   Navigation.registerComponentWithRedux('SearchFilters', () => CardFilterView, Provider, store);
-  Navigation.registerComponentWithRedux('SearchFilters.Enemy', () => CardEnemyFilterView, Provider, store);
+  Navigation.registerComponentWithRedux('SearchFilters.Enemy', () => CardMinionFilterView, Provider, store);
   Navigation.registerComponentWithRedux('SearchFilters.Packs', () => PackFilterView, Provider, store);
   Navigation.registerComponentWithRedux('SearchFilters.Chooser', () => SearchMultiSelectView, Provider, store);
   Navigation.registerComponentWithRedux('My.Collection', () => CollectionEditView, Provider, store);

@@ -1,19 +1,24 @@
 import { filter, forEach, keys, map, mapValues, range, groupBy, pullAt, sortBy, sum, uniqBy, union } from 'lodash';
-
 import { t } from 'ttag';
-import { Deck, Slots } from '../actions/types';
-import Card, { CardKey, CardsMap } from '../data/Card';
+
+import {
+  CardId,
+  CardSplitType,
+  Deck,
+  FactionCounts,
+  ResourceCounts,
+  ParsedDeck,
+  Slots,
+  SplitCards,
+} from '../actions/types';
 import {
   PLAYER_FACTION_CODES,
   RESOURCES,
   FactionCodeType,
   ResourceCodeType,
 } from '../constants';
-
-export interface CardId {
-  id: string;
-  quantity: number;
-}
+import DeckValidation from './DeckValidation';
+import Card, { CardKey, CardsMap } from '../data/Card';
 
 function filterBy(
   cardIds: CardId[],
@@ -22,11 +27,6 @@ function filterBy(
   value: any
 ): CardId[] {
   return cardIds.filter(c => cards[c.id] && cards[c.id][field] === value);
-}
-
-interface AssetGroup {
-  type: string;
-  data: CardId[];
 }
 
 export function isSpecialCard(card: Card): boolean {
@@ -39,16 +39,6 @@ export function isSpecialCard(card: Card): boolean {
     )
   );
 }
-
-
-export interface SplitCards {
-  Ally?: CardId[];
-  Event?: CardId[];
-  Resource?: CardId[];
-  Support?: CardId[];
-  Upgrade?: CardId[];
-}
-export type CardSplitType = keyof SplitCards;
 
 function splitCards(cardIds: CardId[], cards: CardsMap): SplitCards {
   const result: SplitCards = {};
@@ -119,30 +109,6 @@ function sumResourceIcons(
 ): number {
   return sum(cardIds.map(c =>
     (cards[c.id] ? cards[c.id].resourceCount(resource) : 0) * c.quantity));
-}
-
-type FactionCounts = {
-  [faction in FactionCodeType]?: [number, number];
-};
-
-type ResourceCounts = {
-  [skill in ResourceCodeType]?: number;
-};
-
-
-export interface ParsedDeck {
-  investigator: Card;
-  deck: Deck;
-  slots: Slots;
-  normalCardCount: number;
-  totalCardCount: number;
-  packs: number;
-  factionCounts: FactionCounts;
-  costHistogram: number[];
-  resourceCounts: ResourceCounts;
-  normalCards: SplitCards;
-  specialCards: SplitCards;
-  ignoreDeckLimitSlots: Slots;
 }
 
 export function parseDeck(

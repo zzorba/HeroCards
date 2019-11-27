@@ -34,11 +34,11 @@ import {
 import { getPackSpoilers, getPacksInCollection, AppState } from '../../reducers';
 import Card from '../../data/Card';
 import { showCard, showCardSwipe } from '../navHelper';
-import { isSpecialCard } from '../parseDeck';
+import { isSpecialCard } from '../../lib/parseDeck';
 import CardSearchResult from '../CardSearchResult';
-import { ROW_HEIGHT } from '../CardSearchResult/constants';
-import CardSectionHeader, { ROW_HEADER_HEIGHT } from './CardSectionHeader';
-import ShowNonCollectionFooter, { ROW_NON_COLLECTION_HEIGHT } from './ShowNonCollectionFooter';
+import { rowHeight } from '../CardSearchResult/constants';
+import CardSectionHeader, { rowHeaderHeight } from './CardSectionHeader';
+import ShowNonCollectionFooter, { rowNonCollectionHeight } from './ShowNonCollectionFooter';
 import typography from '../../styles/typography';
 import { s, m } from '../../styles/space';
 
@@ -59,7 +59,9 @@ function funLoadingMessages() {
 
 interface OwnProps {
   componentId: string;
+  fontScale: number;
   query?: string;
+  filterQuery?: string;
   termQuery?: string;
   searchTerm?: string;
   sort?: SortType;
@@ -75,6 +77,7 @@ interface OwnProps {
   showNonCollection?: boolean;
   expandSearchControls?: ReactNode;
   renderFooter?: (slots?: Slots, controls?: React.ReactNode) => ReactNode;
+  storyOnly?: boolean;
 }
 
 interface ReduxProps {
@@ -178,11 +181,6 @@ class CardResultList extends React.Component<Props, State> {
       if (offsetY <= 0) {
         this.props.showHeader();
       } else {
-        if (this.hasPendingCountChanges) {
-          this.hasPendingCountChanges = false;
-          this._throttledUpdateResults();
-        }
-
         const delta = Math.abs(offsetY - this.lastOffsetY);
         if (delta < SCROLL_DISTANCE_BUFFER) {
           // Not a long enough scroll, don't update scrollY and don't take any
@@ -195,6 +193,10 @@ class CardResultList extends React.Component<Props, State> {
         const scrollingUp = offsetY < this.lastOffsetY;
 
         if (scrollingUp) {
+          if (this.hasPendingCountChanges) {
+            this.hasPendingCountChanges = false;
+            this._throttledUpdateResults();
+          }
           this.props.showHeader();
         } else {
           this.props.hideHeader();
@@ -315,19 +317,19 @@ class CardResultList extends React.Component<Props, State> {
   getSort(): Sort[] {
     switch(this.props.sort) {
       case SORT_BY_TYPE:
-        return [['sort_by_type', false], ['renderName', false]];
+        return [['sort_by_type', false], ['renderName', false], ['xp', false]];
       case SORT_BY_FACTION:
-        return [['sort_by_faction', false], ['renderName', false]];
+        return [['sort_by_faction', false], ['renderName', false], ['xp', false]];
       case SORT_BY_COST:
-        return [['cost', false], ['renderName', false]];
+        return [['cost', false], ['renderName', false], ['xp', false]];
       case SORT_BY_PACK:
         return [['sort_by_pack', false], ['position', false]];
       case SORT_BY_TITLE:
-        return [['renderName', false]];
+        return [['renderName', false], ['xp', false]];
       case SORT_BY_ENCOUNTER_SET:
         return [['sort_by_pack', false], ['encounter_code', false], ['encounter_position', false]];
       default:
-        return [['renderName', false]];
+        return [['renderName', false], ['xp', false]];
     }
   }
 
@@ -445,6 +447,9 @@ class CardResultList extends React.Component<Props, State> {
       originalDeckSlots,
       searchTerm,
       termQuery,
+      filterQuery,
+      storyOnly,
+      query,
     } = this.props;
     const {
       deckCardCounts,
@@ -456,9 +461,16 @@ class CardResultList extends React.Component<Props, State> {
       uniq(concat(keys(originalDeckSlots), keys(deckCardCounts))),
       code => originalDeckSlots[code] > 0 ||
         (deckCardCounts && deckCardCounts[code] > 0));
-    const query = map(codes, code => ` (code == '${code}')`).join(' OR ');
+    const deckQuery = map(codes, code => ` (code == '${code}')`).join(' OR ');
+    const queryParts = [`(${deckQuery})`];
+    if (storyOnly && query) {
+      queryParts.push(query);
+    }
+    if (filterQuery) {
+      queryParts.push(filterQuery);
+    }
     const possibleDeckCards: Results<Card> = realm.objects<Card>('Card')
-      .filtered(`(${query})`);
+      .filtered(queryParts.join(' and '));
     const deckCards: Results<Card> = termQuery ?
       possibleDeckCards.filtered(termQuery, searchTerm) :
       possibleDeckCards;
@@ -483,15 +495,22 @@ class CardResultList extends React.Component<Props, State> {
     this.setState({
       loadingMessage: CardResultList.randomLoadingMessage(),
     });
+    let parsedSearchTerm = searchTerm;
+    if (parsedSearchTerm) {
+      // replace "smart" single and double quotes
+      parsedSearchTerm = parsedSearchTerm
+        .replace(/[\u2018\u2019]/g, '\'')
+        .replace(/[\u201C\u201D]/g, '"');
+    }
     const resultsKey = this.resultsKey();
     const queryCards: Results<Card> = (query ?
       realm.objects<Card>('Card').filtered(
         `(${query})`,
-        searchTerm
+        parsedSearchTerm
       ) : realm.objects<Card>('Card')
     );
     const cards: Results<Card> = (termQuery ?
-      queryCards.filtered(termQuery, searchTerm) :
+      queryCards.filtered(termQuery, parsedSearchTerm) :
       queryCards
     ).sorted(this.getSort());
     const groupedCards = partition(
@@ -529,7 +548,7 @@ class CardResultList extends React.Component<Props, State> {
         componentId,
         card.code,
         card,
-        true,
+        true
       );
       return;
     }
@@ -567,10 +586,18 @@ class CardResultList extends React.Component<Props, State> {
   };
 
   _renderSectionHeader = ({ section }: { section: SectionListData<CardBucket> }) => {
-    return <CardSectionHeader title={section.title} bold={section.bold} />;
+    const { fontScale } = this.props;
+    return (
+      <CardSectionHeader
+        title={section.title}
+        bold={section.bold}
+        fontScale={fontScale}
+      />
+    );
   };
 
   _renderSectionFooter = ({ section }: { section: SectionListData<CardBucket> }) => {
+    const { fontScale } = this.props;
     const {
       showNonCollection,
     } = this.state;
@@ -580,7 +607,7 @@ class CardResultList extends React.Component<Props, State> {
     if (showNonCollection[section.id]) {
       // Already pressed it, so show a button to edit collection.
       return (
-        <View style={styles.sectionFooterButton}>
+        <View style={[styles.sectionFooterButton, { height: rowNonCollectionHeight(fontScale) }]}>
           <Button
             title={t`Edit Collection`}
             onPress={this._editCollectionSettings}
@@ -591,6 +618,7 @@ class CardResultList extends React.Component<Props, State> {
     return (
       <ShowNonCollectionFooter
         id={section.id}
+        fontScale={fontScale}
         title={ngettext(
           msgid`Show ${section.nonCollectionCount} Non-Collection Card`,
           `Show ${section.nonCollectionCount} Non-Collection Cards`,
@@ -608,6 +636,7 @@ class CardResultList extends React.Component<Props, State> {
     const {
       limits,
       hasSecondCore,
+      fontScale,
     } = this.props;
     const {
       deckCardCounts,
@@ -615,6 +644,7 @@ class CardResultList extends React.Component<Props, State> {
     return (
       <CardSearchResult
         card={item}
+        fontScale={fontScale}
         count={deckCardCounts && deckCardCounts[item.code]}
         onDeckCountChange={this.props.onDeckCountChange}
         id={`${section.id}.${index}`}
@@ -734,6 +764,7 @@ class CardResultList extends React.Component<Props, State> {
   render() {
     const {
       sort,
+      fontScale,
     } = this.props;
     const {
       loadingMessage,
@@ -763,9 +794,9 @@ class CardResultList extends React.Component<Props, State> {
     const elementHeights = map(
       flatMap(data, section => {
         return concat(
-          [ROW_HEADER_HEIGHT], // Header
-          map(section.data || [], () => ROW_HEIGHT), // Rows
-          [section.nonCollectionCount ? ROW_NON_COLLECTION_HEIGHT : 0] // Footer (not used)
+          [rowHeaderHeight(fontScale)], // Header
+          map(section.data || [], () => rowHeight(fontScale)), // Rows
+          [section.nonCollectionCount ? rowNonCollectionHeight(fontScale) : 0] // Footer (not used)
         );
       }),
       (size) => {
@@ -867,7 +898,6 @@ const styles = StyleSheet.create<Styles>({
     borderColor: '#bdbdbd',
   },
   sectionFooterButton: {
-    height: ROW_NON_COLLECTION_HEIGHT,
     margin: 8,
   },
 });

@@ -108,7 +108,7 @@ class MyDecksView extends React.Component<Props, State> {
     return (
       <View style={styles.row}>
         <Text style={[typography.small, styles.searchOption]}>
-          { t`Hide MarvelCDB Decks` }
+          { t`Hide ArkhamDB Decks` }
         </Text>
         <Switch
           value={localDecksOnly}

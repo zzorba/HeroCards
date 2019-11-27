@@ -11,7 +11,7 @@ import {
 import { isBig } from '../../styles/space';
 
 import { WithChildren, WithIconName, WithText, State } from './types';
-import ArkhamIconNode from './ArkhamIconNode';
+import MarvelIconNode from './MarvelIconNode';
 import BlockquoteHtmlTagNode from './BlockquoteHtmlTagNode';
 import BoldHtmlTagNode from './BoldHtmlTagNode';
 import BoldItalicHtmlTagNode from './BoldItalicHtmlTagNode';
@@ -33,13 +33,13 @@ const ParagraphTagRule: MarkdownRule<WithChildren, State> = {
   render: ParagraphHtmlTagNode,
 };
 
-const ArkhamIconRule: MarkdownRule<WithIconName, State> = {
+const MarvelIconRule: MarkdownRule<WithIconName, State> = {
   match: SimpleMarkdown.inlineRegex(new RegExp('^\\[([^\\]]+)\\]')),
   order: 1,
   parse: (capture) => {
     return { name: capture[1] };
   },
-  render: ArkhamIconNode,
+  render: MarvelIconNode,
 };
 
 const ArkahmIconSpanRule: MarkdownRule<WithIconName, State> = {
@@ -48,7 +48,7 @@ const ArkahmIconSpanRule: MarkdownRule<WithIconName, State> = {
   parse: (capture) => {
     return { name: capture[1] };
   },
-  render: ArkhamIconNode,
+  render: MarvelIconNode,
 };
 
 const BreakTagRule: MarkdownRule<WithText, State> = {
@@ -178,7 +178,7 @@ export default function CardText({ text, onLinkPress }: Props) {
       rules={
         Object.assign({
           emMarkdown: EmphasisMarkdownTagRule,
-          arkhamIconSpan: ArkahmIconSpanRule,
+          MarvelIconSpan: ArkahmIconSpanRule,
           hrTag: HrTagRule,
           blockquoteTag: BlockquoteHtmlTagRule,
           delTag: DelHtmlTagRule,
@@ -190,7 +190,7 @@ export default function CardText({ text, onLinkPress }: Props) {
           uTag: UnderlineHtmlTagRule,
           emTag: EmphasisHtmlTagRule,
           iTag: ItalicHtmlTagRule,
-        }, onLinkPress ? {} : { MarvelIcon: ArkhamIconRule })
+        }, onLinkPress ? {} : { MarvelIcon: MarvelIconRule })
       }
       styles={{
         list: {

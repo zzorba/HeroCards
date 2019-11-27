@@ -4,19 +4,16 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { ParsedDeck } from '../parseDeck';
-
+import { ParsedDeck } from '../../actions/types';
 import FactionChart from './FactionChart';
 import CostChart from './CostChart';
 import ResourceIconChart from './ResourceIconChart';
 
-const INCLUDE_SLOTS_CHART = false;
-
-interface Props {
+export interface DeckChartsProps {
   parsedDeck?: ParsedDeck;
 }
 
-export default class DeckChartsView extends React.Component<Props> {
+export default class DeckChartsView extends React.Component<DeckChartsProps> {
   render() {
     const {
       parsedDeck,

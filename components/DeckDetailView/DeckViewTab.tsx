@@ -1,27 +1,19 @@
 import React, { ReactNode } from 'react';
-import { head, find, forEach, keys, map, sum, sumBy } from 'lodash';
+import { forEach, keys, map, sum, sumBy } from 'lodash';
 import {
-  Alert,
-  AlertButton,
-  Button,
-  Linking,
   StyleSheet,
   SectionList,
   View,
   TouchableOpacity,
   Text,
-  ScrollView,
   SectionListData,
 } from 'react-native';
-// @ts-ignore
-import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
-import DeviceInfo from 'react-native-device-info';
-import { msgid, ngettext, t } from 'ttag';
+import { t } from 'ttag';
 
-import AppIcon from '../../assets/AppIcon';
-import { Deck, DeckMeta, DeckProblem, Slots } from '../../actions/types';
-import { CardId, ParsedDeck, SplitCards } from '../parseDeck';
+import { CardId, Deck, DeckMeta, DeckProblem, ParsedDeck, SplitCards, Slots } from '../../actions/types';
 import { showCard, showCardSwipe } from '../navHelper';
+import MarvelIcon from '../../assets/MarvelIcon';
+import AppIcon from '../../assets/AppIcon';
 import InvestigatorImage from '../core/InvestigatorImage';
 import InvestigatorOptionsModule from './InvestigatorOptionsModule';
 import CardSectionHeader, { CardSectionHeaderData } from './CardSectionHeader';
@@ -30,9 +22,8 @@ import DeckValidation from '../../lib/DeckValidation';
 import Card, { CardsMap } from '../../data/Card';
 import typography from '../../styles/typography';
 import { COLORS } from '../../styles/colors';
-import { s, sizeScale } from '../../styles/space';
-
-const SMALL_EDIT_ICON_SIZE = 18 * sizeScale * DeviceInfo.getFontScale();
+import { isBig, s } from '../../styles/space';
+import DeckProblemRow from '../DeckProblemRow';
 
 interface SectionCardId extends CardId {
   special: boolean;
@@ -45,6 +36,8 @@ interface CardSection extends CardSectionHeaderData {
 
 function deckToSections(
   halfDeck: SplitCards,
+  cards: CardsMap,
+  validation: DeckValidation,
   special: boolean
 ): CardSection[] {
   const result: CardSection[] = [];
@@ -72,22 +65,15 @@ function deckToSections(
   return result;
 }
 
-const DECK_PROBLEM_MESSAGES = {
-  too_few_cards: t`Not enough cards.`,
-  too_many_cards: t`Too many cards.`,
-  too_many_copies: t`Too many copies of a card with the same name.`,
-  invalid_cards: t`Contains forbidden cards (cards not permitted by Faction)`,
-  deck_options_limit: t`Contains too many limited cards.`,
-  investigator: t`Doesn't comply with the Investigator requirements.`,
-};
-
 interface Props {
   componentId: string;
+  fontScale: number;
   deck: Deck;
   parsedDeck: ParsedDeck;
   meta: DeckMeta;
   hasPendingEdits?: boolean;
   cards: CardsMap;
+  editable: boolean;
   isPrivate: boolean;
   buttons?: ReactNode;
   showEditNameDialog: () => void;
@@ -95,12 +81,12 @@ interface Props {
   singleCardView: boolean;
   signedIn: boolean;
   login: () => void;
-  deleteDeck: (allVersions: boolean) => void;
-  uploadLocalDeck: () => void;
   problem?: DeckProblem;
   renderFooter: (slots?: Slots) => React.ReactNode;
   onDeckCountChange: (code: string, count: number) => void;
   setMeta: (key: string, value: string) => void;
+  showEditCards: () => void;
+  width: number;
 }
 
 export default class DeckViewTab extends React.Component<Props> {
@@ -108,113 +94,7 @@ export default class DeckViewTab extends React.Component<Props> {
     return item.id;
   };
 
-  _deleteDeckPrompt = () => {
-    const {
-      deck,
-      deleteDeck,
-    } = this.props;
-    if (deck.local) {
-      const options: AlertButton[] = [];
-      const isLatestUpgrade = deck.previous_deck && !deck.next_deck;
-      if (isLatestUpgrade) {
-        options.push({
-          text: t`Delete this upgrade (${deck.version})`,
-          onPress: () => {
-            deleteDeck(false);
-          },
-          style: 'destructive',
-        });
-        options.push({
-          text: t`Delete all versions`,
-          onPress: () => {
-            deleteDeck(true);
-          },
-          style: 'destructive',
-        });
-      } else {
-        const isUpgraded = !!deck.next_deck;
-        options.push({
-          text: isUpgraded ? t`Delete all versions` : t`Delete`,
-          onPress: () => {
-            deleteDeck(true);
-          },
-          style: 'destructive',
-        });
-      }
-      options.push({
-        text: t`Cancel`,
-        style: 'cancel',
-      });
-
-      Alert.alert(
-        t`Delete deck`,
-        t`Are you sure you want to delete this deck?`,
-        options,
-      );
-    } else {
-      Alert.alert(
-        t`Visit MarvelCDB to delete?`,
-        t`Unfortunately to delete decks you have to visit MarvelCDB at this time.`,
-        [
-          {
-            text: t`Visit MarvelCDB`,
-            onPress: () => {
-              Linking.openURL(`https://marvelcdb.com/deck/view/${deck.id}`);
-            },
-          },
-          {
-            text: t`Cancel`,
-            style: 'cancel',
-          },
-        ],
-      );
-    }
-  };
-
-  _uploadToMarvelCDB = () => {
-    const {
-      signedIn,
-      login,
-      deck,
-      hasPendingEdits,
-      uploadLocalDeck,
-    } = this.props;
-    if (hasPendingEdits) {
-      Alert.alert(
-        t`Save Local Changes`,
-        t`Please save any local edits to this deck before sharing to MarvelCDB`
-      );
-    } else if (deck.next_deck || deck.previous_deck) {
-      Alert.alert(
-        t`Unsupported Operation`,
-        t`This deck contains next/previous versions with upgrades, so we cannot upload it to MarvelCDB at this time. If you would like to upload it, you can use Copy to upload a clone of the current deck.`
-      );
-    } else if (!signedIn) {
-      Alert.alert(
-        t`Sign in to MarvelCDB`,
-        t`MarvelCDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.`,
-        [
-          { text: 'Sign In', onPress: login },
-          { text: 'Cancel', style: 'cancel' },
-        ],
-      );
-    } else {
-      Alert.alert(
-        t`Upload to MarvelCDB`,
-        t`You can upload your deck to MarvelCDB to share with others.\n\nAfter doing this you will need network access to make changes to the deck.`,
-        [
-          { text: 'Upload', onPress: uploadLocalDeck },
-          { text: 'Cancel', style: 'cancel' },
-        ],
-      );
-    }
-  };
-
-  _viewDeck = () => {
-    Linking.openURL(`https://marvelcdb.com/deck/view/${this.props.deck.id}`);
-  };
-
-  _showHero = () => {
+  _showInvestigator = () => {
     const {
       parsedDeck: {
         investigator,
@@ -245,7 +125,7 @@ export default class DeckViewTab extends React.Component<Props> {
         componentId,
         card.code,
         card,
-        true
+        true,
       );
       return;
     }
@@ -280,12 +160,14 @@ export default class DeckViewTab extends React.Component<Props> {
       parsedDeck: {
         investigator,
       },
+      fontScale,
     } = this.props;
     return (
       <CardSectionHeader
         key={section.id}
         section={section as CardSectionHeaderData}
         investigator={investigator}
+        fontScale={fontScale}
       />
     );
   }
@@ -299,6 +181,7 @@ export default class DeckViewTab extends React.Component<Props> {
       parsedDeck: {
         ignoreDeckLimitSlots,
       },
+      fontScale,
     } = this.props;
     const card = this.props.cards[item.id];
     if (!card) {
@@ -315,6 +198,7 @@ export default class DeckViewTab extends React.Component<Props> {
         id={id}
         onPressId={this._showSwipeCard}
         count={count}
+        fontScale={fontScale}
       />
     );
   };
@@ -325,26 +209,20 @@ export default class DeckViewTab extends React.Component<Props> {
         investigator,
       },
       problem,
+      fontScale,
     } = this.props;
 
     if (!problem) {
       return null;
     }
     return (
-      <View style={[styles.problemBox,
-        { backgroundColor: COLORS.red },
-      ]}>
-        <View style={styles.problemRow}>
-          <View style={styles.warningIcon}>
-            <AppIcon name="warning" size={14 * DeviceInfo.getFontScale()} color={COLORS.white} />
-          </View>
-          <Text
-            numberOfLines={2}
-            style={[styles.problemText, { color: COLORS.white }]}
-          >
-            { head(problem.problems) || DECK_PROBLEM_MESSAGES[problem.reason] }
-          </Text>
-        </View>
+      <View style={styles.problemBox}>
+        <DeckProblemRow
+          problem={problem}
+          color={COLORS.white}
+          fontSize={14}
+          fontScale={fontScale}
+        />
       </View>
     );
   }
@@ -358,39 +236,67 @@ export default class DeckViewTab extends React.Component<Props> {
         slots,
       },
       meta,
+      showEditCards,
       cards,
     } = this.props;
 
     const validation = new DeckValidation(investigator, meta);
 
     return [
-      ...deckToSections(normalCards, false),
+      {
+        id: 'cards',
+        superTitle: t`Deck Cards`,
+        data: [],
+        onPress: showEditCards,
+      },
+      ...deckToSections(normalCards, cards, validation, false),
       {
         id: 'special',
         superTitle: t`Special Cards`,
         data: [],
       },
-      ...deckToSections(specialCards, true),
+      ...deckToSections(specialCards, cards, validation, true),
     ];
   }
 
-  renderMetadata() {
+  renderInvestigatorStats() {
     const {
       parsedDeck: {
-        normalCardCount,
-        totalCardCount,
+        investigator,
       },
+      fontScale,
     } = this.props;
+
+    const ICON_SIZE = fontScale * (isBig ? 1.2 : 1.0) * 20;
+    const health = investigator.health || 0;
+    const handSize = investigator.hand_size || 0;
     return (
-      <View style={styles.metadata}>
-        <Text style={typography.small}>
-          { ngettext(
-            msgid`${normalCardCount} card (${totalCardCount} total)`,
-            `${normalCardCount} cards (${totalCardCount} total)`,
-            normalCardCount
-          ) }
-        </Text>
-      </View>
+      <>
+        <View style={styles.skillRow}>
+          <Text style={typography.mediumGameFont}>
+            { investigator.name }
+          </Text>
+        </View>
+        <View style={styles.skillRow}>
+          <Text style={typography.mediumGameFont}>
+            ATK { investigator.attack || 0 }
+          </Text>
+          <Text style={typography.mediumGameFont}>
+            THW { investigator.thwart || 0 }
+          </Text>
+          <Text style={typography.mediumGameFont}>
+            DEF { investigator.defense || 0 }
+          </Text>
+        </View>
+        <View style={styles.skillRow}>
+          <Text style={typography.mediumGameFont}>
+            { t`Health: ${health}` }
+          </Text>
+          <Text style={typography.mediumGameFont}>
+            { t`Hand Size: ${handSize}` }
+          </Text>
+        </View>
+      </>
     );
   }
 
@@ -401,117 +307,92 @@ export default class DeckViewTab extends React.Component<Props> {
       },
       meta,
       setMeta,
+      editable,
     } = this.props;
     return (
-      <InvestigatorOptionsModule
-        investigator={investigator}
-        meta={meta}
-        setMeta={setMeta}
-      />
+      <View>
+        <InvestigatorOptionsModule
+          investigator={investigator}
+          meta={meta}
+          setMeta={setMeta}
+          disabled={!editable}
+        />
+      </View>
     );
   }
 
-  render() {
+  renderInvestigatorBlock() {
     const {
       componentId,
-      deck,
-      deckName,
-      cards,
       parsedDeck: {
         investigator,
       },
-      isPrivate,
-      buttons,
-      showEditNameDialog,
     } = this.props;
 
-    const sections = this.data();
-    const detailsEditable = (isPrivate && !deck.next_deck);
     return (
-      <ScrollView>
-        <View>
+      <View style={styles.column}>
+        <TouchableOpacity onPress={this._showInvestigator}>
+          <View style={styles.header}>
+            <View style={styles.image}>
+              <InvestigatorImage
+                card={investigator}
+                componentId={componentId}
+              />
+            </View>
+            <View style={styles.metadata}>
+              { this.renderInvestigatorStats() }
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  _renderHeader = () => {
+    const {
+      buttons,
+      width,
+    } = this.props;
+
+    return (
+      <View style={styles.headerWrapper}>
+        <View style={[styles.kraken, { width: width * 2, top: -width / 3, left: -width * 0.75 }]}>
+          <AppIcon
+            name="kraken"
+            size={width}
+            color={COLORS.veryLightGray}
+          />
+        </View>
+        <View style={styles.headerBlock}>
           { this.renderProblem() }
           <View style={styles.container}>
-            { detailsEditable ? (
-              <TouchableOpacity onPress={showEditNameDialog}>
-                <View style={styles.nameRow}>
-                  <View style={styles.investigatorWrapper}>
-                    <Text
-                      style={[typography.text, typography.bold]}
-                      numberOfLines={2}
-                      ellipsizeMode="tail"
-                    >
-                      { deckName }
-                    </Text>
-                  </View>
-                  <View style={styles.editIcon}>
-                    <MaterialIcons name="edit" color="#222222" size={SMALL_EDIT_ICON_SIZE} />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <Text style={[typography.text, typography.bold]}>
-                { `${deckName}  ` }
-              </Text>
-            ) }
-            <View style={styles.header}>
-              <TouchableOpacity onPress={this._showHero}>
-                <View style={styles.image}>
-                  <InvestigatorImage card={investigator} componentId={componentId} />
-                </View>
-              </TouchableOpacity>
-              <View style={styles.metadata}>
-                { detailsEditable ? (
-                  <TouchableOpacity onPress={showEditNameDialog}>
-                    { this.renderMetadata() }
-                  </TouchableOpacity>
-                ) : (
-                  this.renderMetadata()
-                ) }
+            { this.renderInvestigatorBlock() }
+            { isBig && (
+              <View style={[styles.column, styles.buttonColumn]}>
+                { buttons }
               </View>
-            </View>
+            ) }
           </View>
           { this.renderInvestigatorOptions() }
-          <View style={styles.container}>
-            { buttons }
-          </View>
-          <View style={styles.cards}>
-            <SectionList
-              keyboardShouldPersistTaps="always"
-              keyboardDismissMode="on-drag"
-              initialNumToRender={25}
-              renderItem={this._renderCard}
-              keyExtractor={this._keyForCard}
-              renderSectionHeader={this._renderSectionHeader}
-              sections={sections}
-            />
-          </View>
-          { deck.local ? (
-            <View style={styles.button}>
-              <Button
-                title={t`Upload to MarvelCDB`}
-                onPress={this._uploadToMarvelCDB}
-              />
-            </View>
-          ) : (
-            <View style={styles.button}>
-              <Button
-                title={t`View on MarvelCDB`}
-                onPress={this._viewDeck}
-              />
-            </View>
-          ) }
-          { isPrivate && (
-            <View style={styles.button}>
-              <Button
-                title={t`Delete Deck`}
-                color={COLORS.red}
-                onPress={this._deleteDeckPrompt}
-              />
-            </View>
-          ) }
+          { !isBig && buttons }
         </View>
-      </ScrollView>
+      </View>
+    );
+  };
+
+  render() {
+    const sections = this.data();
+    return (
+      <SectionList
+        ListHeaderComponent={this._renderHeader}
+        keyboardShouldPersistTaps="always"
+        keyboardDismissMode="on-drag"
+        initialNumToRender={25}
+        renderItem={this._renderCard}
+        keyExtractor={this._keyForCard}
+        renderSectionHeader={this._renderSectionHeader}
+        sections={sections}
+      />
     );
   }
 }
@@ -522,27 +403,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
-  button: {
-    margin: s,
+  headerWrapper: {
+    position: 'relative',
+  },
+  kraken: {
+    position: 'absolute',
+    top: -50,
+  },
+  column: {
+    flex: 1,
+  },
+  buttonColumn: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   metadata: {
     flexDirection: 'column',
+    justifyContent: 'center',
     flex: 1,
+    maxWidth: 300,
   },
   image: {
     marginRight: s,
   },
-  investigatorWrapper: {
-    flex: 1,
-  },
   container: {
     marginLeft: s,
     marginRight: s,
-  },
-  problemRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
   },
   problemBox: {
     flex: 1,
@@ -550,29 +438,16 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     paddingRight: s,
     paddingLeft: s,
+    backgroundColor: COLORS.red,
   },
-  problemText: {
-    color: COLORS.white,
-    fontSize: 14,
-    flex: 1,
+  headerBlock: {
+    paddingBottom: s,
+    position: 'relative',
   },
-  warningIcon: {
-    marginRight: 4,
-  },
-  cards: {
-    marginTop: s,
-    borderTopWidth: 1,
-    borderColor: '#bdbdbd',
-  },
-  nameRow: {
-    marginTop: s,
+  skillRow: {
     flexDirection: 'row',
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  editIcon: {
-    width: SMALL_EDIT_ICON_SIZE,
-    height: SMALL_EDIT_ICON_SIZE,
+    justifyContent: 'space-around',
   },
 });

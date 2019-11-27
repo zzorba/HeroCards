@@ -1,4 +1,4 @@
-import { filter } from 'lodash';
+import { concat, filter } from 'lodash';
 import { t } from 'ttag';
 
 import { FactionCodeType, TypeCodeType, ResourceCodeType } from '../constants';
@@ -244,11 +244,23 @@ export default class BaseCard {
     }
   }
 
-  heroOptions(): DeckOption[] {
-    if (this.type_code === 'hero' && this.deck_options) {
-      return filter(this.deck_options, option => {
-        return option.faction_select && option.faction_select.length > 0;
-      });
+  heroSelectOptions(): DeckOption[] {
+    if (this.type_code === 'hero') {
+      return concat(
+        DeckOption.parseList([
+          {
+            aspect_select: [
+              'leadership',
+              'justice',
+              'aggession',
+              'protection',
+            ],
+          },
+        ]),
+        filter(this.deck_options, option => {
+          return option.aspect_select && option.aspect_select.length > 0;
+        })
+      );
     }
     return [];
   }

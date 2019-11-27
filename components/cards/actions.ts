@@ -48,7 +48,12 @@ export function fetchCards(
       });
       const packs = await dispatch(fetchPacks(lang));
       try {
-        const cardCache = await syncCards(realm, packs, lang, cardsCache(getState(), lang));
+        const cardCache = await syncCards(
+          realm,
+          packs,
+          lang,
+          cardsCache(getState(), lang)
+        );
         dispatch({
           type: CARD_FETCH_SUCCESS,
           cache: cardCache || undefined,

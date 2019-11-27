@@ -4,17 +4,16 @@ import { find, head } from 'lodash';
 import { connectRealm, CardResults } from 'react-native-realm';
 
 import { Deck, DeckMeta, Slots } from '../actions/types';
+import withDimensions, { DimensionsProps } from './core/withDimensions';
 import { queryForInvestigator } from '../lib/InvestigatorRequirements';
-import { STORY_CARDS_QUERY } from '../data/query';
 import Card, { CardsMap } from '../data/Card';
+import { parseDeck } from '../lib/parseDeck';
 import CardSearchComponent from './CardSearchComponent';
-import { parseDeck } from './parseDeck';
 import DeckNavFooter from './DeckNavFooter';
 import { NavigationProps } from './types';
 
 export interface EditDeckProps {
   deck: Deck;
-  storyOnly?: boolean;
   slots: Slots;
   meta: DeckMeta;
   ignoreDeckLimitSlots: Slots;
@@ -27,7 +26,7 @@ interface RealmProps {
   cards: Results<Card>;
 }
 
-type Props = NavigationProps & EditDeckProps & RealmProps;
+type Props = NavigationProps & EditDeckProps & RealmProps & DimensionsProps;
 
 interface State {
   deckCardCounts: Slots;
@@ -81,6 +80,7 @@ class DeckEditView extends React.Component<Props, State> {
       ignoreDeckLimitSlots,
       cards,
       meta,
+      fontScale,
     } = this.props;
     const deckCardCounts = updatedDeckCardCounts || this.state.deckCardCounts;
     const cardsInDeck: CardsMap = {};
@@ -93,11 +93,12 @@ class DeckEditView extends React.Component<Props, State> {
       deck,
       deckCardCounts,
       ignoreDeckLimitSlots,
-      cardsInDeck
+      cardsInDeck,
     );
     return (
       <DeckNavFooter
         componentId={componentId}
+        fontScale={fontScale}
         meta={meta}
         parsedDeck={pDeck}
         cards={cardsInDeck}
@@ -110,14 +111,14 @@ class DeckEditView extends React.Component<Props, State> {
     const {
       meta,
       investigator,
-      storyOnly,
     } = this.props;
-    if (storyOnly) {
-      return `((${STORY_CARDS_QUERY}) and (subtype_code != 'basicweakness'))`;
-    }
-    return investigator ?
-      `((${queryForInvestigator(investigator, meta)}) or (${STORY_CARDS_QUERY}))` :
-      undefined;
+    const {
+      deckCardCounts,
+    } = this.state;
+    const parts = investigator ? [
+      `(${queryForInvestigator(investigator, meta)})`,
+    ] : [];
+    return `(${parts.join(' or ')})`;
   }
 
   render() {
@@ -147,7 +148,7 @@ class DeckEditView extends React.Component<Props, State> {
 }
 
 export default connectRealm<NavigationProps & EditDeckProps, RealmProps, Card>(
-  DeckEditView,
+  withDimensions(DeckEditView),
   {
     schemas: ['Card'],
     mapToProps(

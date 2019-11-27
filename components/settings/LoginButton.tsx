@@ -34,7 +34,7 @@ class LoginButton extends React.Component<Props> {
   _logOutPressed = () => {
     Alert.alert(
       t`Are you sure you want to sign out?`,
-      t`Data on MarvelCDB and local decks will be preserved.\n\nIf you are having trouble with your account you can also reconnect.`,
+      t`Data on MarvelCDB will be preserved.\n\n If you are having trouble with your account you can also reconnect.`,
       [
         { text: t`Sign Out`, style: 'destructive', onPress: this.props.logout },
         { text: t`Reconnect Account`, onPress: this.props.login },
@@ -63,19 +63,19 @@ class LoginButton extends React.Component<Props> {
 
     if (signedIn) {
       return settings ? (
-        <SettingsItem onPress={this._logOutPressed} text={t`Sign out of MarvelCDB`} />
+        <SettingsItem onPress={this._logOutPressed} text={t`Sign out of ArkhamDB`} />
       ) : (
         <View style={styles.wrapper}>
-          <Button onPress={this._logOutPressed} title={t`Sign out of MarvelCDB`} />
+          <Button onPress={this._logOutPressed} title={t`Sign out of ArkhamDB`} />
         </View>
       );
     }
 
     return settings ? (
-      <SettingsItem onPress={login} text={t`Sign in to MarvelCDB`} />
+      <SettingsItem onPress={login} text={t`Sign in to ArkhamDB`} />
     ) : (
       <View style={styles.wrapper}>
-        <Button onPress={login} title={t`Sign in to MarvelCDB`} />
+        <Button onPress={login} title={t`Sign in to ArkhamDB`} />
       </View>
     );
   }

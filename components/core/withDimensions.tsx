@@ -1,11 +1,15 @@
 import React from 'react';
+import DeviceInfo from 'react-native-device-info';
 import { Dimensions, ScaledSize } from 'react-native';
 import hoistNonReactStatic from 'hoist-non-react-statics';
 
 export interface DimensionsProps {
   width: number;
   height: number;
+  fontScale: number;
 }
+
+let RECENT_FONT_SCALE = 1.0;
 
 export default function withDimensions<P>(
   WrappedComponent: React.ComponentType<P & DimensionsProps>
@@ -13,28 +17,38 @@ export default function withDimensions<P>(
   interface State {
     width: number;
     height: number;
+    fontScale: number;
   }
 
   class DimensionsComponent extends React.Component<P, State> {
     constructor(props: P) {
       super(props);
 
-      const { width, height } = Dimensions.get('screen');
+      const { width, height } = Dimensions.get('window');
       this.state = {
         width,
         height,
+        fontScale: RECENT_FONT_SCALE,
       };
     }
 
     componentDidMount() {
       Dimensions.addEventListener('change', this._onChange);
+      DeviceInfo.getFontScale().then(fontScale => {
+        if (fontScale !== 'unknown') {
+          RECENT_FONT_SCALE = fontScale;
+          this.setState({
+            fontScale,
+          });
+        }
+      });
     }
 
     componentWillUnmount() {
       Dimensions.removeEventListener('change', this._onChange);
     }
 
-    _onChange = ({ screen: { width, height } }: {
+    _onChange = ({ window: { width, height } }: {
       window: ScaledSize;
       screen: ScaledSize;
     }) => {
@@ -46,10 +60,11 @@ export default function withDimensions<P>(
 
 
     render() {
-      const { width, height } = this.state;
+      const { width, height, fontScale } = this.state;
       return (
         <WrappedComponent
           {...this.props as P}
+          fontScale={fontScale}
           width={width}
           height={height}
         />

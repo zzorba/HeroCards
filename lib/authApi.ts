@@ -51,6 +51,7 @@ export function decks(lastModified?: string): Promise<DecksResponse> {
         return Promise.resolve(result);
       }
       const lastModified = response.headers.get('Last-Modified');
+      console.log(response.status);
       return response.json().then(json => {
         const result: DecksResponse = {
           cacheHit: false,
@@ -188,11 +189,6 @@ export function saveDeck(
       return loadDeck(json.msg);
     });
   });
-}
-
-export interface UpgradeDeckResult {
-  deck: Deck;
-  upgradedDeck: Deck;
 }
 
 export default {

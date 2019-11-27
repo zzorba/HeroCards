@@ -1,65 +1,93 @@
 import React from 'react';
 import {
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableNativeFeedback,
   View,
 } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 // @ts-ignore
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
 
 import { FACTION_DARK_GRADIENTS } from '../../constants';
 import Card from '../../data/Card';
 import typography from '../../styles/typography';
-import { l, s, xs, iconSizeScale } from '../../styles/space';
-
-const SMALL_EDIT_ICON_SIZE = 18 * iconSizeScale * DeviceInfo.getFontScale();
+import { m, s, xs, iconSizeScale } from '../../styles/space';
 
 export interface CardSectionHeaderData {
   superTitle?: string;
   title?: string;
   subTitle?: string;
+  placeholder?: boolean;
   onPress?: () => void;
 }
 
 interface Props {
   investigator: Card;
+  fontScale: number;
   section: CardSectionHeaderData;
 }
 
 export default class CardSectionHeader extends React.Component<Props> {
+  renderSuperTitle(investigator: Card, superTitle: string, noIcon?: boolean) {
+    const {
+      fontScale,
+    } = this.props;
+    const SMALL_EDIT_ICON_SIZE = 24 * iconSizeScale * fontScale;
+    return (
+      <View style={[
+        styles.superHeaderRow,
+        { backgroundColor: FACTION_DARK_GRADIENTS[investigator.factionCode()][0] },
+      ]}>
+        <View style={styles.superHeaderPadding}>
+          <Text style={[typography.text, styles.superHeaderText]}>
+            { superTitle }
+          </Text>
+        </View>
+        { !noIcon && (
+          <View style={{ width: SMALL_EDIT_ICON_SIZE, height: SMALL_EDIT_ICON_SIZE }}>
+            <MaterialIcons
+              name="keyboard-arrow-right"
+              color="#FFF"
+              size={SMALL_EDIT_ICON_SIZE}
+            />
+          </View>
+        ) }
+      </View>
+    );
+  }
   render() {
     const {
       investigator,
       section,
+      fontScale,
     } = this.props;
+    if (section.placeholder) {
+      return (
+        <View style={styles.placeholder} />
+      );
+    }
     if (section.superTitle) {
+      const SMALL_EDIT_ICON_SIZE = 24 * iconSizeScale * fontScale;
       if (section.onPress) {
+        if (Platform.OS === 'ios') {
+          return (
+            <TouchableOpacity onPress={section.onPress}>
+              { this.renderSuperTitle(investigator, section.superTitle) }
+            </TouchableOpacity>
+          );
+        }
         return (
-          <TouchableOpacity onPress={section.onPress} style={[
-            styles.superHeaderRow,
-            { backgroundColor: FACTION_DARK_GRADIENTS[investigator.factionCode()][0] },
-          ]}>
-            <Text style={[typography.text, styles.superHeaderText]}>
-              { section.superTitle }
-            </Text>
-            <View style={styles.editIcon}>
-              <MaterialIcons name="edit" color="#FFF" size={SMALL_EDIT_ICON_SIZE} />
-            </View>
-          </TouchableOpacity>
+          <TouchableNativeFeedback
+            onPress={section.onPress}
+            useForeground
+          >
+            { this.renderSuperTitle(investigator, section.superTitle) }
+          </TouchableNativeFeedback>
         );
       }
-      return (
-        <View style={[
-          styles.superHeaderRow,
-          { backgroundColor: FACTION_DARK_GRADIENTS[investigator.factionCode()][0] },
-        ]}>
-          <Text style={[typography.label, styles.superHeaderText]}>
-            { section.superTitle }
-          </Text>
-        </View>
-      );
+      return this.renderSuperTitle(investigator, section.superTitle, true);
     }
     if (section.subTitle) {
       return (
@@ -88,13 +116,19 @@ const styles = StyleSheet.create({
   superHeaderText: {
     color: '#FFF',
   },
-  superHeaderRow: {
-    marginTop: l,
+  placeholder: {
+    backgroundColor: '#FFF',
+    height: m,
+  },
+  superHeaderPadding: {
     padding: s,
+  },
+  superHeaderRow: {
     borderBottomWidth: 1,
     borderColor: '#bdbdbd',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   subHeaderRow: {
     backgroundColor: '#eee',
@@ -111,9 +145,5 @@ const styles = StyleSheet.create({
     paddingBottom: xs,
     borderBottomWidth: 1,
     borderColor: '#bdbdbd',
-  },
-  editIcon: {
-    width: SMALL_EDIT_ICON_SIZE,
-    height: SMALL_EDIT_ICON_SIZE,
   },
 });

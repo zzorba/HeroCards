@@ -2,7 +2,7 @@ import React from 'react';
 import { indexOf } from 'lodash';
 import { t } from 'ttag';
 
-import FactionSelectPicker from './FactionSelectPicker';
+import AspectSelectPicker from './AspectSelectPicker';
 import { DeckMeta } from '../../actions/types';
 import Card from '../../data/Card';
 import DeckOption from '../../data/DeckOption';
@@ -12,6 +12,7 @@ interface Props {
   option: DeckOption;
   meta: DeckMeta;
   setMeta: (key: string, value: string) => void;
+  disabled?: boolean;
 }
 
 export default class InvestigatorOption extends React.Component<Props> {
@@ -20,8 +21,8 @@ export default class InvestigatorOption extends React.Component<Props> {
       option,
       setMeta,
     } = this.props;
-    if (option.faction_select && option.faction_select.length) {
-      setMeta('faction_selected', selection);
+    if (option.aspect_select && option.aspect_select.length) {
+      setMeta('aspect', selection);
     }
   };
 
@@ -30,19 +31,21 @@ export default class InvestigatorOption extends React.Component<Props> {
       investigator,
       option,
       meta,
+      disabled,
     } = this.props;
-    if (option.faction_select && option.faction_select.length) {
+    if (option.aspect_select && option.aspect_select.length) {
       const selection = (
-        meta.faction_selected &&
-        indexOf(option.faction_select, meta.faction_selected) !== -1
-      ) ? meta.faction_selected : undefined;
+        meta.aspect &&
+        indexOf(option.aspect_select, meta.aspect) !== -1
+      ) ? meta.aspect : undefined;
       return (
-        <FactionSelectPicker
-          name={option.name() || t`Select Faction`}
-          factions={option.faction_select}
+        <AspectSelectPicker
+          name={t`Select Aspect`}
+          aspects={option.aspect_select}
           onChange={this._onChange}
           selection={selection}
           investigatorFaction={investigator.faction_code}
+          disabled={disabled}
         />
       );
     }

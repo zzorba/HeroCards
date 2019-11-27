@@ -11,28 +11,35 @@ import {
 } from 'lodash';
 import {
   Alert,
+  AlertButton,
   ActivityIndicator,
   BackHandler,
+  Button,
+  Linking,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { Results } from 'realm';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-// @ts-ignore
-import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
-import { Navigation, EventSubscription } from 'react-native-navigation';
+import { Navigation, EventSubscription, OptionsTopBarButton } from 'react-native-navigation';
 import DialogComponent from 'react-native-dialog';
-import DeviceInfo from 'react-native-device-info';
 import deepDiff from 'deep-diff';
-import { t } from 'ttag';
+import { ngettext, msgid, t } from 'ttag';
+import SideMenu from 'react-native-side-menu';
+import {
+  SettingsButton,
+  SettingsCategoryHeader,
+} from 'react-native-settings-components';
 
 import withLoginState, { LoginStateProps } from '../withLoginState';
 import CopyDeckDialog from '../CopyDeckDialog';
 import Dialog from '../core/Dialog';
 import withDialogs, { InjectedDialogProps } from '../core/withDialogs';
-import Button from '../core/Button';
+import withDimensions, { DimensionsProps } from '../core/withDimensions';
 import { iconsMap } from '../../app/NavIcons';
 import {
   fetchPrivateDeck,
@@ -42,11 +49,12 @@ import {
   saveDeckChanges,
   DeckChanges,
 } from '../decks/actions';
-import { Deck, DeckMeta, Slots } from '../../actions/types';
+import { Deck, DeckMeta, ParsedDeck, Slots } from '../../actions/types';
 import withPlayerCards, { PlayerCardProps } from '../withPlayerCards';
 import DeckValidation from '../../lib/DeckValidation';
 import { FACTION_DARK_GRADIENTS } from '../../constants';
-import { parseDeck, ParsedDeck } from '../parseDeck';
+import Card from '../../data/Card';
+import { parseDeck } from '../../lib/parseDeck';
 import { EditDeckProps } from '../DeckEditView';
 import EditDeckDetailsDialog from './EditDeckDetailsDialog';
 import DeckViewTab from './DeckViewTab';
@@ -57,8 +65,10 @@ import {
   getEffectiveDeckId,
   AppState,
 } from '../../reducers';
-import { m, s, iconSizeScale } from '../../styles/space';
+import { m } from '../../styles/space';
 import typography from '../../styles/typography';
+import { COLORS } from '../../styles/colors';
+import { getDeckOptions, showCardCharts, showDrawSimulator } from '../navHelper';
 
 export interface DeckDetailProps {
   id: number;
@@ -75,7 +85,7 @@ interface ReduxProps {
 interface ReduxActionProps {
   fetchPrivateDeck: (id: number) => void;
   fetchPublicDeck: (id: number, useDeckEndpoint: boolean) => void;
-  removeDeck: (id: number, deleteAllVersions?: boolean) => void;
+  removeDeck: (id: number) => void;
   uploadLocalDeck: (deck: Deck) => Promise<Deck>;
   saveDeckChanges: (deck: Deck, changes: DeckChanges) => Promise<Deck>;
 }
@@ -86,7 +96,8 @@ type Props = NavigationProps &
   ReduxActionProps &
   PlayerCardProps &
   LoginStateProps &
-  InjectedDialogProps;
+  InjectedDialogProps &
+  DimensionsProps;
 
 interface State {
   parsedDeck?: ParsedDeck;
@@ -102,6 +113,8 @@ interface State {
   hasPendingEdits: boolean;
   visible: boolean;
   editDetailsVisible: boolean;
+  upgradeCard?: Card;
+  menuOpen: boolean;
 }
 
 class DeckDetailView extends React.Component<Props, State> {
@@ -124,7 +137,9 @@ class DeckDetailView extends React.Component<Props, State> {
       hasPendingEdits: false,
       visible: true,
       editDetailsVisible: false,
+      menuOpen: false,
     };
+
     this._uploadLocalDeck = throttle(this.uploadLocalDeck.bind(this), 200);
     this._saveEditsAndDismiss = throttle(this.saveEdits.bind(this, true), 200);
     this._saveEdits = throttle(this.saveEdits.bind(this, false), 200);
@@ -187,9 +202,6 @@ class DeckDetailView extends React.Component<Props, State> {
         fetchPublicDeck(id, false);
       }
     }
-    if (deck && deck.investigator_code) {
-      this.loadCards(deck);
-    }
   }
 
   componentWillUnmount() {
@@ -203,6 +215,9 @@ class DeckDetailView extends React.Component<Props, State> {
     const {
       deck,
       id,
+      isPrivate,
+      fetchPrivateDeck,
+      fetchPublicDeck,
     } = this.props;
     if (deck !== prevProps.deck) {
       if (!deck) {
@@ -220,14 +235,9 @@ class DeckDetailView extends React.Component<Props, State> {
         }
       }
     }
-    if (deck) {
-      if (deck !== prevProps.deck) {
-        this.loadCards(deck);
-      }
-    }
   }
 
-  _deleteDeck = (deleteAllVersions: boolean) => {
+  _deleteDeck = () => {
     const {
       id,
       removeDeck,
@@ -237,26 +247,30 @@ class DeckDetailView extends React.Component<Props, State> {
       deleting: true,
     }, () => {
       Navigation.dismissAllModals();
-      removeDeck(id, deleteAllVersions);
+      removeDeck(id);
     });
   };
 
   _toggleCopyDialog = () => {
     this.setState({
+      menuOpen: false,
       copying: !this.state.copying,
     });
   };
 
+  _savePressed = () => {
+    this._saveEdits();
+  };
+
   getRightButtons() {
-    const {
-      isPrivate,
-      deck,
-    } = this.props;
     const {
       hasPendingEdits,
     } = this.state;
-    const rightButtons = [];
-    const editable = isPrivate && deck && !deck.next_deck;
+    const rightButtons: OptionsTopBarButton[] = [{
+      id: 'menu',
+      icon: iconsMap.menu,
+      color: 'white',
+    }];
     if (hasPendingEdits) {
       rightButtons.push({
         text: t`Save`,
@@ -264,36 +278,9 @@ class DeckDetailView extends React.Component<Props, State> {
         color: 'white',
         testID: t`Save`,
       });
-    } else {
-      rightButtons.push({
-        id: 'copy',
-        icon: iconsMap['content-copy'],
-        color: 'white',
-        testID: t`Clone Deck`,
-      });
-    }
-    if (editable) {
-      rightButtons.push({
-        id: 'edit',
-        icon: iconsMap.edit,
-        color: 'white',
-        testID: t`Edit Deck`,
-      });
     }
     return rightButtons;
   }
-
-  _syncNavigationButtons = () => {
-    const {
-      componentId,
-    } = this.props;
-
-    Navigation.mergeOptions(componentId, {
-      topBar: {
-        rightButtons: this.getRightButtons(),
-      },
-    });
-  };
 
   _handleBackPress = () => {
     if (!this.state.visible) {
@@ -326,14 +313,14 @@ class DeckDetailView extends React.Component<Props, State> {
   };
 
   navigationButtonPressed({ buttonId }: { buttonId: string }) {
-    if (buttonId === 'edit') {
-      this._onEditPressed();
-    } else if (buttonId === 'back' || buttonId === 'androidBack') {
+    if (buttonId === 'back' || buttonId === 'androidBack') {
       this._handleBackPress();
     } else if (buttonId === 'save') {
       this._saveEdits();
-    } else if (buttonId === 'copy') {
-      this._toggleCopyDialog();
+    } else if (buttonId === 'menu') {
+      this.setState({
+        menuOpen: !this.state.menuOpen,
+      });
     }
   }
 
@@ -346,6 +333,9 @@ class DeckDetailView extends React.Component<Props, State> {
     if (!deck) {
       return;
     }
+    this.setState({
+      menuOpen: false,
+    });
     const investigator = cards[deck.investigator_code];
     const {
       slots,
@@ -376,7 +366,7 @@ class DeckDetailView extends React.Component<Props, State> {
               color: 'white',
             },
             background: {
-              color: FACTION_DARK_GRADIENTS[investigator ? investigator.factionCode() : 'basic'][0],
+              color: FACTION_DARK_GRADIENTS[investigator ? investigator.factionCode() : 'neutral'][0],
             },
           },
         },
@@ -400,11 +390,11 @@ class DeckDetailView extends React.Component<Props, State> {
       this.setState({
         saving: true,
       });
-      uploadLocalDeck(deck).then(() => {
+      uploadLocalDeck(deck).then(newDeck => {
         this.setState({
           saving: false,
           hasPendingEdits: false,
-        }, this._syncNavigationButtons);
+        });
       }, () => {
         this.setState({
           saving: false,
@@ -448,6 +438,12 @@ class DeckDetailView extends React.Component<Props, State> {
       const problemObj = this.getProblem();
       const problem = problemObj ? problemObj.reason : '';
 
+      const addedBasicWeaknesses = this.addedBasicWeaknesses(
+        deck,
+        slots,
+        ignoreDeckLimitSlots
+      );
+
       this.setState({
         saving: true,
       });
@@ -468,7 +464,7 @@ class DeckDetailView extends React.Component<Props, State> {
             saving: false,
             nameChange: undefined,
             hasPendingEdits: false,
-          }, this._syncNavigationButtons);
+          });
         }
       }, this._handleSaveError);
     }
@@ -576,7 +572,7 @@ class DeckDetailView extends React.Component<Props, State> {
         this.state.ignoreDeckLimitSlots,
         updatedMeta,
         this.state.nameChange),
-    }, this._syncNavigationButtons);
+    });
   };
 
   _updateIgnoreDeckLimitSlots = (newIgnoreDeckLimitSlots: Slots) => {
@@ -599,7 +595,7 @@ class DeckDetailView extends React.Component<Props, State> {
         newIgnoreDeckLimitSlots,
         this.state.meta,
         this.state.nameChange),
-    }, this._syncNavigationButtons);
+    });
   };
 
   _onDeckCountChange = (code: string, count: number) => {
@@ -637,7 +633,7 @@ class DeckDetailView extends React.Component<Props, State> {
         ignoreDeckLimitSlots,
         this.state.meta,
         this.state.nameChange),
-    }, this._syncNavigationButtons);
+    });
   };
 
   loadCards(deck: Deck) {
@@ -657,7 +653,7 @@ class DeckDetailView extends React.Component<Props, State> {
         parsedDeck,
         hasPendingEdits: false,
         loaded: true,
-      }, this._syncNavigationButtons);
+      });
     }
   }
 
@@ -681,11 +677,14 @@ class DeckDetailView extends React.Component<Props, State> {
       />
     );
   }
+
   _showEditDetailsVisible = () => {
     this.setState({
       editDetailsVisible: true,
+      menuOpen: false,
     });
   };
+
   _toggleEditDetailsVisible = () => {
     this.setState({
       editDetailsVisible: !this.state.editDetailsVisible,
@@ -708,10 +707,10 @@ class DeckDetailView extends React.Component<Props, State> {
       nameChange: name,
       hasPendingEdits: pendingEdits,
       editDetailsVisible: false,
-    }, this._syncNavigationButtons);
+    });
   };
 
-  renderEditDetailsDialog(deck: Deck) {
+  renderEditDetailsDialog(deck: Deck, parsedDeck: ParsedDeck) {
     const {
       viewRef,
     } = this.props;
@@ -770,49 +769,25 @@ class DeckDetailView extends React.Component<Props, State> {
     const {
       hasPendingEdits,
     } = this.state;
-    if (!deck || deck.next_deck) {
+    if (!deck || !hasPendingEdits) {
       return null;
     }
     return (
-      <React.Fragment>
-        <View style={styles.twoColumn}>
-          <View style={styles.halfColumn}>
-            <Button
-              style={styles.button}
-              grow
-              text={t`Edit`}
-              color="purple"
-              size="small"
-              icon={<MaterialIcons size={20 * iconSizeScale * DeviceInfo.getFontScale()} color="#FFFFFF" name="edit" />}
-              onPress={this._onEditPressed}
-            />
-          </View>
-
+      <>
+        <View style={styles.button}>
+          <Button
+            title={t`Save Changes`}
+            onPress={this._savePressed}
+          />
         </View>
-        { hasPendingEdits && (
-          <View style={[styles.twoColumn, styles.topSpace]}>
-            <View style={styles.halfColumn}>
-              <Button
-                style={styles.button}
-                text={t`Save`}
-                color="green"
-                size="small"
-                grow
-                onPress={this._saveEdits}
-              />
-            </View>
-            <View style={styles.halfColumn}>
-              <Button
-                text={t`Discard Edits`}
-                color="red"
-                grow
-                size="small"
-                onPress={this._clearEdits}
-              />
-            </View>
-          </View>
-        ) }
-      </React.Fragment>
+        <View style={styles.button}>
+          <Button
+            title={t`Discard Changes`}
+            color={COLORS.red}
+            onPress={this._clearEdits}
+          />
+        </View>
+      </>
     );
   }
 
@@ -839,6 +814,9 @@ class DeckDetailView extends React.Component<Props, State> {
     const validator = new DeckValidation(investigator, meta);
     return validator.getProblem(flatMap(keys(slots), code => {
       const card = cards[code];
+      if (!card) {
+        return [];
+      }
       return map(
         range(0, Math.max(0, slots[code] - (ignoreDeckLimitSlots[code] || 0))),
         () => card
@@ -846,10 +824,14 @@ class DeckDetailView extends React.Component<Props, State> {
     }));
   }
 
-  _renderFooter = (slots?: Slots, controls?: React.ReactNode) => {
+  _renderFooter = (
+    slots?: Slots,
+    controls?: React.ReactNode
+  ) => {
     const {
       componentId,
       cards,
+      fontScale,
     } = this.props;
     const {
       parsedDeck,
@@ -861,6 +843,7 @@ class DeckDetailView extends React.Component<Props, State> {
     return (
       <DeckNavFooter
         componentId={componentId}
+        fontScale={fontScale}
         parsedDeck={parsedDeck}
         meta={meta}
         cards={cards}
@@ -869,25 +852,269 @@ class DeckDetailView extends React.Component<Props, State> {
     );
   };
 
-  render() {
+  _menuOpenChange = (menuOpen: boolean) => {
+    this.setState({
+      menuOpen,
+    });
+  };
+
+  _doLocalDeckUpload = () => {
+    this._uploadLocalDeck();
+  };
+
+  _uploadToMarvelCB = () => {
+    const {
+      signedIn,
+      login,
+      deck,
+    } = this.props;
+    const { hasPendingEdits } = this.state;
+    if (!deck) {
+      return;
+    }
+    this.setState({
+      menuOpen: false,
+    });
+    if (hasPendingEdits) {
+      Alert.alert(
+        t`Save Local Changes`,
+        t`Please save any local edits to this deck before sharing to ArkhamDB`
+      );
+    } else if (!signedIn) {
+      Alert.alert(
+        t`Sign in to ArkhamDB`,
+        t`ArkhamDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.`,
+        [
+          { text: 'Sign In', onPress: login },
+          { text: 'Cancel', style: 'cancel' },
+        ],
+      );
+    } else {
+      Alert.alert(
+        t`Upload to ArkhamDB`,
+        t`You can upload your deck to ArkhamDB to share with others.\n\nAfter doing this you will need network access to make changes to the deck.`,
+        [
+          { text: 'Upload', onPress: this._doLocalDeckUpload },
+          { text: 'Cancel', style: 'cancel' },
+        ],
+      );
+    }
+  };
+
+  _viewDeck = () => {
+    const { deck } = this.props;
+    if (deck) {
+      Linking.openURL(`https://marvelcdb.com/deck/view/${deck.id}`);
+    }
+  };
+
+  _deleteDeckPrompt = () => {
     const {
       deck,
+    } = this.props;
+    if (!deck) {
+      return;
+    }
+    this.setState({
+      menuOpen: false,
+    });
+    if (deck.local) {
+      const options: AlertButton[] = [];
+      options.push({
+        text: t`Delete`,
+        onPress: this._deleteDeck,
+        style: 'destructive',
+      });
+      options.push({
+        text: t`Cancel`,
+        style: 'cancel',
+      });
+
+      Alert.alert(
+        t`Delete deck`,
+        t`Are you sure you want to delete this deck?`,
+        options,
+      );
+    } else {
+      Alert.alert(
+        t`Visit ArkhamDB to delete?`,
+        t`Unfortunately to delete decks you have to visit ArkhamDB at this time.`,
+        [
+          {
+            text: t`Visit ArkhamDB`,
+            onPress: () => {
+              Linking.openURL(`https://marvelcdb.com/deck/view/${deck.id}`);
+            },
+          },
+          {
+            text: t`Cancel`,
+            style: 'cancel',
+          },
+        ],
+      );
+    }
+  };
+
+  _showCardCharts = () => {
+    const { componentId } = this.props;
+    const { parsedDeck } = this.state;
+    this.setState({
+      menuOpen: false,
+    });
+    if (parsedDeck) {
+      showCardCharts(componentId, parsedDeck);
+    }
+  };
+
+  _showDrawSimulator = () => {
+    const { componentId } = this.props;
+    const { parsedDeck } = this.state;
+    this.setState({
+      menuOpen: false,
+    });
+    if (parsedDeck) {
+      showDrawSimulator(componentId, parsedDeck);
+    }
+  };
+
+  renderSideMenu(
+    deck: Deck,
+    parsedDeck: ParsedDeck
+  ) {
+    const {
+      isPrivate,
+    } = this.props;
+    const {
+      nameChange,
+    } = this.state;
+    const {
+      normalCardCount,
+      totalCardCount,
+    } = parsedDeck;
+
+    const editable = isPrivate && deck;
+    return (
+      <ScrollView style={styles.menu}>
+        <SettingsCategoryHeader title={t`Deck`} />
+        { editable && (
+          <>
+            <SettingsButton
+              onPress={this._showEditDetailsVisible}
+              title={t`Name`}
+              description={nameChange || deck.name}
+            />
+          </>
+        ) }
+        <SettingsCategoryHeader title={t`Cards`} />
+        <SettingsButton
+          onPress={this._onEditPressed}
+          title={t`Edit Cards`}
+          description={ngettext(
+            msgid`${normalCardCount} Card (${totalCardCount} Total)`,
+            `${normalCardCount} Cards (${totalCardCount} Total)`,
+            normalCardCount
+          )}
+        />
+        <SettingsButton
+          onPress={this._showCardCharts}
+          title={t`Charts`}
+        />
+        <SettingsButton
+          onPress={this._showDrawSimulator}
+          title={t`Draw Simulator`}
+        />
+        <SettingsCategoryHeader title={t`Options`} />
+        <SettingsButton
+          onPress={this._toggleCopyDialog}
+          title={t`Clone`}
+        />
+        { deck.local ? (
+          <SettingsButton
+            onPress={this._uploadToMarvelCB}
+            title={t`Upload to MarvelCDB`}
+          />
+        ) : (
+          <SettingsButton
+            title={t`View on MarvelCDB`}
+            onPress={this._viewDeck}
+          />
+        ) }
+        { !!isPrivate && (
+          <SettingsButton
+            title={t`Delete`}
+            titleStyle={styles.destructive}
+            onPress={this._deleteDeckPrompt}
+          />
+        ) }
+      </ScrollView>
+    );
+  }
+
+  renderDeck(
+    deck: Deck,
+    parsedDeck: ParsedDeck
+  ) {
+    const {
       componentId,
+      fontScale,
       isPrivate,
       captureViewRef,
       cards,
       signedIn,
       login,
       singleCardView,
+      width,
     } = this.props;
     const {
-      loaded,
-      parsedDeck,
       nameChange,
       hasPendingEdits,
       meta,
     } = this.state;
 
+    const editable = !!isPrivate && !!deck;
+    return (
+      <View>
+        <View style={styles.container} ref={captureViewRef}>
+          <DeckViewTab
+            componentId={componentId}
+            fontScale={fontScale}
+            deck={deck}
+            editable={editable}
+            meta={meta}
+            setMeta={this._setMeta}
+            deckName={nameChange || deck.name}
+            singleCardView={singleCardView}
+            parsedDeck={parsedDeck}
+            problem={this.getProblem() || undefined}
+            hasPendingEdits={hasPendingEdits}
+            cards={cards}
+            isPrivate={!!isPrivate}
+            buttons={this.renderButtons()}
+            showEditCards={this._onEditPressed}
+            showEditNameDialog={this._showEditDetailsVisible}
+            signedIn={signedIn}
+            login={login}
+            renderFooter={this._renderFooter}
+            onDeckCountChange={this._onDeckCountChange}
+            width={width}
+          />
+          { this._renderFooter() }
+        </View>
+        { this.renderEditDetailsDialog(deck, parsedDeck) }
+      </View>
+    );
+  }
+
+  render() {
+    const {
+      width,
+      captureViewRef,
+      deck,
+    } = this.props;
+    const {
+      loaded,
+      parsedDeck,
+    } = this.state;
     if (!deck || !loaded || !parsedDeck) {
       return (
         <View style={styles.activityIndicatorContainer}>
@@ -899,33 +1126,19 @@ class DeckDetailView extends React.Component<Props, State> {
         </View>
       );
     }
+    const menuWidth = Math.min(width * 0.60, 240);
     return (
-      <View>
-        <View style={styles.container} ref={captureViewRef}>
-          <DeckViewTab
-            componentId={componentId}
-            deck={deck}
-            meta={meta}
-            setMeta={this._setMeta}
-            deckName={nameChange || deck.name}
-            singleCardView={singleCardView}
-            parsedDeck={parsedDeck}
-            problem={this.getProblem() || undefined}
-            hasPendingEdits={hasPendingEdits}
-            cards={cards}
-            isPrivate={!!isPrivate}
-            buttons={this.renderButtons()}
-            showEditNameDialog={this._showEditDetailsVisible}
-            signedIn={signedIn}
-            login={login}
-            deleteDeck={this._deleteDeck}
-            uploadLocalDeck={this._uploadLocalDeck}
-            renderFooter={this._renderFooter}
-            onDeckCountChange={this._onDeckCountChange}
-          />
-          { this._renderFooter() }
-        </View>
-        { this.renderEditDetailsDialog(deck) }
+      <View style={styles.flex} ref={captureViewRef}>
+        <SideMenu
+          isOpen={this.state.menuOpen}
+          onChange={this._menuOpenChange}
+          menu={this.renderSideMenu(deck, parsedDeck)}
+          openMenuOffset={menuWidth}
+          autoClosing
+          menuPosition="right"
+        >
+          { this.renderDeck(deck, parsedDeck) }
+        </SideMenu>
         { this.renderSavingDialog() }
         { this.renderCopyDialog() }
       </View>
@@ -962,13 +1175,17 @@ export default connect<ReduxProps, ReduxActionProps, NavigationProps & DeckDetai
   withPlayerCards<ReduxProps & ReduxActionProps & NavigationProps & DeckDetailProps>(
     withDialogs(
       withLoginState(
-        DeckDetailView
+        withDimensions(DeckDetailView)
       )
     )
   )
 );
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
   container: {
     position: 'relative',
     height: '100%',
@@ -984,24 +1201,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  button: {
-    marginRight: s,
-  },
   errorMargin: {
     padding: m,
   },
-  topSpace: {
-    marginTop: s,
+  button: {
+    margin: 8,
   },
-  twoColumn: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+  menu: {
+    borderLeftWidth: 2,
+    borderColor: COLORS.darkGray,
+    backgroundColor: COLORS.white,
   },
-  halfColumn: {
-    width: '50%',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+  destructive: {
+    color: COLORS.red,
   },
 });

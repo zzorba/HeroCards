@@ -4,7 +4,7 @@ import { StackedBarChart } from 'react-native-svg-charts';
 import { View, Text, StyleSheet } from 'react-native';
 import { t } from 'ttag';
 
-import { ParsedDeck } from '../parseDeck';
+import { ParsedDeck } from '../../actions/types';
 import MarvelIcon from '../../assets/MarvelIcon';
 import { PLAYER_FACTION_CODES, FACTION_COLORS, FactionCodeType } from '../../constants';
 import typography from '../../styles/typography';
@@ -17,9 +17,10 @@ interface Item {
   faction: FactionCodeType;
   hero: number;
   protection: number;
-  aggression: number;
   leadership: number;
+  aggression: number;
   justice: number;
+  encounter: number;
   basic: number;
   dual: number;
   total: number;
@@ -34,11 +35,12 @@ interface LabelData {
 
 const DEFAULT_ITEM = {
   hero: 0,
-  aggression: 0,
   protection: 0,
-  justice: 0,
   leadership: 0,
+  aggression: 0,
+  justice: 0,
   basic: 0,
+  encounter: 0,
 };
 
 export default class FactionChart extends React.PureComponent<Props> {
@@ -111,12 +113,14 @@ export default class FactionChart extends React.PureComponent<Props> {
       ))
     );
     const keys: (FactionCodeType | 'dual')[] = [
+      'hero',
+      'protection',
       'aggression',
       'justice',
       'leadership',
-      'protection',
       'basic',
       'dual',
+      'encounter',
     ];
     const colors = map(keys, key => key === 'basic' ? '#444' : FACTION_COLORS[key]);
     return (

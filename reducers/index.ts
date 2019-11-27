@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import { concat, find, filter, flatMap, forEach, keys, map, max, minBy, last, sortBy, values } from 'lodash';
 import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import { createSelector } from 'reselect';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import signedIn from './signedIn';
 import filters from './filters';
@@ -11,35 +11,36 @@ import decks from './decks';
 import packs from './packs';
 import settings from './settings';
 import { FilterState } from '../lib/filters';
-import { Deck, Pack, SortType } from '../actions/types';
+import { Deck, DecksMap, Pack, SortType } from '../actions/types';
+import Card, { CardsMap } from '../data/Card';
 
 const packsPersistConfig = {
   key: 'packs',
-  storage,
+  storage: AsyncStorage,
   blacklist: ['loading', 'error'],
 };
 
 const cardsPersistConfig = {
   key: 'cards',
-  storage,
+  storage: AsyncStorage,
   blacklist: ['loading', 'error'],
 };
 
 const decksPersistConfig = {
   key: 'decks',
-  storage,
+  storage: AsyncStorage,
   blacklist: ['refreshing', 'error'],
 };
 
 const settingsPeristConfig = {
   key: 'settings',
-  storage,
+  storage: AsyncStorage,
   blacklist: [],
 };
 
 const signedInPersistConfig = {
   key: 'signedIn',
-  storage,
+  storage: AsyncStorage,
   blacklist: ['loading', 'error'],
 };
 
@@ -74,7 +75,7 @@ export function getPackFetchDate(state: AppState): number | null {
 
 export const getAllPacks = createSelector(
   allPacksSelector,
-  allPacks => sortBy(allPacks || DEFAULT_PACK_LIST, pack => pack.position),
+  allPacks => sortBy(allPacks || DEFAULT_PACK_LIST, pack => pack.position)
 );
 
 export function getPack(state: AppState, packCode: string): Pack | undefined {
@@ -102,18 +103,12 @@ export function getAllDecks(state: AppState) {
 export function getBaseDeck(state: AppState, deckId: number): Deck | undefined {
   const decks = getAllDecks(state);
   let deck = decks[deckId];
-  while (deck && deck.previous_deck && decks[deck.previous_deck]) {
-    deck = decks[deck.previous_deck];
-  }
   return deck;
 }
 
 export function getLatestDeck(state: AppState, deckId: number): Deck | undefined {
   const decks = getAllDecks(state);
   let deck = decks[deckId];
-  while (deck && deck.next_deck && decks[deck.next_deck]) {
-    deck = decks[deck.next_deck];
-  }
   return deck;
 }
 

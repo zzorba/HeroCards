@@ -1,27 +1,29 @@
 import React, { ReactNode } from 'react';
 import {
   ActivityIndicator,
+  Platform,
   StyleSheet,
   Text,
+  TouchableNativeFeedback,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { ngettext, msgid, t } from 'ttag';
 
-import { Deck } from '../actions/types';
+import { Deck, ParsedDeck } from '../actions/types';
 import Card, { CardsMap } from '../data/Card';
 import InvestigatorImage from './core/InvestigatorImage';
 import FactionGradient from './core/FactionGradient';
 import DeckTitleBarComponent from './DeckTitleBarComponent';
 import DeckProblemRow from './DeckProblemRow';
 import { toRelativeDateString } from '../lib/datetime';
-import { parseDeck, ParsedDeck } from './parseDeck';
+import { parseDeck } from '../lib/parseDeck';
 import typography from '../styles/typography';
 import { s } from '../styles/space';
 
 interface Props {
   deck: Deck;
-  previousDeck?: Deck;
+  fontScale: number;
   cards: CardsMap;
   investigator?: Card;
   onPress?: (deck: Deck, investigator?: Card) => void;
@@ -47,6 +49,7 @@ export default class DeckListRow extends React.Component<Props> {
       deck,
       cards,
       details,
+      fontScale,
     } = this.props;
     if (details) {
       return details;
@@ -54,6 +57,12 @@ export default class DeckListRow extends React.Component<Props> {
     if (!deck) {
       return null;
     }
+    const parsedDeck = parseDeck(
+      deck,
+      deck.slots,
+      deck.ignoreDeckLimitSlots || {},
+      cards
+    );
 
     const date: undefined | string = deck.date_update || deck.date_creation;
     const parsedDate: number | undefined = date ? Date.parse(date) : undefined;
@@ -61,7 +70,11 @@ export default class DeckListRow extends React.Component<Props> {
     return (
       <View>
         { !!deck.problem && (
-          <DeckProblemRow problem={{ reason: deck.problem }} color="#222" />
+          <DeckProblemRow
+            problem={{ reason: deck.problem }}
+            color="#222"
+            fontScale={fontScale}
+          />
         ) }
         { !!dateStr && (
           <Text style={typography.small} >
@@ -79,6 +92,7 @@ export default class DeckListRow extends React.Component<Props> {
       titleButton,
       compact,
       subDetails,
+      fontScale,
     } = this.props;
     if (!deck || !investigator) {
       return (
@@ -92,12 +106,13 @@ export default class DeckListRow extends React.Component<Props> {
       );
     }
     return (
-      <React.Fragment>
+      <View>
         <View style={styles.column}>
           <DeckTitleBarComponent
             name={compact && investigator ? investigator.name : deck.name}
             investigator={investigator}
             button={titleButton}
+            fontScale={fontScale}
             compact
           />
           <FactionGradient
@@ -126,7 +141,7 @@ export default class DeckListRow extends React.Component<Props> {
           style={styles.footer}
           dark
         />
-      </React.Fragment>
+      </View>
     );
   }
 
@@ -147,11 +162,21 @@ export default class DeckListRow extends React.Component<Props> {
         </View>
       );
     }
+    if (viewDeckButton) {
+      return this.renderContents();
+    }
+    if (Platform.OS === 'ios') {
+      return (
+        <TouchableOpacity onPress={this._onPress}>
+          { this.renderContents() }
+        </TouchableOpacity>
+      );
+    }
     return (
-      <TouchableOpacity onPress={this._onPress} disabled={viewDeckButton}>
+      <TouchableNativeFeedback useForeground onPress={this._onPress}>
         { this.renderContents() }
-      </TouchableOpacity>
-    );
+      </TouchableNativeFeedback>
+    )
   }
 }
 

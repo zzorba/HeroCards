@@ -27,6 +27,7 @@ export interface FilterProps {
   filters: FilterState;
   defaultFilterState: FilterState;
   width: number;
+  fontScale: number;
   pushFilterView: (screen: string) => void;
   onToggleChange: (setting: string, value: boolean) => void;
   onFilterChange: (setting: string, value: any) => void;
@@ -186,6 +187,7 @@ export default function withFilterFunctions<P>(
         /* eslint-disable @typescript-eslint/no-unused-vars */
         filterId,
         width,
+        fontScale,
         currentFilters,
         ...otherProps
       } = this.props;
@@ -200,6 +202,7 @@ export default function withFilterFunctions<P>(
             filters={currentFilters}
             defaultFilterState={defaultFilterState}
             width={width}
+            fontScale={fontScale}
             pushFilterView={this._pushFilterView}
             onToggleChange={this._onToggleChange}
             onFilterChange={this._onFilterChange}
@@ -234,6 +237,7 @@ export default function withFilterFunctions<P>(
     mapStateToProps,
     mapDispatchToProps,
   )(
+    // @ts-ignore TS2345
     connectRealm<NavigationProps & CardFilterProps & P & ReduxProps & ReduxActionProps, RealmProps, Card>(
       withDimensions(WrappedFilterComponent), {
         schemas: ['Card'],

@@ -1,14 +1,16 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { Navigation, Options } from 'react-native-navigation';
-
 import { t } from 'ttag';
-import { Deck, Slots } from '../actions/types';
-import { FACTION_DARK_GRADIENTS } from '../constants';
-import Card from '../data/Card';
+
+import { DeckChartsProps } from './DeckChartsView';
+import { DrawSimulatorProps } from './DrawSimulatorView';
 import { CardDetailProps } from './CardDetailView';
 import { CardDetailSwipeProps } from './CardDetailSwipeView';
 import { DeckDetailProps } from './DeckDetailView';
+import { Deck, ParsedDeck, Slots } from '../actions/types';
+import { FACTION_DARK_GRADIENTS } from '../constants';
+import Card from '../data/Card';
 import { iconsMap } from '../app/NavIcons';
 import { COLORS } from '../styles/colors';
 
@@ -17,7 +19,6 @@ export function getDeckOptions(
   modal?: boolean,
   title?: string
 ): Options {
-  const investigatorDeckName = investigator ? investigator.name : t`Deck`;
   return {
     statusBar: {
       style: 'light',
@@ -39,15 +40,17 @@ export function getDeckOptions(
         },
       ] : [],
       title: {
-        text: (title !== undefined ? title : investigatorDeckName),
+        fontWeight: 'bold',
+        text: (investigator ? investigator.name : t`Deck`),
         color: '#FFFFFF',
       },
       subtitle: {
+        text: title,
         color: '#FFFFFF',
       },
       background: {
         color: FACTION_DARK_GRADIENTS[
-          (investigator ? investigator.faction_code : null) || 'basic'
+          (investigator ? investigator.faction_code : null) || 'neutral'
         ][0],
       },
     },
@@ -64,47 +67,6 @@ export function showDeckModal(
   deck: Deck,
   investigator?: Card
 ) {
-  /* if (Platform.OS === 'ios' && Platform.isPad && false) {
-    Navigation.showModal({
-      splitView: {
-        id: 'SPLIT_DECK_EDIT',
-        master: {
-          stack: {
-            id: 'MASTER_ID',
-            children: [
-              {
-                component: {
-                  name: 'Settings',
-                },
-              },
-            ],
-          },
-        },
-        detail: {
-          stack: {
-            id: 'DETAILS_ID',
-            children: [
-              {
-                component: {
-                  name: 'Deck',
-                  passProps: {
-                    id: deck.id,
-                    isPrivate: true,
-                    modal: true,
-                    title: investigator.name,
-                  },
-                  options: getDeckOptions(investigator),
-                },
-              },
-            ],
-          },
-        },
-        options: {
-          displayMode: 'visible',
-        },
-      },
-    });
-  } else { */
   const passProps: DeckDetailProps = {
     id: deck.id,
     isPrivate: true,
@@ -118,7 +80,7 @@ export function showDeckModal(
         component: {
           name: 'Deck',
           passProps,
-          options: getDeckOptions(investigator, true),
+          options: getDeckOptions(investigator, true, deck.name),
         },
       }],
     },
@@ -146,6 +108,40 @@ export function showCard(
           },
         },
       },
+    },
+  });
+}
+
+export function showCardCharts(
+  componentId: string,
+  parsedDeck: ParsedDeck
+) {
+  Navigation.push<DeckChartsProps>(componentId, {
+    component: {
+      name: 'Deck.Charts',
+      passProps: {
+        parsedDeck,
+      },
+      options: getDeckOptions(parsedDeck.investigator, false, t`Charts`),
+    },
+  });
+}
+
+export function showDrawSimulator(
+  componentId: string,
+  parsedDeck: ParsedDeck
+) {
+  const {
+    slots,
+    investigator,
+  } = parsedDeck;
+  Navigation.push<DrawSimulatorProps>(componentId, {
+    component: {
+      name: 'Deck.DrawSimulator',
+      passProps: {
+        slots,
+      },
+      options: getDeckOptions(investigator, false, t`Draw`),
     },
   });
 }
@@ -185,7 +181,6 @@ export function showCardSwipe(
     },
   });
 }
-
 
 export default {
   showDeckModal,

@@ -23,6 +23,7 @@ import typography from '../../styles/typography';
 
 interface Props {
   componentId: string;
+  fontScale: number;
   baseQuery?: string;
   mythosToggle?: boolean;
   showNonCollection?: boolean;
@@ -39,6 +40,7 @@ interface Props {
   onDeckCountChange?: (code: string, count: number) => void;
   limits?: Slots;
   renderFooter?: (slots?: Slots, controls?: React.ReactNode) => ReactNode;
+  storyOnly?: boolean;
 }
 
 interface State {
@@ -179,6 +181,7 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
     if (baseQuery) {
       queryParts.push(baseQuery);
     }
+    queryParts.push('(altArtInvestigator != true)');
     queryParts.push('(back_linked != true)');
     forEach(
       this.filterQueryParts(),
@@ -257,7 +260,7 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
     }
     return (
       <View>
-        { searchTerm && (
+        { !!searchTerm && (
           <View style={styles.button}>
             <Button
               onPress={this._clearSearchTerm}
@@ -296,9 +299,10 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
       renderFooter,
       showNonCollection,
       selectedSort,
-      mythosMode,
       visible,
       investigator,
+      storyOnly,
+      fontScale,
     } = this.props;
     const {
       searchTerm,
@@ -309,7 +313,9 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
         <View style={styles.container}>
           <CardResultList
             componentId={componentId}
+            fontScale={fontScale}
             query={this.query()}
+            filterQuery={this.filterQueryParts().join(' and ')}
             termQuery={this.termQuery()}
             searchTerm={searchTerm}
             sort={selectedSort}
@@ -323,7 +329,8 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
             expandSearchControls={this.renderExpandSearchButtons()}
             visible={visible}
             renderFooter={renderFooter}
-            showNonCollection={mythosMode || showNonCollection}
+            showNonCollection={showNonCollection}
+            storyOnly={storyOnly}
           />
         </View>
         { !!renderFooter && <View style={[

@@ -1,5 +1,5 @@
 import React from 'react';
-import { debounce } from 'lodash';
+import { debounce, range } from 'lodash';
 import {
   Animated,
   StyleSheet,
@@ -11,12 +11,13 @@ import LinearGradient from 'react-native-linear-gradient';
 import Button from '../core/Button';
 import PlusMinusButtons from '../core/PlusMinusButtons';
 import CountButton from './CountButton';
-import { ROW_HEIGHT, BUTTON_WIDTH, BUTTON_PADDING, TOGGLE_BUTTON_MODE } from './constants';
+import { rowHeight, buttonWidth, BUTTON_PADDING, toggleButtonMode } from './constants';
 import typography from '../../styles/typography';
 import { s, xs } from '../../styles/space';
 
 interface Props {
   count: number;
+  fontScale: number;
   countChanged: (count: number) => void;
   limit: number;
   showZeroCount?: boolean;
@@ -91,11 +92,12 @@ export default class CardQuantityComponent extends React.PureComponent<Props, St
   };
 
   _selectCount = (count: number) => {
+    const { fontScale } = this.props;
     this.setState({
       count: count,
     }, () => {
       setTimeout(() => {
-        if (TOGGLE_BUTTON_MODE) {
+        if (toggleButtonMode(fontScale)) {
           this._toggle();
         }
         this._throttledCountChange(count);
@@ -135,12 +137,13 @@ export default class CardQuantityComponent extends React.PureComponent<Props, St
   renderTiny() {
     const {
       limit,
+      fontScale,
     } = this.props;
     const {
       count,
       slideAnim,
     } = this.state;
-    const drawerWidth = BUTTON_PADDING + (BUTTON_WIDTH + BUTTON_PADDING) * (limit + 1);
+    const drawerWidth = BUTTON_PADDING + (buttonWidth(fontScale) + BUTTON_PADDING) * (limit + 1);
 
     const translateX = slideAnim.interpolate({
       inputRange: [0, 1],
@@ -149,13 +152,13 @@ export default class CardQuantityComponent extends React.PureComponent<Props, St
     });
 
     return (
-      <View style={styles.tinyContainer} pointerEvents="box-none">
+      <View style={[styles.tinyContainer, { height: rowHeight(fontScale) }]} pointerEvents="box-none">
         <Button
-          style={styles.button}
+          style={[styles.button, { width: buttonWidth(fontScale) }]}
           color={count === 0 ? 'white' : undefined}
           size="small"
           align="center"
-          width={BUTTON_WIDTH}
+          width={buttonWidth(fontScale)}
           text={count.toString()}
           onPress={this._toggle}
         />
@@ -163,6 +166,7 @@ export default class CardQuantityComponent extends React.PureComponent<Props, St
           <Animated.View style={[
             styles.slideDrawer,
             {
+              height: rowHeight(fontScale),
               width: drawerWidth,
               transform: [{ translateX: translateX }],
             },
@@ -173,22 +177,16 @@ export default class CardQuantityComponent extends React.PureComponent<Props, St
               start={{ x: 0, y: 1 }}
               end={{ x: 1, y: 1 }}
             >
-              <CountButton
-                text="0"
-                selected={count === 0}
-                onPress={this._selectZero}
-              />
-              <CountButton text="1"
-                selected={count === 1}
-                onPress={this._selectOne}
-              />
-              { (limit > 1) && (
+              { range(0, limit + 1).map(buttonIdx => (
                 <CountButton
-                  text="2"
-                  selected={count === 2}
-                  onPress={this._selectTwo}
+                  key={buttonIdx}
+                  fontScale={fontScale}
+                  count={buttonIdx}
+                  text={`${buttonIdx}`}
+                  selected={count === buttonIdx}
+                  onPress={this._selectCount}
                 />
-              ) }
+              )) }
             </LinearGradient>
           </Animated.View>
         </View>
@@ -202,8 +200,9 @@ export default class CardQuantityComponent extends React.PureComponent<Props, St
       showZeroCount,
       forceBig,
       light,
+      fontScale,
     } = this.props;
-    if (TOGGLE_BUTTON_MODE && !forceBig) {
+    if (toggleButtonMode(fontScale) && !forceBig) {
       return this.renderTiny();
     }
 
@@ -212,7 +211,7 @@ export default class CardQuantityComponent extends React.PureComponent<Props, St
     } = this.state;
 
     return (
-      <View style={styles.row}>
+      <View style={[styles.row, { height: rowHeight(fontScale) }]}>
         <PlusMinusButtons
           count={count}
           size={36}
@@ -237,7 +236,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    height: ROW_HEIGHT,
     paddingRight: xs,
   },
   count: {
@@ -251,7 +249,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    height: ROW_HEIGHT,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -262,7 +259,6 @@ const styles = StyleSheet.create({
     marginTop: xs,
     marginBottom: xs,
     marginRight: xs,
-    width: BUTTON_WIDTH,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -277,7 +273,6 @@ const styles = StyleSheet.create({
   slideDrawer: {
     borderColor: '#888888',
     borderLeftWidth: 1,
-    height: ROW_HEIGHT,
   },
   gradient: {
     width: '100%',

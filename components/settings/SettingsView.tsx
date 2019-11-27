@@ -21,6 +21,7 @@ import LanguagePicker from './LanguagePicker';
 import { clearDecks } from '../../actions';
 import { fetchCards } from '../cards/actions';
 import { setSingleCardView } from './actions';
+import { prefetch } from '../../lib/auth';
 import Card from '../../data/Card';
 import { getAllDecks, AppState } from '../../reducers';
 import SettingsItem from './SettingsItem';
@@ -74,6 +75,10 @@ class SettingsView extends React.Component<Props> {
     });
   }
 
+  componentDidMount() {
+    prefetch();
+  }
+
   _myCollectionPressed = () => {
     this.navButtonPressed('My.Collection', t`Edit Collection`);
   };
@@ -125,7 +130,7 @@ class SettingsView extends React.Component<Props> {
     }
     return cardsError ?
       t`Error: Check for Cards Again` :
-      t`Check for New Cards on MarvelCDB`;
+      t`Check for New Cards on ArkhamDB`;
   }
 
   _swipeBetweenCardsChanged = (value: boolean) => {

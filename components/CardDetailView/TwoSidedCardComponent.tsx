@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import DeviceInfo from 'react-native-device-info';
-import { msgid, ngettext, t, jt } from 'ttag';
+import { msgid, ngettext, t } from 'ttag';
 
 import {
   CORE_FACTION_CODES,
@@ -36,7 +36,7 @@ const PER_HERO_ICON = (
 );
 const ICON_SIZE = isBig ? 44 : 28;
 const SMALL_ICON_SIZE = isBig ? 26 : 16;
-const SKILL_ICON_SIZE = isBig ? 26 : 16;
+const RESOURCE_ICON_SIZE = isBig ? 26 : 16;
 
 const RESOURCE_FIELDS = [
   'resource_physical',
@@ -61,6 +61,7 @@ interface Props {
   linked?: boolean;
   notFirst?: boolean;
   width: number;
+  fontScale: number;
 }
 
 interface State {
@@ -181,7 +182,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
             style={styles.resourceIcon}
             key={idx}
             name={resource.substring(9)}
-            size={SKILL_ICON_SIZE}
+            size={RESOURCE_ICON_SIZE}
             color="#444"
           />))
         }
@@ -270,12 +271,20 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     subname: string | null,
     factionColor?: string
   ) {
+    const {
+      fontScale,
+    } = this.props;
     return (
       <React.Fragment>
         <View style={styles.titleRow}>
           { card.hasCost() && (
             <View style={styles.costIcon}>
-              <CardCostIcon card={card} inverted linked={this.props.linked} />
+              <CardCostIcon
+                card={card}
+                inverted
+                linked={this.props.linked}
+                fontScale={fontScale}
+              />
             </View>
           ) }
           <View style={styles.column}>
@@ -345,6 +354,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     const {
       componentId,
       width,
+      fontScale,
     } = this.props;
     if (card.linked_card) {
       return (
@@ -355,6 +365,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
             linked
             notFirst={!isFirst}
             width={width}
+            fontScale={fontScale}
           />
         </View>
       );
@@ -419,12 +430,13 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
   }
 
   renderFaqButton() {
+    const { fontScale } = this.props;
     return (
       <Button
         grow
         text={t`FAQ`}
         onPress={this._showFaq}
-        icon={<AppIcon name="faq" size={24 * DeviceInfo.getFontScale()} color="white" />}
+        icon={<AppIcon name="faq" size={24 * fontScale} color="white" />}
       />
     );
   }

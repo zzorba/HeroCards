@@ -6,7 +6,6 @@ import {
   Platform,
   View,
 } from 'react-native';
-import { map } from 'lodash';
 import { Navigation, EventSubscription } from 'react-native-navigation';
 import { connect } from 'react-redux';
 import { t } from 'ttag';
@@ -26,7 +25,6 @@ import { COLORS } from '../styles/colors';
 
 interface ReduxProps {
   showSpoilers: { [pack_code: string]: boolean };
-  hasSecondCore: boolean;
 }
 
 export interface CardDetailSwipeProps {
@@ -38,7 +36,10 @@ export interface CardDetailSwipeProps {
   renderFooter?: (slots?: Slots, controls?: React.ReactNode) => React.ReactNode;
 }
 
-type Props = NavigationProps & DimensionsProps & CardDetailSwipeProps & ReduxProps;
+type Props = NavigationProps &
+  CardDetailSwipeProps &
+  ReduxProps &
+  DimensionsProps;
 
 interface State {
   deckCardCounts?: Slots;
@@ -215,8 +216,8 @@ class CardDetailSwipeView extends React.Component<Props, State> {
 
   renderDeckCountControl() {
     const {
-      hasSecondCore,
       onDeckCountChange,
+      fontScale,
     } = this.props;
     const {
       deckCardCounts,
@@ -227,7 +228,7 @@ class CardDetailSwipeView extends React.Component<Props, State> {
     }
     const deck_limit: number = Math.min(
       card.pack_code === 'core' ?
-        ((card.quantity || 0) * (hasSecondCore ? 2 : 1)) :
+        (card.quantity || 0) :
         (card.deck_limit || 0),
       card.deck_limit || 0
     );
@@ -235,6 +236,7 @@ class CardDetailSwipeView extends React.Component<Props, State> {
       <View>
         <CardQuantityComponent
           key={card.code}
+          fontScale={fontScale}
           count={deckCardCounts[card.code] || 0}
           countChanged={this._countChanged}
           limit={deck_limit}
@@ -254,10 +256,11 @@ class CardDetailSwipeView extends React.Component<Props, State> {
     }
   };
 
-  _renderItem = (card: Card, itemIndex: number) => {
+  renderCard(card: Card, itemIndex: number) {
     const {
       componentId,
       width,
+      fontScale,
     } = this.props;
     return (
       <ScrollView
@@ -268,6 +271,7 @@ class CardDetailSwipeView extends React.Component<Props, State> {
       >
         <CardDetailComponent
           componentId={componentId}
+          fontScale={fontScale}
           card={card}
           showSpoilers={this.showSpoilers(card)}
           toggleShowSpoilers={this._toggleShowSpoilers}
@@ -276,13 +280,21 @@ class CardDetailSwipeView extends React.Component<Props, State> {
         />
       </ScrollView>
     );
-  };
+  }
+
+  renderCards() {
+    const {
+      cards,
+    } = this.props;
+    const vm = this;
+
+    return cards.map((card, index) => vm.renderCard(card, index));
+  }
 
   render() {
     const {
       width,
       renderFooter,
-      cards,
       initialIndex,
       height,
     } = this.props;
@@ -307,9 +319,7 @@ class CardDetailSwipeView extends React.Component<Props, State> {
           onIndexChanged={this._onIndexChange}
           loop={false}
         >
-          { map(cards, (card, idx) =>
-            this._renderItem(card, idx)
-          ) }
+          { this.renderCards() }
         </Swiper>
         { !!renderFooter && renderFooter(deckCardCounts, this.renderDeckCountControl()) }
         { Platform.OS === 'ios' && <View style={[styles.gutter, { height }]} /> }
@@ -318,20 +328,21 @@ class CardDetailSwipeView extends React.Component<Props, State> {
   }
 }
 
-const EMPTY_SPOILERS = {};
+const EMPTY_SPOILERS: { [code: string]: boolean } = {};
 function mapStateToProps(
   state: AppState,
   props: NavigationProps & CardDetailSwipeProps
 ): ReduxProps {
   return {
     showSpoilers: state.packs.show_spoilers || EMPTY_SPOILERS,
-    hasSecondCore: (state.packs.in_collection || {}).core || false,
   };
 }
 
-export default
-connect<ReduxProps, {}, NavigationProps & CardDetailSwipeProps, AppState>(mapStateToProps)(
-  withDimensions(CardDetailSwipeView)
+export default withDimensions<NavigationProps & CardDetailSwipeProps>(
+  connect<ReduxProps, {}, NavigationProps & CardDetailSwipeProps & DimensionsProps, AppState>(mapStateToProps)(
+    // @ts-ignore TS2345
+    CardDetailSwipeView
+  )
 );
 
 const styles = StyleSheet.create({

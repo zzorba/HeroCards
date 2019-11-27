@@ -61,9 +61,9 @@ export function toRelativeDateString(date: Date) {
     return 'Yesterday';
   }
   if (isAfter(date, addDays(startOfNowDate, -7))) {
-    return format(date, 'dddd');
+    return format(date, 'EEEE');
   }
-  return format(date, 'MMMM D, YYYY');
+  return format(date, 'MMMM d, yyyy');
 }
 
 /**

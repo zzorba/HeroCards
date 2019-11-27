@@ -1,12 +1,21 @@
-import { indexOf } from 'lodash';
+import {
+  groupBy,
+  mapValues,
+  forEach,
+  find,
+  findKey,
+  filter,
+  indexOf,
+} from 'lodash';
+
 import { DeckMeta, DeckProblem, DeckProblemType } from '../actions/types';
 import Card from '../data/Card';
+import DeckOption from '../data/DeckOption';
 
 
 // Code taken from:
-// https://github.com/Kamalisk/MarvelCDB/blob/4c194c54fcbc381e45b93f0f1bcb65a37ae581a9/src/AppBundle/Resources/public/js/app.deck.js
+// https://github.com/Kamalisk/arkhamdb/blob/4c194c54fcbc381e45b93f0f1bcb65a37ae581a9/src/AppBundle/Resources/public/js/app.deck.js
 /* eslint-disable */
-import { groupBy, mapValues, forEach, find, findKey, filter } from 'lodash';
 
 interface DeckOptionsCount {
   limit: number,
@@ -26,6 +35,16 @@ export default class DeckValidation {
     this.meta = meta;
   }
 
+  getDeckSize(): number {
+    var size: number = 30;
+  	if (this.investigator.deck_requirements) {
+      if (this.investigator.deck_requirements.size) {
+  			size = this.investigator.deck_requirements.size;
+  		}
+    }
+    return size;
+  }
+
   getPhysicalDrawDeck(cards: Card[]) {
     return filter(cards, card => card && !card.double_sided);
   }
@@ -33,7 +52,7 @@ export default class DeckValidation {
   getDrawDeck(cards: Card[]) {
     return filter(
       this.getPhysicalDrawDeck(cards),
-      card => card
+      card => !!card
     );
   }
 
@@ -67,13 +86,9 @@ export default class DeckValidation {
   getProblemHelper(cards: Card[]): DeckProblemType | null {
 	  // get investigator data
   	var card = this.investigator;
-  	var size = 30;
   	// store list of all problems
   	this.problem_list = [];
   	if (card && card.deck_requirements){
-  		if (card.deck_requirements.size){
-  			size = card.deck_requirements.size;
-  		}
   		//console.log(card.deck_requirements);
   		// must have the required cards
   		if (card.deck_requirements.card){
@@ -88,12 +103,13 @@ export default class DeckValidation {
           }
   			});
   			if (req_met_count < req_count) {
-  				return 'investigator';
+  				return 'hero';
   			}
   		}
   	} else {
 
   	}
+    const size = this.getDeckSize();
 
   	// too many copies of one card
   	if(findKey(
@@ -107,11 +123,9 @@ export default class DeckValidation {
   		return 'invalid_cards';
   	}
 
-    const investigator = this.investigator;
-  	//console.log(investigator);
-  	for (var i = 0; i < investigator.deck_options.length; i++) {
-  		//console.log(investigator.deck_options);
-      const option = investigator.deck_options[i];
+    const deck_options = this.deckOptions();
+  	for (var i = 0; i < deck_options.length; i++) {
+      const option = deck_options[i];
       if (!option) {
         continue;
       }
@@ -120,7 +134,7 @@ export default class DeckValidation {
   				if (option.error) {
   					this.problem_list.push(option.error);
   				}
-  				return 'investigator';
+  				return 'hero';
   			}
   		}
       const atleast = option.atleast;
@@ -136,7 +150,7 @@ export default class DeckValidation {
   					if (option.error){
   						this.problem_list.push(option.error);
   					}
-  					return 'investigator';
+  					return 'hero';
   				}
   			}
   		}
@@ -156,8 +170,8 @@ export default class DeckValidation {
   }
 
   getInvalidCards(cards: Card[]) {
+    this.deck_options_counts = [];
   	if (this.investigator) {
-      this.deck_options_counts = [];
   		for (var i = 0; i < this.investigator.deck_options.length; i++){
   			this.deck_options_counts.push({
           limit: 0,
@@ -168,11 +182,24 @@ export default class DeckValidation {
   	return filter(cards, card => !this.canIncludeCard(card, true));
   }
 
-  canIncludeCard(card: Card, processDeckCounts: boolean): boolean {
+  deckOptions(): DeckOption[] {
+    var deck_options: DeckOption[] = [];
+  	if (this.investigator &&
+        this.investigator.deck_options &&
+        this.investigator.deck_options.length) {
+      forEach(this.investigator.deck_options, deck_option => deck_options.push(deck_option));
+    }
+    return deck_options;
+  }
+
+  canIncludeCard(
+    card: Card,
+    processDeckCounts: boolean
+  ): boolean {
     const investigator = this.investigator;
 
   	// hide investigators
-  	if (card.type_code === 'hero' || card.type_code === 'alter_ego') {
+  	if (card.type_code === 'hero') {
   		return false;
   	}
   	if (card.faction_code === 'encounter') {
@@ -187,38 +214,19 @@ export default class DeckValidation {
   	}
 
   	//var investigator = app.data.cards.findById(investigator_code);
-
-  	if (investigator &&
-        investigator.deck_options &&
-        investigator.deck_options.length) {
-
+    const deck_options: DeckOption[] = this.deckOptions();
+    if (deck_options.length) {
   		//console.log(card);
-  		for (var i = 0; i < investigator.deck_options.length; i++) {
-  			var option = investigator.deck_options[i];
-  			//console.log(option);
-
-  			if (option.faction && option.faction.length){
-  				// needs to match at least one faction
-  				var faction_valid = false;
-  				for(var j = 0; j < option.faction.length; j++){
-  					var faction = option.faction[j];
-  					if (card.faction_code == faction || card.faction2_code == faction){
-  						faction_valid = true;
-  					}
-  				}
-
-  				if (!faction_valid){
-  					continue;
-  				}
-  				//console.log("faction valid");
-  			}
-        if (option.faction_select && option.faction_select.length) {
-          let selected_faction: string = option.faction_select[0]
+  		for (var i = 0; i < deck_options.length; i++) {
+        const finalOption = (i === deck_options.length - 1);
+  			var option = deck_options[i];
+        if (option.aspect_select && option.aspect_select.length) {
+          let selected_faction: string = option.aspect_select[0]
           if (this.meta &&
-            this.meta.faction_selected &&
-            indexOf(option.faction_select, this.meta.faction_selected) !== -1
+            this.meta.aspect &&
+            indexOf(option.aspect_select, this.meta.aspect) !== -1
           ) {
-            selected_faction = this.meta.faction_selected;
+            selected_faction = this.meta.aspect;
           }
           if (card.faction_code != selected_faction &&
             card.faction2_code != selected_faction){
@@ -292,33 +300,30 @@ export default class DeckValidation {
             continue;
           }
         }
-
-  			if (option.level){
-  				// needs to match at least one faction
-  				var level_valid = false;
-  				//console.log(option.level, card.xp, card.xp >= option.level.min, card.xp <= option.level.max);
-  			}
-
   			if (option.not){
   				return false;
   			} else {
-  				if (processDeckCounts && option.limit){
-  					this.deck_options_counts[i].limit += 1;
-  				}
-  				if (processDeckCounts && option.atleast && card.faction_code) {
-  					if (!this.deck_options_counts[i].atleast[card.faction_code]) {
-  						this.deck_options_counts[i].atleast[card.faction_code] = 0;
-  					}
-  					this.deck_options_counts[i].atleast[card.faction_code] += 1;
+          if (processDeckCounts && option.atleast && card.faction_code) {
+            if (!this.deck_options_counts[i].atleast[card.faction_code]) {
+              this.deck_options_counts[i].atleast[card.faction_code] = 0;
+            }
+            this.deck_options_counts[i].atleast[card.faction_code] += 1;
 
             if (card.faction2_code){
               if (!this.deck_options_counts[i].atleast[card.faction2_code]){
-				        this.deck_options_counts[i].atleast[card.faction2_code] = 0;
+                this.deck_options_counts[i].atleast[card.faction2_code] = 0;
               }
               this.deck_options_counts[i].atleast[card.faction2_code] += 1;
-  					}
-  				}
-  				return true;
+            }
+          }
+  				if (processDeckCounts && option.limit) {
+            if (finalOption || this.deck_options_counts[i].limit < option.limit) {
+				      this.deck_options_counts[i].limit += 1;
+              return true;
+            }
+  				} else {
+            return true;
+          }
   			}
   		}
   	}

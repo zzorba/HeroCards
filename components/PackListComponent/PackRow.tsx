@@ -10,6 +10,7 @@ import { Navigation } from 'react-native-navigation';
 
 import { t } from 'ttag';
 import { Pack } from '../../actions/types';
+import PackIcon from '../../assets/PackIcon';
 import Switch from '../core/Switch';
 import { PackCardsProps } from '../PackCardsView';
 
@@ -72,7 +73,7 @@ export default class PackRow extends React.Component<Props> {
       nameOverride,
     } = this.props;
 
-    const backgroundColor = (whiteBackground) ? '#FFFFFF' : '#f0f0f0';
+    const backgroundColor = whiteBackground ? '#FFFFFF' : '#f0f0f0';
     const textColor = '#222222';
     const iconSize = (compact) ? 24 : 28;
     const fontSize = (compact) ? 16 : 22;
@@ -85,7 +86,11 @@ export default class PackRow extends React.Component<Props> {
         <TouchableOpacity style={styles.touchable} onPress={this._onPress}>
           <View style={styles.touchableContent}>
             <View style={styles.icon}>
-              
+              <PackIcon
+                pack_code={pack.code}
+                size={iconSize}
+                color="#000000"
+              />
             </View>
             <Text
               style={[styles.title, { color: textColor, fontSize }]}

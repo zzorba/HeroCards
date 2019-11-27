@@ -9,19 +9,17 @@ import {
 // @ts-ignore
 import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
-import { Navigation } from 'react-native-navigation';
 import { msgid, ngettext, t } from 'ttag';
 
-import { DeckMeta } from '../../actions/types';
+import { DeckMeta, ParsedDeck } from '../../actions/types';
 import AppIcon from '../../assets/AppIcon';
 import DeckProblemRow from '../DeckProblemRow';
-import { DrawSimulatorProps } from '../DrawSimulatorView';
-import { ParsedDeck } from '../parseDeck';
 import { CardsMap } from '../../data/Card';
 import typography from '../../styles/typography';
 import { TINY_PHONE } from '../../styles/sizes';
+import { COLORS } from '../../styles/colors';
 import DeckValidation from '../../lib/DeckValidation';
-import { getDeckOptions } from '../navHelper';
+import { showCardCharts, showDrawSimulator } from '../navHelper';
 import { FOOTER_HEIGHT } from './constants';
 import { FACTION_DARK_GRADIENTS } from '../../constants';
 
@@ -33,6 +31,7 @@ interface Props {
   cards: CardsMap;
   meta: DeckMeta;
   controls?: React.ReactNode;
+  fontScale: number;
 }
 
 export default class DeckNavFooter extends React.Component<Props> {
@@ -41,34 +40,15 @@ export default class DeckNavFooter extends React.Component<Props> {
       componentId,
       parsedDeck,
     } = this.props;
-    Navigation.push(componentId, {
-      component: {
-        name: 'Deck.Charts',
-        passProps: {
-          parsedDeck,
-        },
-        options: getDeckOptions(parsedDeck.investigator, false, t`Charts`),
-      },
-    });
+    showCardCharts(componentId, parsedDeck);
   };
 
   _showCardSimulator = () => {
     const {
       componentId,
-      parsedDeck: {
-        slots,
-        investigator,
-      },
+      parsedDeck,
     } = this.props;
-    Navigation.push<DrawSimulatorProps>(componentId, {
-      component: {
-        name: 'Deck.DrawSimulator',
-        passProps: {
-          slots,
-        },
-        options: getDeckOptions(investigator, false, t`Draw`),
-      },
-    });
+    showDrawSimulator(componentId, parsedDeck);
   };
 
   renderProblem() {
@@ -80,6 +60,7 @@ export default class DeckNavFooter extends React.Component<Props> {
         investigator,
       },
       meta,
+      fontScale,
     } = this.props;
 
     const validator = new DeckValidation(investigator, meta);
@@ -99,7 +80,12 @@ export default class DeckNavFooter extends React.Component<Props> {
     }
 
     return (
-      <DeckProblemRow problem={problem} color="#FFFFFF" noFontScaling />
+      <DeckProblemRow
+        problem={problem}
+        color="#FFFFFF"
+        noFontScaling
+        fontScale={fontScale}
+      />
     );
   }
 
@@ -142,31 +128,41 @@ export default class DeckNavFooter extends React.Component<Props> {
       normalCardCount
     );
     return (
-      <LinearGradient
-        style={styles.wrapper}
-        colors={FACTION_DARK_GRADIENTS[investigator.factionCode()]}
-      >
-        <View style={styles.left}>
-          <View style={styles.row}>
-            <Text style={[
-              TINY_PHONE ? typography.small : typography.text,
-              styles.whiteText,
-            ]} allowFontScaling={false}>
-              { cardCountString }
-            </Text>
+      <View style={styles.borderWrapper}>
+        <LinearGradient
+          style={styles.wrapper}
+          colors={FACTION_DARK_GRADIENTS[investigator.factionCode()]}
+        >
+          <View style={styles.left}>
+            <View style={styles.row}>
+              <Text style={[
+                TINY_PHONE ? typography.small : typography.text,
+                styles.whiteText,
+              ]} allowFontScaling={false}>
+                { cardCountString }
+              </Text>
+            </View>
+            <View style={styles.row}>
+              { this.renderProblem() }
+            </View>
           </View>
-          { this.renderProblem() }
-        </View>
-        <View style={styles.right}>
-          { this.renderControls() }
-        </View>
-      </LinearGradient>
+          <View style={styles.right}>
+            { this.renderControls() }
+          </View>
+        </LinearGradient>
+      </View>
     );
   }
 }
 
 const BUTTON_SIZE = 44;
 const styles = StyleSheet.create({
+  borderWrapper: {
+    width: '100%',
+    height: FOOTER_HEIGHT,
+    borderTopWidth: 1,
+    borderColor: COLORS.white,
+  },
   wrapper: {
     width: '100%',
     height: FOOTER_HEIGHT,

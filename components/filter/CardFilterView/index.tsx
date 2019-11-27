@@ -306,6 +306,7 @@ class CardFilterView extends React.Component<Props, State> {
       },
       onToggleChange,
       onFilterChange,
+      fontScale,
     } = this.props;
     const {
       loading,
@@ -345,6 +346,7 @@ class CardFilterView extends React.Component<Props, State> {
           { (types.length > 0 || allTypes.length > 0) && (
             <FilterChooserButton
               componentId={componentId}
+              fontScale={fontScale}
               title={t`Types`}
               values={allTypes}
               selection={types}
@@ -355,6 +357,7 @@ class CardFilterView extends React.Component<Props, State> {
           { (subTypes.length > 0 || allSubTypes.length > 0) && (
             <FilterChooserButton
               componentId={componentId}
+              fontScale={fontScale}
               title={t`SubTypes`}
               values={allSubTypes}
               selection={subTypes}
@@ -366,6 +369,7 @@ class CardFilterView extends React.Component<Props, State> {
         { hasCost && (
           <SliderChooser
             label={t`Cost`}
+            fontScale={fontScale}
             width={width}
             values={cost}
             enabled={costEnabled}
@@ -378,6 +382,7 @@ class CardFilterView extends React.Component<Props, State> {
         ) }
         { hasResource && (
           <ResourceChooser
+            fontScale={fontScale}
             resources={resources}
             onFilterChange={onFilterChange}
             enabled={resourceEnabled}
@@ -387,6 +392,7 @@ class CardFilterView extends React.Component<Props, State> {
         <View>
           { (traits.length > 0 || allTraits.length > 0) && (
             <FilterChooserButton
+              fontScale={fontScale}
               title={t`Traits`}
               componentId={componentId}
               values={allTraits}
@@ -396,12 +402,17 @@ class CardFilterView extends React.Component<Props, State> {
             />
           ) }
           { indexOf(allTypeCodes, 'enemy') !== -1 && (
-            <NavButton text={this.enemyFilterText()} onPress={this._onEnemyPress} />
+            <NavButton
+              fontScale={fontScale}
+              text={this.enemyFilterText()}
+              onPress={this._onEnemyPress}
+            />
           ) }
         </View>
         { (uses.length > 0 || allUses.length > 0) && (
           <FilterChooserButton
             componentId={componentId}
+            fontScale={fontScale}
             title={t`Uses`}
             values={allUses}
             selection={uses}
@@ -424,6 +435,7 @@ class CardFilterView extends React.Component<Props, State> {
         { (encounters.length > 0 || allEncounters.length > 0) && (
           <FilterChooserButton
             componentId={componentId}
+            fontScale={fontScale}
             title={t`Encounter Sets`}
             values={allEncounters}
             selection={encounters}
@@ -432,11 +444,16 @@ class CardFilterView extends React.Component<Props, State> {
           />
         ) }
         { (packs.length > 0 || allPacks.length > 1) && (
-          <NavButton text={this.selectedPacksText()} onPress={this._onPacksPress} />
+          <NavButton
+            text={this.selectedPacksText()}
+            fontScale={fontScale}
+            onPress={this._onPacksPress}
+          />
         ) }
         { (illustrators.length > 0 || allIllustrators.length > 0) && (
           <FilterChooserButton
             componentId={componentId}
+            fontScale={fontScale}
             title={t`Illustrators`}
             values={allIllustrators}
             selection={illustrators}

@@ -7,15 +7,17 @@ import {
   View,
 } from 'react-native';
 
-import { ROW_HEIGHT, BUTTON_WIDTH, BUTTON_PADDING } from './constants';
+import { rowHeight, buttonWidth, BUTTON_PADDING } from './constants';
 import typography from '../../styles/typography';
 
 const DEPRESS_HEIGHT = 6;
 
 interface Props {
+  count: number;
+  fontScale: number;
   text?: string;
   selected?: boolean;
-  onPress: () => void;
+  onPress: (count: number) => void;
 }
 
 interface State {
@@ -59,11 +61,19 @@ export default class CountButton extends React.PureComponent<Props, State> {
     }
   }
 
+  _onPress = () => {
+    const {
+      count,
+      onPress,
+    } = this.props;
+    onPress(count);
+  }
+
   render() {
     const {
       text,
       selected,
-      onPress,
+      fontScale,
     } = this.props;
     const {
       anim,
@@ -74,16 +84,27 @@ export default class CountButton extends React.PureComponent<Props, State> {
       extrapolate: 'clamp',
     });
     return (
-      <TouchableWithoutFeedback onPress={onPress}>
+      <TouchableWithoutFeedback onPress={this._onPress}>
         <View style={[
           styles.container,
+          {
+            height: rowHeight(fontScale),
+            width: buttonWidth(fontScale),
+          },
         ]}>
-          <View style={styles.shadow} />
+          <View style={[styles.shadow, {
+            height: rowHeight(fontScale) / 2,
+            width: buttonWidth(fontScale),
+          }]} />
           <Animated.View style={[
             styles.button,
-            { borderColor: selected ? '#1b526f' : '#5191b2' },
-            { backgroundColor: selected ? '#22678b' : '#59a9d2' },
-            { transform: [{ translateY: translateY }] },
+            {
+              height: rowHeight(fontScale) - DEPRESS_HEIGHT - 2 - 8,
+              width: buttonWidth(fontScale),
+              borderColor: selected ? '#1b526f' : '#5191b2',
+              backgroundColor: selected ? '#22678b' : '#59a9d2',
+              transform: [{ translateY: translateY }],
+            },
           ]}>
             { !!text && (
               <Text style={[typography.text, styles.buttonText]}>
@@ -99,8 +120,6 @@ export default class CountButton extends React.PureComponent<Props, State> {
 
 const styles = StyleSheet.create({
   container: {
-    width: BUTTON_WIDTH,
-    height: ROW_HEIGHT,
     marginRight: BUTTON_PADDING,
     position: 'relative',
   },
@@ -108,8 +127,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 4,
     left: 0,
-    height: ROW_HEIGHT - DEPRESS_HEIGHT - 2 - 8,
-    width: BUTTON_WIDTH,
     borderRadius: 4,
     borderWidth: 1,
     overflow: 'hidden',
@@ -127,7 +144,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 4,
     left: 0,
-    height: ROW_HEIGHT / 2,
-    width: BUTTON_WIDTH,
   },
 });

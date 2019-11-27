@@ -1,3 +1,4 @@
+import { forEach, range } from 'lodash';
 import Config from 'react-native-config';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { Action, ActionCreator } from 'redux';
@@ -45,14 +46,10 @@ function updateDeck(
   };
 }
 
-export function removeDeck(
-  id: number,
-  deleteAllVersions?: boolean
-): DeleteDeckAction {
+export function removeDeck(id: number): DeleteDeckAction {
   return {
     type: DELETE_DECK,
     id,
-    deleteAllVersions: !!deleteAllVersions,
   };
 }
 
@@ -127,8 +124,8 @@ export const saveDeckChanges: ActionCreator<
           changes.name || deck.name,
           changes.slots || deck.slots,
           changes.ignoreDeckLimitSlots || deck.ignoreDeckLimitSlots || {},
-          changes.problem !== undefined ? changes.problem : (deck.problem || ''),
-          changes.meta !== undefined ? changes.meta : deck.meta
+          (changes.problem !== undefined && changes.problem !== null) ? changes.problem : (deck.problem || ''),
+          (changes.meta !== undefined && changes.meta !== null) ? changes.meta : deck.meta
         );
         dispatch(updateDeck(newDeck.id, newDeck, true));
         setTimeout(() => {
@@ -140,8 +137,8 @@ export const saveDeckChanges: ActionCreator<
           changes.name || deck.name,
           changes.slots || deck.slots,
           changes.ignoreDeckLimitSlots || deck.ignoreDeckLimitSlots || {},
-          changes.problem !== undefined ? changes.problem : (deck.problem || ''),
-          changes.meta !== undefined ? changes.meta : deck.meta
+          (changes.problem !== undefined && changes.problem !== null) ? changes.problem : (deck.problem || ''),
+          (changes.meta !== undefined && changes.meta !== null) ? changes.meta : deck.meta
         );
         handleAuthErrors<Deck>(
           savePromise,
@@ -168,7 +165,7 @@ export const saveDeckChanges: ActionCreator<
 export interface NewDeckParams {
   local: boolean;
   deckName: string;
-  heroCode: string;
+  investigatorCode: string;
   slots: Slots;
   ignoreDeckLimitSlots?: Slots;
   meta?: DeckMeta;
@@ -182,13 +179,13 @@ export const saveNewDeck: ActionCreator<
     dispatch: ThunkDispatch<AppState, {}, Action>,
     getState: () => AppState
   ): Promise<Deck> => {
-    return new Promise((resolve, reject) => {
+    return new Promise<Deck>((resolve, reject) => {
       if (params.local) {
         const nextLocalDeckId = getNextLocalDeckId(getState());
         const deck = newLocalDeck(
           nextLocalDeckId,
           params.deckName,
-          params.heroCode,
+          params.investigatorCode,
           params.slots,
           params.meta,
         );
@@ -198,7 +195,7 @@ export const saveNewDeck: ActionCreator<
         }, 1000);
       } else {
         const newDeckPromise = newCustomDeck(
-          params.heroCode,
+          params.investigatorCode,
           params.deckName,
           params.slots,
           params.ignoreDeckLimitSlots || {},
@@ -234,22 +231,28 @@ export const saveClonedDeck: ActionCreator<
   deckName: string
 ) => {
   return (dispatch: ThunkDispatch<AppState, {}, Action>): Promise<Deck> => {
-    return dispatch(saveNewDeck({
-      local,
-      deckName,
-      heroCode: cloneDeck.investigator_code,
-      slots: cloneDeck.slots,
-      ignoreDeckLimitSlots: cloneDeck.ignoreDeckLimitSlots,
-      meta: cloneDeck.meta,
-    })).then(deck => {
-      return dispatch(saveDeckChanges(
-        deck,
-        {
-          slots: cloneDeck.slots,
-          ignoreDeckLimitSlots: cloneDeck.ignoreDeckLimitSlots,
-          problem: cloneDeck.problem,
-        }
-      ));
+    return new Promise<Deck>((resolve, reject) => {
+      dispatch(saveNewDeck({
+        local,
+        deckName,
+        investigatorCode: cloneDeck.investigator_code,
+        slots: cloneDeck.slots,
+        ignoreDeckLimitSlots: cloneDeck.ignoreDeckLimitSlots,
+        meta: cloneDeck.meta,
+      })).then(deck => {
+        setTimeout(() => {
+          dispatch(saveDeckChanges(
+            deck,
+            {
+              slots: cloneDeck.slots,
+              ignoreDeckLimitSlots: cloneDeck.ignoreDeckLimitSlots,
+              problem: cloneDeck.problem,
+            }
+          )).then(resolve, reject);
+        },
+        // Slow it down to avoid ADB race conditions
+        1000);
+      }, reject);
     });
   };
 };

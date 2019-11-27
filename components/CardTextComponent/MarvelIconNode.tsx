@@ -8,14 +8,10 @@ import { WithIconName } from './types';
 
 const BAD_ICON_NAMES: { [key: string]: string | undefined} = {
   Action: 'action',
-  'per investigator': 'per_investigator',
-  lightning: 'free',
-  lighting: 'free',
-  fast: 'free',
-  'auto-fail': 'auto_fail',
+  'per hero': 'per_hero',
 };
 
-export default function ArkhamIconNode(
+export default function MarvelIconNode(
   node: Node & WithIconName,
   output: OutputFunction,
   state: RenderState

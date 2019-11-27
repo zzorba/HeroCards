@@ -1,12 +1,9 @@
 import React from 'react';
 import {
-  ImageStyle,
   StyleSheet,
   Text,
-  TextStyle,
   TouchableOpacity,
   View,
-  ViewStyle,
 } from 'react-native';
 import { CachedImage } from 'react-native-cached-image';
 
@@ -15,10 +12,9 @@ import { createFactionIcons, FACTION_COLORS } from '../../constants';
 import Card from '../../data/Card';
 import { isBig } from '../../styles/space';
 
-const FACTION_ICONS = createFactionIcons(55, '#FFF');
-const SMALL_FACTION_ICONS = createFactionIcons(40, '#FFF');
+const FACTION_ICONS = createFactionIcons('#FFF');
 
-const scaleFactor = isBig ? 1.5 : 1.0;
+const scaleFactor = isBig ? 1.2 : 1.0;
 
 interface Props {
   card: Card;
@@ -42,27 +38,30 @@ export default class InvestigatorImage extends React.Component<Props> {
       card,
       small,
     } = this.props;
-    const size = (small ? 65 : 80) * scaleFactor;
+    const size = (small ? 65 : 100) * scaleFactor;
+    const faction_icon = FACTION_ICONS[card.factionCode()];
     return (
       <View style={[styles.container, { width: size, height: size }]}>
-        <View style={styles.relative}>
-          <View style={[
-            styles.placeholder,
-            {
-              width: size,
-              height: size,
-              backgroundColor: FACTION_COLORS[card.factionCode()],
-            },
-          ]}>
-            <Text style={styles.placeholderIcon} allowFontScaling={false}>
-              { (small ? SMALL_FACTION_ICONS : FACTION_ICONS)[card.factionCode()] }
-            </Text>
+        { !!faction_icon && (
+          <View style={styles.relative}>
+            <View style={[
+              styles.placeholder,
+              {
+                width: size,
+                height: size,
+                backgroundColor: FACTION_COLORS[card.factionCode()],
+              },
+            ]}>
+              <Text style={styles.placeholderIcon} allowFontScaling={false}>
+                { faction_icon(small ? 40 : 55) }
+              </Text>
+            </View>
           </View>
-        </View>
+        ) }
         { !!card.imagesrc && (
           <View style={styles.relative}>
             <CachedImage
-              style={styles.image}
+              style={small ? styles.image : styles.bigImage}
               source={{
                 uri: `https://marvelcdb.com/${card.imagesrc}`,
               }}
@@ -86,15 +85,7 @@ export default class InvestigatorImage extends React.Component<Props> {
   }
 }
 
-interface Styles {
-  container: ViewStyle;
-  relative: ViewStyle;
-  image: ImageStyle;
-  placeholder: ViewStyle;
-  placeholderIcon: TextStyle;
-}
-
-const styles = StyleSheet.create<Styles>({
+const styles = StyleSheet.create({
   container: {
     position: 'relative',
     overflow: 'hidden',
@@ -106,9 +97,16 @@ const styles = StyleSheet.create<Styles>({
   image: {
     position: 'absolute',
     top: -17 * scaleFactor,
-    left: -10 * scaleFactor,
+    left: -14 * scaleFactor,
     width: (166 + 44) * scaleFactor,
     height: (136 + 34) * scaleFactor,
+  },
+  bigImage: {
+    position: 'absolute',
+    top: -22 * scaleFactor,
+    left: -10 * scaleFactor,
+    width: (166 + 44) * 1.25 * scaleFactor,
+    height: (136 + 34) * 1.25 * scaleFactor,
   },
   placeholder: {
     position: 'absolute',

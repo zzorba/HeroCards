@@ -14,9 +14,10 @@ interface Props {
   resources: ResourceFilters;
   enabled: boolean;
   onToggleChange: (setting: string, value: boolean) => void;
+  fontScale: number;
 }
 
-export default class SkillIconChooser extends React.Component<Props> {
+export default class ResourceChooser extends React.Component<Props> {
   _onToggleChange = (key: string) => {
     const {
       onFilterChange,
@@ -40,10 +41,12 @@ export default class SkillIconChooser extends React.Component<Props> {
       },
       enabled,
       onToggleChange,
+      fontScale,
     } = this.props;
     return (
       <AccordionItem
         label={enabled ? t`Resources` : t`Resources: All`}
+        fontScale={fontScale}
         height={90}
         enabled={enabled}
         toggleName="resourceEnabled"

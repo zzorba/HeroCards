@@ -1,5 +1,6 @@
 import React from 'react';
 import { head, startsWith } from 'lodash';
+import { connect } from 'react-redux';
 import {
   RefreshControl,
   ScrollView,
@@ -19,6 +20,7 @@ import { showCard } from './navHelper';
 import { NavigationProps } from './types';
 import { WebViewProps } from './WebViewWrapper';
 import { getFaqEntry } from '../lib/publicApi';
+import { AppState } from '../reducers';
 import typography from '../styles/typography';
 import { m } from '../styles/space';
 
@@ -68,7 +70,7 @@ class CardFaqView extends React.Component<Props, State> {
           options: {
             topBar: {
               title: {
-                text: 'MarvelCDB',
+                text: 'ArkhamDB',
               },
             },
           },

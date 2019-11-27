@@ -11,7 +11,7 @@ import ToggleFilter from '../core/ToggleFilter';
 import withFilterFunctions, { FilterProps } from './withFilterFunctions';
 import { COLORS } from '../../styles/colors';
 
-class CardEnemyFilterView extends React.Component<FilterProps> {
+class CardMinionFilterView extends React.Component<FilterProps> {
   static get options() {
     return {
       topBar: {
@@ -139,6 +139,7 @@ class CardEnemyFilterView extends React.Component<FilterProps> {
       width,
       onToggleChange,
       onFilterChange,
+      fontScale,
     } = this.props;
     return (
       <ScrollView>
@@ -152,6 +153,7 @@ class CardEnemyFilterView extends React.Component<FilterProps> {
           enabled={enemyFightEnabled}
           toggleName="enemyFightEnabled"
           onToggleChange={onToggleChange}
+          fontScale={fontScale}
         />
         <SliderChooser
           label={t`Health`}
@@ -164,6 +166,7 @@ class CardEnemyFilterView extends React.Component<FilterProps> {
           toggleName="enemyHealthEnabled"
           onToggleChange={onToggleChange}
           height={1}
+          fontScale={fontScale}
         >
           <View>
             <ToggleFilter
@@ -184,6 +187,7 @@ class CardEnemyFilterView extends React.Component<FilterProps> {
           enabled={enemyEvadeEnabled}
           toggleName="enemyEvadeEnabled"
           onToggleChange={onToggleChange}
+          fontScale={fontScale}
         />
         <SliderChooser
           label={t`Damage`}
@@ -195,6 +199,7 @@ class CardEnemyFilterView extends React.Component<FilterProps> {
           enabled={enemyDamageEnabled}
           toggleName="enemyDamageEnabled"
           onToggleChange={onToggleChange}
+          fontScale={fontScale}
         />
         <SliderChooser
           label={t`Horror`}
@@ -206,6 +211,7 @@ class CardEnemyFilterView extends React.Component<FilterProps> {
           enabled={enemyHorrorEnabled}
           toggleName="enemyHorrorEnabled"
           onToggleChange={onToggleChange}
+          fontScale={fontScale}
         />
         { this.renderToggles() }
       </ScrollView>
@@ -214,8 +220,8 @@ class CardEnemyFilterView extends React.Component<FilterProps> {
 }
 
 export default withFilterFunctions(
-  CardEnemyFilterView,
-  t`Enemy Filters`,
+  CardMinionFilterView,
+  t`Minion Filters`,
   [
     'enemyHealth',
     'enemyHealthEnabled',

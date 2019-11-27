@@ -5,7 +5,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 
 import { DeckProblem, DeckProblemType } from '../actions/types';
 import { t } from 'ttag';
@@ -18,30 +17,40 @@ const DECK_PROBLEM_MESSAGES: { [error in DeckProblemType]: string } = {
   too_many_copies: t`Too many copies of a card with the same name.`,
   invalid_cards: t`Contains forbidden cards (cards not permitted by Faction)`,
   deck_options_limit: t`Contains too many limited cards.`,
-  investigator: t`Doesn't comply with the Investigator requirements.`,
+  hero: t`Doesn't comply with the Investigator requirements.`,
 };
 
 interface Props {
   problem: DeckProblem;
   color: string;
   noFontScaling?: boolean;
+  fontSize?: number;
+  fontScale: number;
 }
 export default function DeckProblemRow({
   problem,
   color,
   noFontScaling,
+  fontSize,
+  fontScale,
 }: Props) {
+
   return (
     <View style={styles.problemRow}>
       <View style={styles.warningIcon}>
         <AppIcon
           name="warning"
-          size={SMALL_FONT_SIZE * (noFontScaling ? 1 : DeviceInfo.getFontScale())}
+          size={SMALL_FONT_SIZE * (noFontScaling ? 1 : fontScale)}
           color={color}
         />
       </View>
       <Text
-        style={[typography.small, { color }, styles.problemText]}
+        style={[
+          typography.small,
+          { color },
+          { fontSize: fontSize || SMALL_FONT_SIZE },
+          styles.problemText,
+        ]}
         numberOfLines={2}
         ellipsizeMode="tail"
         allowFontScaling={!noFontScaling}
@@ -59,9 +68,10 @@ const styles = StyleSheet.create({
   problemRow: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   warningIcon: {
-    marginRight: 2,
+    marginRight: 4,
   },
 });

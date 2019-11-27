@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { map } from 'lodash';
 import { SettingsPicker } from 'react-native-settings-components';
 import { t } from 'ttag';
@@ -10,10 +9,11 @@ import { COLORS } from '../../styles/colors';
 
 interface Props {
   name: string;
-  factions: FactionCodeType[];
+  aspects: FactionCodeType[];
   selection?: FactionCodeType;
   onChange: (faction: FactionCodeType) => void;
   investigatorFaction?: FactionCodeType;
+  disabled?: boolean;
 }
 
 export default class FactionSelectPicker extends React.Component<Props> {
@@ -37,15 +37,16 @@ export default class FactionSelectPicker extends React.Component<Props> {
 
   render() {
     const {
-      factions,
+      aspects,
       selection,
       name,
       investigatorFaction,
+      disabled,
     } = this.props;
-    const options = map(factions, faction => {
+    const options = map(aspects, aspect => {
       return {
-        label: this._codeToLabel(faction),
-        value: faction,
+        label: this._codeToLabel(aspect),
+        value: aspect,
       };
     });
     const color = investigatorFaction ?
@@ -54,13 +55,17 @@ export default class FactionSelectPicker extends React.Component<Props> {
     return (
       <SettingsPicker
         ref={this._captureRef}
+        disabled={disabled}
+        disabledOverlayStyle={{
+          backgroundColor: 'rgba(255,255,255,0.0)',
+        }}
+        valueStyle={{
+          color: COLORS.darkGray,
+        }}
         title={name}
         value={selection}
         valueFormat={this._codeToLabel}
         onValueChange={this._onChange}
-        containerStyle={styles.container}
-        titleStyle={styles.title}
-        valueStyle={styles.value}
         modalStyle={{
           header: {
             wrapper: {
@@ -75,22 +80,10 @@ export default class FactionSelectPicker extends React.Component<Props> {
           },
         }}
         options={options}
+        containerStyle={{
+          backgroundColor: 'transparent',
+        }}
       />
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-  title: {
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-  value: {
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-});

@@ -9,11 +9,8 @@ import MarvelIcon from '../../../assets/MarvelIcon';
 import { FACTION_COLORS, FactionCodeType } from '../../../constants';
 
 function factionToIconName(faction: FactionCodeType) {
-  if (faction === 'basic') {
+  if (faction === 'hero') {
     return 'elder_sign';
-  }
-  if (faction === 'encounter') {
-    return 'auto_fail';
   }
   return faction;
 }

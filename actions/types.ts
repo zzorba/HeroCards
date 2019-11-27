@@ -1,5 +1,6 @@
-import { FactionCodeType } from '../constants';
+import { FactionCodeType, ResourceCodeType } from '../constants';
 import { FilterState } from '../lib/filters';
+import Card from '../data/Card';
 
 export const SORT_BY_TYPE = 'Type';
 export const SORT_BY_FACTION = 'Faction';
@@ -16,10 +17,47 @@ export type SortType =
   typeof SORT_BY_TITLE |
   typeof SORT_BY_ENCOUNTER_SET;
 
+export interface CardId {
+  id: string;
+  quantity: number;
+}
+
+export type FactionCounts = {
+  [faction in FactionCodeType]?: [number, number];
+};
+
+export type ResourceCounts = {
+  [resource in ResourceCodeType]?: number;
+};
+
+export interface SplitCards {
+  Ally?: CardId[];
+  Event?: CardId[];
+  Resource?: CardId[];
+  Support?: CardId[];
+  Upgrade?: CardId[];
+}
+export type CardSplitType = keyof SplitCards;
+
+export interface ParsedDeck {
+  investigator: Card;
+  deck: Deck;
+  slots: Slots;
+  normalCardCount: number;
+  totalCardCount: number;
+  packs: number;
+  factionCounts: FactionCounts;
+  costHistogram: number[];
+  resourceCounts: ResourceCounts;
+  normalCards: SplitCards;
+  specialCards: SplitCards;
+  ignoreDeckLimitSlots: Slots;
+}
+
 export interface Slots {
   [code: string]: number;
 }
-const INVESTIGATOR = 'investigator';
+const INVESTIGATOR = 'hero';
 const TOO_MANY_COPIES = 'too_many_copies';
 const INVALID_CARDS = 'invalid_cards';
 const TOO_FEW_CARDS = 'too_few_cards';
@@ -40,19 +78,16 @@ export interface DeckProblem {
 }
 
 export interface DeckMeta {
-  faction_selected?: FactionCodeType;
+  aspect?: FactionCodeType;
 }
 export interface Deck {
   id: number;
   name: string;
   investigator_code: string;
-  next_deck?: number;
-  previous_deck?: number;
   local?: boolean;
   meta?: DeckMeta;
   date_update: string;
   date_creation: string;
-  scenarioCount?: number;
   slots: Slots;
   ignoreDeckLimitSlots: Slots;
   problem?: DeckProblemType;
@@ -155,7 +190,6 @@ export const DELETE_DECK = 'DELETE_DECK';
 export interface DeleteDeckAction {
   type: typeof DELETE_DECK;
   id: number;
-  deleteAllVersions: boolean;
 }
 export const CLEAR_DECKS = 'CLEAR_DECKS';
 export interface ClearDecksAction {
@@ -256,6 +290,7 @@ export interface AddFilterSetAction {
   id: string;
   filters: FilterState;
   sort?: SortType;
+  mythosToggle?: boolean;
 }
 
 export const SYNC_FILTER_SET = 'SYNC_FILTER_SET';

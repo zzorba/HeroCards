@@ -1,13 +1,14 @@
 import React from 'react';
-import { ActivityIndicator, Platform, TouchableOpacity, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Platform, Text, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { throttle } from 'lodash';
 import { bindActionCreators, Action, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import DialogComponent from 'react-native-dialog';
+import { NetInfoStateType } from '@react-native-community/netinfo';
 import { t } from 'ttag';
 
 import SelectDeckSwitch from './SelectDeckSwitch';
-import { parseDeck } from '../parseDeck';
+import { parseDeck } from '../../lib/parseDeck';
 import withPlayerCards, { PlayerCardProps } from '../withPlayerCards';
 import { showDeckModal } from '../navHelper';
 import Dialog from '../core/Dialog';
@@ -17,7 +18,7 @@ import { login } from '../../actions';
 import { Deck } from '../../actions/types';
 import { getDeck, getBaseDeck, getLatestDeck, AppState } from '../../reducers';
 import typography from '../../styles/typography';
-import space from '../../styles/space';
+import space, { s } from '../../styles/space';
 import { COLORS } from '../../styles/colors';
 
 interface OwnProps {
@@ -46,6 +47,7 @@ interface State {
   deckName: string | null;
   offlineDeck: boolean;
   selectedDeckId?: number;
+  error: string | null;
 }
 
 class CopyDeckDialog extends React.Component<Props, State> {
@@ -59,6 +61,7 @@ class CopyDeckDialog extends React.Component<Props, State> {
       deckName: null,
       offlineDeck: !!(props.deck && props.deck.local),
       selectedDeckId: props.deckId,
+      error: null,
     };
 
     this._onOkayPress = throttle(this.onOkayPress.bind(this, false), 200);
@@ -125,7 +128,7 @@ class CopyDeckDialog extends React.Component<Props, State> {
       componentId,
       toggleVisible,
     } = this.props;
-    const investigator = this.investigator();
+    const hero = this.hero();
     this.setState({
       saving: false,
     });
@@ -133,7 +136,7 @@ class CopyDeckDialog extends React.Component<Props, State> {
       toggleVisible();
     }
     // Change the deck options for required cards, if present.
-    showDeckModal(componentId, deck, investigator);
+    showDeckModal(componentId, deck, hero);
   };
 
   selectedDeck(): Deck | undefined {
@@ -158,6 +161,7 @@ class CopyDeckDialog extends React.Component<Props, State> {
   onOkayPress(isRetry: boolean) {
     const {
       signedIn,
+      isConnected,
       networkType,
       saveClonedDeck,
     } = this.props;
@@ -169,26 +173,29 @@ class CopyDeckDialog extends React.Component<Props, State> {
     if (!cloneDeck) {
       return;
     }
-    const investigator = this.investigator();
-    if (investigator && (!this.state.saving || isRetry)) {
-      const local = (offlineDeck || !signedIn || networkType === 'none');
+    const hero = this.hero();
+    if (hero && (!this.state.saving || isRetry)) {
+      this.setState({
+        saving: true,
+      });
+      const local = (offlineDeck || !signedIn || !isConnected || networkType === NetInfoStateType.none);
       saveClonedDeck(
         local,
         cloneDeck,
         deckName || t`New Deck`
       ).then(
         this._showNewDeck,
-        () => {
-          // TODO: error.
+        (err) => {
           this.setState({
             saving: false,
+            error: err.message,
           });
         }
       );
     }
   }
 
-  investigator() {
+  hero() {
     const {
       deck,
       investigators,
@@ -200,12 +207,14 @@ class CopyDeckDialog extends React.Component<Props, State> {
     const {
       signedIn,
       networkType,
+      isConnected,
       refreshNetworkStatus,
     } = this.props;
     const {
       saving,
       deckName,
       offlineDeck,
+      error,
     } = this.state;
     if (saving) {
       return (
@@ -233,17 +242,22 @@ class CopyDeckDialog extends React.Component<Props, State> {
         </DialogComponent.Description>
         <DialogComponent.Switch
           label={t`Create on MarvelCDB`}
-          value={!offlineDeck && signedIn && networkType !== 'none'}
-          disabled={networkType === 'none'}
+          value={!offlineDeck && signedIn && isConnected && networkType !== NetInfoStateType.none}
+          disabled={!isConnected || networkType === NetInfoStateType.none}
           onValueChange={this._onDeckTypeChange}
           trackColor={COLORS.switchTrackColor}
         />
-        { networkType === 'none' && (
+        { (!isConnected || networkType === NetInfoStateType.none) && (
           <TouchableOpacity onPress={refreshNetworkStatus}>
             <DialogComponent.Description style={[typography.small, { color: COLORS.red }, space.marginBottomS]}>
               { t`You seem to be offline. Refresh Network?` }
             </DialogComponent.Description>
           </TouchableOpacity>
+        ) }
+        { !!error && (
+          <Text style={[typography.text, typography.center, styles.error]}>
+            { error }
+          </Text>
         ) }
       </React.Fragment>
     );
@@ -259,8 +273,8 @@ class CopyDeckDialog extends React.Component<Props, State> {
       saving,
       selectedDeckId,
     } = this.state;
-    const investigator = this.investigator();
-    if (!investigator) {
+    const hero = this.hero();
+    if (!hero) {
       return null;
     }
     const okDisabled = saving || selectedDeckId === null;
@@ -275,7 +289,7 @@ class CopyDeckDialog extends React.Component<Props, State> {
         >
           { saving ?
             t`Saving` :
-            t`Make a copy of a deck.`
+            t`Make a copy of a deck so you can make different changes.`
           }
         </DialogComponent.Description>
         { this.renderFormContent() }
@@ -337,5 +351,9 @@ const styles = StyleSheet.create({
   descriptionMargin: {
     marginLeft: 8,
     marginRight: 8,
+  },
+  error: {
+    color: 'red',
+    marginBottom: s,
   },
 });

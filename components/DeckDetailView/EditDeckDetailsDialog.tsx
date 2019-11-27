@@ -2,16 +2,13 @@ import React from 'react';
 import {
   Platform,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
-import { Results } from 'realm';
 import { t } from 'ttag';
 import DialogComponent from 'react-native-dialog';
 
 import Dialog from '../core/Dialog';
-import PlusMinusButtons from '../core/PlusMinusButtons';
 import { COLORS } from '../../styles/colors';
 import space, { m } from '../../styles/space';
 import typography from '../../styles/typography';

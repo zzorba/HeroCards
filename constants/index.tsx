@@ -64,7 +64,7 @@ export const RESOURCES: ResourceCodeType[] = [
   'wild',
 ];
 
-export const RESOURCE_COLORS: { [skill: string]: string } = {
+export const RESOURCE_COLORS: { [resource: string]: string } = {
   mental: '#003961',
   energy: '#ff8f3f',
   physical: '#661e09',
@@ -108,17 +108,19 @@ export const FACTION_BACKGROUND_COLORS: { [faction_code: string]: string } = Obj
   },
 );
 
+
 export function createFactionIcons(
-  size: number,
   defaultColor?: string
-): { [faction in FactionCodeType | 'dual']?: ReactNode } {
+): { [faction in FactionCodeType | 'dual']?: (size: number) => ReactNode } {
   return mapValues(FACTION_COLORS, (color, faction) => {
-    return (
-      <MarvelIcon
-        name={(faction === 'basic' || faction === 'dual') ? 'elder_sign' : faction}
-        size={size}
-        color={defaultColor || color}
-      />
-    );
+    return function factionIcon(size: number) {
+      return (
+        <MarvelIcon
+          name={(faction === 'neutral' || faction === 'dual') ? 'elder_sign' : faction}
+          size={size}
+          color={defaultColor || color}
+        />
+      );
+    };
   });
 }

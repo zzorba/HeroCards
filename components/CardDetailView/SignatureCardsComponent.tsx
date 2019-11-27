@@ -12,7 +12,6 @@ import { t } from 'ttag';
 
 import SignatureCardItem from './SignatureCardItem';
 import Card from '../../data/Card';
-import { AppState } from '../../reducers';
 
 interface RealmProps {
   requiredCards?: Results<Card>;
@@ -23,7 +22,9 @@ interface OwnProps {
   componentId: string;
   investigator: Card;
   width: number;
+  fontScale: number;
 }
+
 type Props = OwnProps & RealmProps;
 
 class SignatureCardsComponent extends React.Component<Props> {
@@ -33,6 +34,7 @@ class SignatureCardsComponent extends React.Component<Props> {
       requiredCards,
       alternateCards,
       width,
+      fontScale,
     } = this.props;
 
     return (
@@ -43,6 +45,7 @@ class SignatureCardsComponent extends React.Component<Props> {
             <SignatureCardItem
               key={card.code}
               componentId={componentId}
+              fontScale={fontScale}
               card={card}
               width={width}
             />
@@ -55,6 +58,7 @@ class SignatureCardsComponent extends React.Component<Props> {
               <SignatureCardItem
                 key={card.code}
                 componentId={componentId}
+                fontScale={fontScale}
                 card={card}
                 width={width}
               />
@@ -65,6 +69,7 @@ class SignatureCardsComponent extends React.Component<Props> {
     );
   }
 }
+
 
 export default connectRealm<OwnProps, RealmProps, Card>(
   SignatureCardsComponent, {

@@ -6,7 +6,6 @@ import {
   View,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import DeviceInfo from 'react-native-device-info';
 
 import { t } from 'ttag';
 import typography from '../../styles/typography';
@@ -20,18 +19,22 @@ interface Props {
   componentId: string;
   card: Card;
   width: number;
+  fontScale: number;
   showSpoilers: boolean;
-  toggleShowSpoilers: (code: string) => void;
-  showInvestigatorCards: (code: string) => void;
+  toggleShowSpoilers?: (code: string) => void;
+  showInvestigatorCards?: (code: string) => void;
 }
 
 export default class CardDetailComponent extends React.Component<Props> {
   _editSpoilersPressed = () => {
-    Navigation.push<{}>(this.props.componentId, {
-      component: {
-        name: 'My.Spoilers',
-      },
-    });
+    const { componentId } = this.props;
+    if (componentId) {
+      Navigation.push<{}>(componentId, {
+        component: {
+          name: 'My.Spoilers',
+        },
+      });
+    }
   };
 
   shouldBlur() {
@@ -50,7 +53,7 @@ export default class CardDetailComponent extends React.Component<Props> {
       card,
       showInvestigatorCards,
     } = this.props;
-    showInvestigatorCards(card.code);
+    showInvestigatorCards && showInvestigatorCards(card.code);
   };
 
   renderInvestigatorCardsLink() {
@@ -58,6 +61,7 @@ export default class CardDetailComponent extends React.Component<Props> {
       componentId,
       card,
       width,
+      fontScale,
     } = this.props;
     if (!card || card.type_code !== 'hero' || card.encounter_code !== null) {
       return null;
@@ -71,13 +75,14 @@ export default class CardDetailComponent extends React.Component<Props> {
           <Button
             onPress={this._showInvestigatorCards}
             text={t`Deckbuilding Cards`}
-            icon={<AppIcon name="deck" size={22 * DeviceInfo.getFontScale()} color="white" />}
+            icon={<AppIcon name="deck" size={22 * fontScale} color="white" />}
           />
         </View>
         <SignatureCardsComponent
           componentId={componentId}
           investigator={card}
           width={width}
+          fontScale={fontScale}
         />
       </View>
     );
@@ -88,7 +93,7 @@ export default class CardDetailComponent extends React.Component<Props> {
       card,
       toggleShowSpoilers,
     } = this.props;
-    toggleShowSpoilers(card.code);
+    toggleShowSpoilers && toggleShowSpoilers(card.code);
   };
 
   render() {
@@ -96,6 +101,7 @@ export default class CardDetailComponent extends React.Component<Props> {
       componentId,
       card,
       width,
+      fontScale,
     } = this.props;
     if (this.shouldBlur()) {
       return (
@@ -118,6 +124,7 @@ export default class CardDetailComponent extends React.Component<Props> {
           componentId={componentId}
           card={card}
           width={width}
+          fontScale={fontScale}
         />
         { this.renderInvestigatorCardsLink() }
       </View>

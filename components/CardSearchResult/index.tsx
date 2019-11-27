@@ -7,34 +7,27 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-// @ts-ignore
-import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 
 import MarvelIcon from '../../assets/MarvelIcon';
-import CardCostIcon, { COST_ICON_SIZE } from '../core/CardCostIcon';
-import Button from '../core/Button';
+import CardCostIcon, { costIconSize } from '../core/CardCostIcon';
 import Switch from '../core/Switch';
 import Card from '../../data/Card';
 import { createFactionIcons, FACTION_COLORS, RESOURCES, ResourceCodeType } from '../../constants';
 import { COLORS } from '../../styles/colors';
-import { ROW_HEIGHT, ICON_SIZE, TOGGLE_BUTTON_MODE, BUTTON_WIDTH } from './constants';
+import { rowHeight, iconSize, toggleButtonMode, buttonWidth } from './constants';
 import CardQuantityComponent from './CardQuantityComponent';
 import typography from '../../styles/typography';
 import { isBig, s, xs } from '../../styles/space';
 
-const SKILL_ICON_SIZE = (isBig ? 26 : 16) * DeviceInfo.getFontScale();
-const SMALL_ICON_SIZE = (isBig ? 38 : 26) * DeviceInfo.getFontScale();
-const SMALL_FACTION_ICONS = createFactionIcons(SMALL_ICON_SIZE);
-const FACTION_ICONS = createFactionIcons(ICON_SIZE);
+const FACTION_ICONS = createFactionIcons();
 
 interface Props {
   card: Card;
+  fontScale: number;
   id?: string;
   count?: number;
   onPress?: (card: Card) => void;
   onPressId?: (code: string, card: Card) => void;
-  onUpgrade?: (card: Card) => void;
   onDeckCountChange?: (code: string, count: number) => void;
   limit?: number;
   onToggleChange?: () => void;
@@ -60,14 +53,6 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     }
   };
 
-  _onUpgradePressed = () => {
-    const {
-      onUpgrade,
-      card,
-    } = this.props;
-    onUpgrade && onUpgrade(card);
-  };
-
   _onDeckCountChange = (count: number) => {
     const {
       onDeckCountChange,
@@ -81,51 +66,85 @@ export default class CardSearchResult extends React.PureComponent<Props> {
   };
 
   renderFactionIcon(card: Card, size: number): ReactNode {
+    const { fontScale } = this.props;
+    const SMALL_ICON_SIZE = (isBig ? 38 : 26) * fontScale;
+
     if (!card.encounter_code && card.linked_card) {
       return this.renderFactionIcon(card.linked_card, size);
     }
 
-    if (card.spoiler && card.encounter_code) {
-      // Encounter icons?
-      return null;
-    }    
     if (card.isEncounterCard()) {
+      // Encounter Icon?
       return null;
     }
+    const ICON_SIZE = iconSize(fontScale);
     if (card.faction2_code) {
-      return (size === ICON_SIZE ? FACTION_ICONS : SMALL_FACTION_ICONS).dual;
+      const icon = FACTION_ICONS.dual;
+      return !!icon && icon(size === ICON_SIZE ? ICON_SIZE : SMALL_ICON_SIZE);
     }
-    return (size === ICON_SIZE ? FACTION_ICONS : SMALL_FACTION_ICONS)[card.factionCode()];
+    const icon = FACTION_ICONS[card.factionCode()];
+    return !!icon && icon(size === ICON_SIZE ? ICON_SIZE : SMALL_ICON_SIZE);
+  }
+
+  static cardCost(card: Card): string {
+    if (card.type_code === 'resource') {
+      return '';
+    }
+    if (card.double_sided) {
+      return '-';
+    }
+    return `${card.cost !== null ? card.cost : 'X'}`;
   }
 
   renderIcon(card: Card): ReactNode {
+    const { fontScale } = this.props;
     if (card.hidden && card.linked_card) {
       return this.renderIcon(card.linked_card);
     }
 
-    if (card.hasCost()) {
+    const showCost = card.type_code === 'ally' ||
+      card.type_code === 'event' ||
+      card.type_code === 'resource' ||
+      card.type_code === 'upgrade' ||
+      card.type_code === 'support';
+
+    if (showCost) {
       return (
-        <View style={styles.factionIcon}>
-          <CardCostIcon card={card} />
+        <View style={[styles.factionIcon, {
+          width: costIconSize(fontScale),
+          height: costIconSize(fontScale),
+        }]}>
+          <CardCostIcon
+            card={card}
+            fontScale={fontScale}
+          />
         </View>
       );
     }
     return (
-      <View style={styles.factionIcon}>
-        { this.renderFactionIcon(card, ICON_SIZE) }
+      <View style={[styles.factionIcon, {
+        width: costIconSize(fontScale),
+        height: costIconSize(fontScale),
+      }]}>
+        { this.renderFactionIcon(card, iconSize(fontScale)) }
       </View>
     );
   }
 
-  static resourceIcon(skill: ResourceCodeType, count: number): ReactNode[] {
+  static resourceIcon(
+    fontScale: number,
+    resource: ResourceCodeType,
+    count: number
+  ): ReactNode[] {
     if (count === 0) {
       return [];
     }
+    const RESOURCE_ICON_SIZE = (isBig ? 26 : 16) * fontScale;
     return map(range(0, count), key => (
-      <View key={`${skill}-${key}`} style={styles.resourceIcon}>
+      <View key={`${resource}-${key}`} style={styles.resourceIcon}>
         <MarvelIcon
-          name={skill}
-          size={SKILL_ICON_SIZE}
+          name={resource}
+          size={RESOURCE_ICON_SIZE}
           color="#444"
         />
       </View>
@@ -135,23 +154,25 @@ export default class CardSearchResult extends React.PureComponent<Props> {
   renderDualFactionIcons() {
     const {
       card,
+      fontScale,
     } = this.props;
     if (!card.faction2_code) {
       return null;
     }
+    const SKILL_ICON_SIZE = (isBig ? 26 : 16) * fontScale;
     return (
       <View style={styles.dualFactionIcons}>
         <View style={styles.resourceIcon}>
           <MarvelIcon
             name={card.factionCode()}
-            size={15}
+            size={SKILL_ICON_SIZE}
             color={FACTION_COLORS[card.factionCode()]}
           />
         </View>
         <View style={styles.resourceIcon}>
           <MarvelIcon
             name={card.faction2_code}
-            size={15}
+            size={SKILL_ICON_SIZE}
             color={FACTION_COLORS[card.faction2_code]}
           />
         </View>
@@ -159,17 +180,22 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     );
   }
 
-  renderResourceIcons() {
+  renderSkillIcons() {
     const {
       card,
+      fontScale,
     } = this.props;
-    if (!card.isPlayerDeckCard()) {
+    if (card.type_code === 'hero' || (
+      card.resource_wild === null &&
+      card.resource_energy === null &&
+      card.resource_mental === null &&
+      card.resource_physical === null)) {
       return null;
     }
     return (
-      <View style={styles.resources}>
+      <View style={styles.skillIcons}>
         { flatMap(RESOURCES, (resource: ResourceCodeType) =>
-          CardSearchResult.resourceIcon(resource, card.resourceCount(resource))) }
+          CardSearchResult.resourceIcon(fontScale, resource, card.resourceCount(resource))) }
       </View>
     );
   }
@@ -189,7 +215,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
           </Text>
         </View>
         <View style={styles.row}>
-          { this.renderResourceIcons() }
+          { this.renderSkillIcons() }
           { !!card.renderSubname && (
             <View style={styles.row}>
               <Text style={[typography.small, styles.subname, { color }]} numberOfLines={1} ellipsizeMode="clip">
@@ -221,10 +247,10 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       card,
       count = 0,
       onDeckCountChange,
-      onUpgrade,
       limit,
       hasSecondCore,
       showZeroCount,
+      fontScale,
     } = this.props;
     if (onDeckCountChange) {
       const deck_limit: number = Math.min(
@@ -235,6 +261,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       );
       return (
         <CardQuantityComponent
+          fontScale={fontScale}
           count={count || 0}
           limit={Math.max(count || 0, typeof limit === 'number' ? limit : deck_limit)}
           countChanged={this._onDeckCountChange}
@@ -245,14 +272,6 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     if (count !== 0) {
       return (
         <View style={styles.countText}>
-          { !!onUpgrade && (
-            <Button
-              style={styles.upgradeButton}
-              size="small"
-              onPress={this._onUpgradePressed}
-              icon={<MaterialCommunityIcons size={18 * DeviceInfo.getFontScale()} color="#FFF" name="arrow-up-bold" />}
-            />
-          ) }
           <Text style={typography.text}>
             { this.countText(count) }
           </Text>
@@ -270,9 +289,10 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       onPress,
       onPressId,
       onDeckCountChange,
+      fontScale,
     } = this.props;
     return (
-      <View style={styles.rowContainer}>
+      <View style={[styles.rowContainer, { minHeight: rowHeight(fontScale) }]}>
         <TouchableOpacity
           onPress={this._onPress}
           disabled={!onPress && !onPressId}
@@ -280,8 +300,8 @@ export default class CardSearchResult extends React.PureComponent<Props> {
         >
           <View style={[
             styles.cardTextRow,
-            onDeckCountChange && TOGGLE_BUTTON_MODE ?
-              { paddingRight: BUTTON_WIDTH } :
+            onDeckCountChange && toggleButtonMode(fontScale) ?
+              { paddingRight: buttonWidth(fontScale) } :
               {},
           ]}>
             { this.renderIcon(card) }
@@ -304,10 +324,11 @@ export default class CardSearchResult extends React.PureComponent<Props> {
   render() {
     const {
       card,
+      fontScale,
     } = this.props;
     if (!card) {
       return (
-        <View style={styles.rowContainer}>
+        <View style={[styles.rowContainer, { minHeight: rowHeight(fontScale) }]}>
           <View style={styles.cardNameBlock}>
             <View style={styles.row}>
               <Text style={typography.text}>
@@ -320,7 +341,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     }
     if (!card.name) {
       return (
-        <View style={styles.rowContainer}>
+        <View style={[styles.rowContainer, { minHeight: rowHeight(fontScale) }]}>
           <Text>No Text</Text>;
         </View>
       );
@@ -332,10 +353,9 @@ export default class CardSearchResult extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   rowContainer: {
-    backgroundColor: 'transparent',
+    backgroundColor: '#FFF',
     position: 'relative',
     width: '100%',
-    minHeight: ROW_HEIGHT,
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderColor: COLORS.gray,
@@ -356,7 +376,7 @@ const styles = StyleSheet.create({
   },
   fullHeight: {
   },
-  resources: {
+  skillIcons: {
     flexDirection: 'row',
   },
   dualFactionIcons: {
@@ -373,8 +393,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    height: COST_ICON_SIZE,
-    width: COST_ICON_SIZE,
     marginRight: xs,
   },
   cardTextRow: {

@@ -21,7 +21,6 @@ import { COLORS } from '../../styles/colors';
 import { getShowSpoilers, AppState } from '../../reducers';
 import Card from '../../data/Card';
 
-
 export function rightButtonsForCard(card?: Card, color?: string) {
   const rightButtons = [{
     icon: iconsMap.web,
@@ -34,17 +33,6 @@ export function rightButtonsForCard(card?: Card, color?: string) {
     color: color || COLORS.navButton,
     testID: t`FAQ`,
   }];
-  if (card &&
-    card.type_code === 'hero' &&
-    card.encounter_code === null
-  ) {
-    rightButtons.push({
-      icon: iconsMap.deck,
-      id: 'deck',
-      color: color || COLORS.navButton,
-      testID: t`Deckbuilding Cards`,
-    });
-  }
   return rightButtons;
 }
 
@@ -107,8 +95,6 @@ class CardDetailView extends React.Component<Props, State> {
     } = this.props;
     if (buttonId === 'share') {
       Linking.openURL(`https://marvelcdb.com/card/${id}#reviews-header`);
-    } else if (buttonId === 'deck') {
-      this._showInvestigatorCards();
     } else if (buttonId === 'faq') {
       this._showFaq();
     } else if (buttonId === 'back') {
@@ -183,6 +169,7 @@ class CardDetailView extends React.Component<Props, State> {
       card,
       showSpoilers,
       width,
+      fontScale,
     } = this.props;
     if (!card) {
       return null;
@@ -191,6 +178,7 @@ class CardDetailView extends React.Component<Props, State> {
       <ScrollView style={styles.wrapper}>
         <CardDetailComponent
           width={width}
+          fontScale={fontScale}
           componentId={componentId}
           card={card}
           showSpoilers={showSpoilers || this.state.showSpoilers}

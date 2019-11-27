@@ -1,7 +1,7 @@
 import { Platform, StyleSheet } from 'react-native';
 
 import { isBig } from './space';
-const sizeScale = isBig ? 1.5 : 1;
+const sizeScale = isBig ? 1.2 : 1;
 
 export const SMALL_FONT_SIZE = 12 * sizeScale;
 
@@ -57,6 +57,12 @@ export default StyleSheet.create({
     fontFamily: 'Teutonic',
     fontSize: 18 * sizeScale,
     lineHeight: 26 * sizeScale,
+    color: '#222',
+  },
+  mediumGameFont: {
+    fontFamily: 'Teutonic',
+    fontSize: 24 * sizeScale,
+    lineHeight: 30 * sizeScale,
     color: '#222',
   },
   bigGameFont: {

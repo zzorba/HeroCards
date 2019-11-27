@@ -41,21 +41,6 @@ const DEFAULT_DECK_STATE: DecksState = {
   lastModified: undefined,
 };
 
-function updateDeck(
-  state: DecksState,
-  action: NewDeckAvailableAction | UpdateDeckAction | ReplaceLocalDeckAction
-): Deck {
-  const deck = Object.assign({}, action.deck);
-  let scenarioCount = 0;
-  let currentDeck = deck;
-  while (currentDeck && currentDeck.previous_deck) {
-    scenarioCount ++;
-    currentDeck = state.all[currentDeck.previous_deck];
-  }
-  deck.scenarioCount = scenarioCount;
-  return deck;
-}
-
 function sortMyDecks(myDecks: number[], allDecks: DecksMap): number[] {
   return reverse(
     sortBy(
@@ -120,21 +105,12 @@ export default function(
     forEach(action.decks, deck => {
       allDecks[deck.id] = deck;
     });
-    forEach(action.decks, deck => {
-      let scenarioCount = 0;
-      let currentDeck = deck;
-      while (currentDeck && currentDeck.previous_deck) {
-        scenarioCount ++;
-        currentDeck = allDecks[currentDeck.previous_deck];
-      }
-      deck.scenarioCount = scenarioCount;
-    });
     const localDeckIds: number[] = filter(
       state.myDecks,
       id => allDecks[id] ? !!allDecks[id].local : false);
 
     const actionDeckIds: number[] = map(
-      filter(action.decks, (deck: Deck) => !deck.next_deck),
+      action.decks,
       deck => deck.id
     );
     return Object.assign({},
@@ -150,7 +126,7 @@ export default function(
     );
   }
   if (action.type === REPLACE_LOCAL_DECK) {
-    const deck = updateDeck(state, action);
+    const deck = action.deck;
     const all = {
       ...state.all,
       [deck.id]: deck,
@@ -180,45 +156,25 @@ export default function(
     const all = Object.assign({}, state.all);
     let deck = all[action.id];
     const toDelete = [action.id];
-    if (deck) {
-      if (action.deleteAllVersions) {
-        console.log('DELETE: all versions');
-        while (deck.previous_deck && all[deck.previous_deck]) {
-          const id = deck.previous_deck;
-          toDelete.push(id);
-          deck = all[id];
-          delete all[id];
-        }
-      } else {
-        if (deck.previous_deck && all[deck.previous_deck]) {
-          const previousDeck = all[deck.previous_deck];
-          all[deck.previous_deck] = Object.assign(
-            {},
-            previousDeck,
-            { next_deck: null }
-          );
-        }
-      }
-    }
     delete all[action.id];
     const toDeleteSet = new Set(toDelete);
-    const myDecks = (action.deleteAllVersions || !deck || !deck.previous_deck) ?
-      filter(state.myDecks, deckId => !toDeleteSet.has(deckId)) :
-      map(state.myDecks, deckId => deckId === action.id ? deck.previous_deck : deckId);
+    const myDecks = filter(
+      state.myDecks,
+      deckId => !toDeleteSet.has(deckId));
 
     return Object.assign({},
       state,
       {
         all,
         myDecks,
-        // There's a bug on MarvelCDB cache around deletes,
+        // There's a bug on ArkhamDB cache around deletes,
         // so drop lastModified when we detect a delete locally.
         lastModified: undefined,
       },
     );
   }
   if (action.type === UPDATE_DECK) {
-    const deck = updateDeck(state, action);
+    const deck = action.deck;
     const newState = Object.assign({},
       state,
       {
@@ -239,7 +195,7 @@ export default function(
     return newState;
   }
   if (action.type === NEW_DECK_AVAILABLE) {
-    const deck = updateDeck(state, action);
+    const deck = action.deck;
     return Object.assign({},
       state,
       {
@@ -250,7 +206,7 @@ export default function(
         ),
         myDecks: [
           action.id,
-          ...filter(state.myDecks, deckId => deck.previous_deck !== deckId),
+          state.myDecks,
         ],
       });
   }

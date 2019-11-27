@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { filter } from 'lodash';
 import { bindActionCreators, Action, Dispatch } from 'redux';
+import { NetInfoStateType } from '@react-native-community/netinfo';
 import { connect } from 'react-redux';
 import { t } from 'ttag';
 
@@ -83,13 +84,14 @@ class MyDecksComponent extends React.Component<Props> {
     const {
       error,
       networkType,
+      isConnected,
       width,
     } = this.props;
 
-    if (!error && networkType !== 'none') {
+    if (!error && networkType !== NetInfoStateType.none) {
       return null;
     }
-    if (networkType === 'none') {
+    if (!isConnected || networkType === NetInfoStateType.none) {
       return (
         <View style={[styles.banner, styles.warning, { width }]}>
           <Text style={typography.small}>
@@ -140,9 +142,9 @@ class MyDecksComponent extends React.Component<Props> {
     return (
       <View style={[styles.signInFooter, { width }]}>
         <Text style={[typography.text, space.marginBottomM]}>
-          { t`MarvelCDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.` }
+          { t`ArkhamDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.` }
         </Text>
-        <Button onPress={login} title={t`Connect to MarvelCDB`} />
+        <Button onPress={login} title={t`Connect to ArkhamDB`} />
       </View>
     );
   }
