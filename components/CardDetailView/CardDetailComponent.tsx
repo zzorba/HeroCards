@@ -63,7 +63,7 @@ export default class CardDetailComponent extends React.Component<Props> {
       width,
       fontScale,
     } = this.props;
-    if (!card || card.type_code !== 'hero' || card.encounter_code !== null) {
+    if (!card || card.type_code !== 'hero') {
       return null;
     }
     return (

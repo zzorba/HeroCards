@@ -267,7 +267,7 @@ export function filterToQuery(filters: FilterState): string[] {
   applyFilter(filters.subTypes, 'subtype_name', query);
   applyPlayerCardFilters(filters, query);
   applyFilter(filters.packs, 'pack_name', query);
-  applyFilter(filters.encounters, 'encounter_name', query);
+  applyFilter(filters.encounters, 'card_set_name', query);
   applyFilter(filters.illustrators, 'illustrator', query);
   if (filters.resourceEnabled) {
     applyResourcesFilter(filters.resources, query);

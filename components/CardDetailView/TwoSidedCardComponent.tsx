@@ -456,15 +456,15 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
               <Text style={typography.cardText}>
                 { `${card.pack_name} #${card.position % 1000}.` }
               </Text>
-              { !!card.encounter_name &&
+              { !!card.card_set_name &&
                 <Text style={typography.cardText}>
-                  { `${card.encounter_name} #${card.encounter_position}.${card.quantity && card.quantity > 1 ?
+                  { card.set_position ? `${card.card_set_name} #${card.set_position}.${card.quantity && card.quantity > 1 ?
                     ngettext(
                       msgid`\n${card.quantity} copy.`,
                       `\n${card.quantity} copies.`,
                       card.quantity
                     ) : ''
-                  }` }
+                  }` : card.card_set_name }
                 </Text>
               }
             </View>

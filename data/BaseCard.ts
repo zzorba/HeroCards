@@ -32,8 +32,9 @@ export default class BaseCard {
     boost: 'int?',
     boost_text: 'string?',
     scheme: 'int?',
-    encounter_name: 'string?',
-    encounter_position: 'int?',
+    card_set_code: 'string?',
+    card_set_name: 'string?',
+    set_position: 'int?',
     renderName: 'string',
     renderSubname: 'string?',
     name: 'string',
@@ -122,9 +123,9 @@ export default class BaseCard {
   public enemy_horror!: number | null;
   public enemy_fight!: number | null;
   public enemy_evade!: number | null;
-  public encounter_code!: string | null;
-  public encounter_name!: string | null;
-  public encounter_position!: number | null;
+  public card_set_code!: string | null;
+  public card_set_name!: string | null;
+  public set_position!: number | null;
   public renderName!: string;
   public renderSubname!: string | null;
   public name!: string;

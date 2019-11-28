@@ -10,7 +10,7 @@ import {
   SORT_BY_COST,
   SORT_BY_PACK,
   SORT_BY_TITLE,
-  SORT_BY_ENCOUNTER_SET,
+  SORT_BY_CARD_SET,
   SortType,
 } from '../../actions/types';
 import DialogPicker from '../core/DialogPicker';
@@ -48,7 +48,7 @@ export default class CardSortDialog extends React.Component<Props> {
         return t`Pack`;
       case SORT_BY_TITLE:
         return t`Title`;
-      case SORT_BY_ENCOUNTER_SET:
+      case SORT_BY_CARD_SET:
         return t`Encounter Set`;
       default: {
         /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -78,8 +78,8 @@ export default class CardSortDialog extends React.Component<Props> {
       SORT_BY_PACK,
       SORT_BY_TITLE,
     ];
-    if (hasEncounterCards || selectedSort === SORT_BY_ENCOUNTER_SET) {
-      sorts.push(SORT_BY_ENCOUNTER_SET);
+    if (hasEncounterCards || selectedSort === SORT_BY_CARD_SET) {
+      sorts.push(SORT_BY_CARD_SET);
     }
     return sorts;
   }

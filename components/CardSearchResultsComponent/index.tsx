@@ -9,7 +9,7 @@ import {
 
 import { t } from 'ttag';
 import {
-  SORT_BY_ENCOUNTER_SET,
+  SORT_BY_CARD_SET,
   SortType,
   Slots,
 } from '../../actions/types';
@@ -181,14 +181,13 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
     if (baseQuery) {
       queryParts.push(baseQuery);
     }
-    queryParts.push('(altArtInvestigator != true)');
     queryParts.push('(back_linked != true)');
     forEach(
       this.filterQueryParts(),
       clause => queryParts.push(clause));
 
-    if (selectedSort === SORT_BY_ENCOUNTER_SET) {
-      queryParts.push(`(encounter_code != null OR linked_card.encounter_code != null)`);
+    if (selectedSort === SORT_BY_CARD_SET) {
+      queryParts.push(`(card_set_code != null OR linked_card.card_set_code != null)`);
     }
     return queryParts.join(' and ');
   }

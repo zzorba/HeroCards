@@ -409,7 +409,7 @@ export default connect<ReduxProps, {}, OwnProps, AppState>(
       const names: { [name: string]: boolean } = {};
       forEach(
         results.cards.filtered(
-          `(type_code == "investigator" AND encounter_code == null)`)
+          `(type_code == "investigator")`)
           .sorted('code', false),
         card => {
           if (!names[card.name]) {

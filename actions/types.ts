@@ -7,7 +7,7 @@ export const SORT_BY_FACTION = 'Faction';
 export const SORT_BY_COST = 'Cost';
 export const SORT_BY_PACK = 'Pack';
 export const SORT_BY_TITLE = 'Title';
-export const SORT_BY_ENCOUNTER_SET = 'Encounter Set';
+export const SORT_BY_CARD_SET = 'Card Set';
 
 export type SortType =
   typeof SORT_BY_TYPE |
@@ -15,7 +15,7 @@ export type SortType =
   typeof SORT_BY_COST |
   typeof SORT_BY_PACK |
   typeof SORT_BY_TITLE |
-  typeof SORT_BY_ENCOUNTER_SET;
+  typeof SORT_BY_CARD_SET;
 
 export interface CardId {
   id: string;

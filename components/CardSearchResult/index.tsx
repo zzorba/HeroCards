@@ -69,10 +69,6 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     const { fontScale } = this.props;
     const SMALL_ICON_SIZE = (isBig ? 38 : 26) * fontScale;
 
-    if (!card.encounter_code && card.linked_card) {
-      return this.renderFactionIcon(card.linked_card, size);
-    }
-
     if (card.isEncounterCard()) {
       // Encounter Icon?
       return null;

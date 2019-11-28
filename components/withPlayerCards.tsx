@@ -27,7 +27,7 @@ export default function withPlayerCards<Props, ExtraProps={}>(
           props: Props
         ): PlayerCardProps & ExtraProps {
           const playerCards = results.cards.filtered(
-            `((type_code == "investigator" AND encounter_code == null) OR deck_limit > 0 OR bonded_name != null)`
+            `(type_code == "investigator" OR deck_limit > 0)`
           );
           const investigators: CardsMap = {};
           const cards: CardsMap = {};
@@ -35,7 +35,7 @@ export default function withPlayerCards<Props, ExtraProps={}>(
             playerCards,
             card => {
               cards[card.code] = card;
-              if (card.type_code === 'hero' && card.encounter_code === null) {
+              if (card.type_code === 'hero') {
                 investigators[card.code] = card;
               }
             });

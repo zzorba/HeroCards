@@ -126,8 +126,8 @@ class CardFilterView extends React.Component<Props, State> {
         if (card.pack_name) {
           packsMap[card.pack_name] = true;
         }
-        if (card.encounter_name) {
-          encountersMap[card.encounter_name] = true;
+        if (card.card_set_name) {
+          encountersMap[card.card_set_name] = true;
         }
         if (card.illustrator) {
           illustratorsMap[card.illustrator] = true;

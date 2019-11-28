@@ -27,7 +27,7 @@ import {
   SORT_BY_COST,
   SORT_BY_PACK,
   SORT_BY_TITLE,
-  SORT_BY_ENCOUNTER_SET,
+  SORT_BY_CARD_SET,
   SortType,
   Slots,
 } from '../../actions/types';
@@ -317,19 +317,19 @@ class CardResultList extends React.Component<Props, State> {
   getSort(): Sort[] {
     switch(this.props.sort) {
       case SORT_BY_TYPE:
-        return [['sort_by_type', false], ['renderName', false], ['xp', false]];
+        return [['sort_by_type', false], ['renderName', false]];
       case SORT_BY_FACTION:
-        return [['sort_by_faction', false], ['renderName', false], ['xp', false]];
+        return [['sort_by_faction', false], ['renderName', false]];
       case SORT_BY_COST:
-        return [['cost', false], ['renderName', false], ['xp', false]];
+        return [['cost', false], ['renderName', false]];
       case SORT_BY_PACK:
         return [['sort_by_pack', false], ['position', false]];
       case SORT_BY_TITLE:
-        return [['renderName', false], ['xp', false]];
-      case SORT_BY_ENCOUNTER_SET:
-        return [['sort_by_pack', false], ['encounter_code', false], ['encounter_position', false]];
+        return [['renderName', false]];
+      case SORT_BY_CARD_SET:
+        return [['sort_by_pack', false], ['card_set_name', false], ['set_position', false]];
       default:
-        return [['renderName', false], ['xp', false]];
+        return [['renderName', false]];
     }
   }
 
@@ -348,9 +348,9 @@ class CardResultList extends React.Component<Props, State> {
         return card.pack_name;
       case SORT_BY_TITLE:
         return t`All Cards`;
-      case SORT_BY_ENCOUNTER_SET:
-        return card.encounter_name ||
-          (card.linked_card && card.linked_card.encounter_name) ||
+      case SORT_BY_CARD_SET:
+        return card.card_set_name ||
+          (card.linked_card && card.linked_card.card_set_name) ||
           t`N/A`;
       default:
         return t`All Cards`;
@@ -787,7 +787,7 @@ class CardResultList extends React.Component<Props, State> {
     }
     const stickyHeaders = (
       sort === SORT_BY_PACK ||
-      sort === SORT_BY_ENCOUNTER_SET
+      sort === SORT_BY_CARD_SET
     );
     const data = this.getData();
     let offset = 0;
