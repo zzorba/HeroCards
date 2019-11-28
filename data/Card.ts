@@ -81,6 +81,7 @@ export default class Card extends BaseCard {
       t`Hero`,
       t`Ally`,
       t`Event`,
+      t`Resource`,
       t`Support`,
       t`Upgrade`,
       t`Obligation`,
