@@ -878,12 +878,12 @@ class DeckDetailView extends React.Component<Props, State> {
     if (hasPendingEdits) {
       Alert.alert(
         t`Save Local Changes`,
-        t`Please save any local edits to this deck before sharing to ArkhamDB`
+        t`Please save any local edits to this deck before sharing to MarvelCDB`
       );
     } else if (!signedIn) {
       Alert.alert(
-        t`Sign in to ArkhamDB`,
-        t`ArkhamDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.`,
+        t`Sign in to MarvelCDB`,
+        t`MarvelCDB is a popular deck building site where you can manage and share decks with others.\n\nSign in to access your decks or share decks you have created with others.`,
         [
           { text: 'Sign In', onPress: login },
           { text: 'Cancel', style: 'cancel' },
@@ -891,8 +891,8 @@ class DeckDetailView extends React.Component<Props, State> {
       );
     } else {
       Alert.alert(
-        t`Upload to ArkhamDB`,
-        t`You can upload your deck to ArkhamDB to share with others.\n\nAfter doing this you will need network access to make changes to the deck.`,
+        t`Upload to MarvelCDB`,
+        t`You can upload your deck to MarvelCDB to share with others.\n\nAfter doing this you will need network access to make changes to the deck.`,
         [
           { text: 'Upload', onPress: this._doLocalDeckUpload },
           { text: 'Cancel', style: 'cancel' },
@@ -937,11 +937,11 @@ class DeckDetailView extends React.Component<Props, State> {
       );
     } else {
       Alert.alert(
-        t`Visit ArkhamDB to delete?`,
-        t`Unfortunately to delete decks you have to visit ArkhamDB at this time.`,
+        t`Visit MarvelCDB to delete?`,
+        t`Unfortunately to delete decks you have to visit MarvelCDB at this time.`,
         [
           {
-            text: t`Visit ArkhamDB`,
+            text: t`Visit MarvelCDB`,
             onPress: () => {
               Linking.openURL(`https://marvelcdb.com/deck/view/${deck.id}`);
             },

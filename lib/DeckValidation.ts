@@ -14,7 +14,7 @@ import DeckOption from '../data/DeckOption';
 
 
 // Code taken from:
-// https://github.com/Kamalisk/arkhamdb/blob/4c194c54fcbc381e45b93f0f1bcb65a37ae581a9/src/AppBundle/Resources/public/js/app.deck.js
+// https://github.com/Kamalisk/MarvelCDB/blob/4c194c54fcbc381e45b93f0f1bcb65a37ae581a9/src/AppBundle/Resources/public/js/app.deck.js
 /* eslint-disable */
 
 interface DeckOptionsCount {

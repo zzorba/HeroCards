@@ -16,7 +16,7 @@ export function handleAuthErrors<T>(
       if (err.message === 'badAccessToken') {
         Alert.alert(
           t`Authorization error`,
-          t`We are having trouble talking to ArkhamDB.\n\nIf the problem persists, please try to reauthorize.`,
+          t`We are having trouble talking to MarvelCDB.\n\nIf the problem persists, please try to reauthorize.`,
           [{
             text: t`Try again`,
             onPress: () => {

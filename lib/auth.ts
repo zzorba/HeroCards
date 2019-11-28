@@ -16,7 +16,7 @@ const config: any = {
 
 function saveAuthResponse(response: AuthorizeResult | RefreshResult) {
   const serialized = JSON.stringify(response);
-  return Keychain.setGenericPassword('arkhamdb', serialized)
+  return Keychain.setGenericPassword('MarvelCDB', serialized)
     .then(() => {
       return response.accessToken;
     });

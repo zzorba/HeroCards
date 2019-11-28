@@ -23,8 +23,8 @@ export default class Card extends BaseCard {
     return null;
   }
 
-  static factionHeaderOrder() {
-    return [
+  static factionHeaderOrder(json: any) {
+    const BASE_ORDER = [
       t`Hero`,
       t`Aggression`,
       t`Justice`,
@@ -33,6 +33,8 @@ export default class Card extends BaseCard {
       t`Basic`,
       t`Encounter`,
     ];
+
+    return BASE_ORDER.indexOf(Card.factionSortHeader(json));
   }
 
   static factionCodeToName(code: string, defaultName: string) {
@@ -60,22 +62,18 @@ export default class Card extends BaseCard {
     if (json.spoiler) {
       return t`Encounter`;
     }
-    switch(json.subtype_code) {
-      case 'basicweakness':
-      case 'weakness':
-        return t`Weakness`;
-      default: {
-        if (!json.faction_code || !json.faction_name) {
-          return t`Unknown`;
-        }
-        if (json.faction2_code && json.faction2_name) {
-          const faction1 = Card.factionCodeToName(json.faction_code, json.faction_name);
-          const faction2 = Card.factionCodeToName(json.faction2_code, json.faction2_name);
-          return `${faction1} / ${faction2}`;
-        }
-        return Card.factionCodeToName(json.faction_code, json.faction_name);
-      }
+    if (json.faction_code === 'hero' && json.card_set_name) {
+      return json.card_set_name;
     }
+    if (!json.faction_code || !json.faction_name) {
+      return t`Unknown`;
+    }
+    if (json.faction2_code && json.faction2_name) {
+      const faction1 = Card.factionCodeToName(json.faction_code, json.faction_name);
+      const faction2 = Card.factionCodeToName(json.faction2_code, json.faction2_name);
+      return `${faction1} / ${faction2}`;
+    }
+    return Card.factionCodeToName(json.faction_code, json.faction_name);
   }
 
   static typeHeaderOrder() {
@@ -175,7 +173,7 @@ export default class Card extends BaseCard {
     const uses = uses_match ? uses_match[1].toLowerCase() : null;
 
     const sort_by_type = Card.typeHeaderOrder().indexOf(Card.typeSortHeader(json));
-    const sort_by_faction = Card.factionHeaderOrder().indexOf(Card.factionSortHeader(json));
+    const sort_by_faction = Card.factionHeaderOrder(json);
     const pack = packsByCode[json.pack_code] || null;
     const sort_by_pack = pack ? (pack.position) : -1;
     const spoiler = !!(json.spoiler || (linked_card && linked_card.spoiler));

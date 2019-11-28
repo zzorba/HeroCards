@@ -29,6 +29,7 @@ import { CardFaqProps } from '../CardFaqView';
 
 import PlayerCardImage from './PlayerCardImage';
 
+const FAQ_BUTTON = false;
 const PLAYER_BACK = require('../../assets/player-back.png');
 const ENCOUNTER_BACK = require('../../assets/encounter-back.png');
 const PER_HERO_ICON = (
@@ -430,6 +431,9 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
   }
 
   renderFaqButton() {
+    if (!FAQ_BUTTON) {
+      return null;
+    }
     const { fontScale } = this.props;
     return (
       <Button

@@ -167,7 +167,7 @@ export default function(
       {
         all,
         myDecks,
-        // There's a bug on ArkhamDB cache around deletes,
+        // There's a bug on MarvelCDB cache around deletes,
         // so drop lastModified when we detect a delete locally.
         lastModified: undefined,
       },

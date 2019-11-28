@@ -63,19 +63,19 @@ class LoginButton extends React.Component<Props> {
 
     if (signedIn) {
       return settings ? (
-        <SettingsItem onPress={this._logOutPressed} text={t`Sign out of ArkhamDB`} />
+        <SettingsItem onPress={this._logOutPressed} text={t`Sign out of MarvelCDB`} />
       ) : (
         <View style={styles.wrapper}>
-          <Button onPress={this._logOutPressed} title={t`Sign out of ArkhamDB`} />
+          <Button onPress={this._logOutPressed} title={t`Sign out of MarvelCDB`} />
         </View>
       );
     }
 
     return settings ? (
-      <SettingsItem onPress={login} text={t`Sign in to ArkhamDB`} />
+      <SettingsItem onPress={login} text={t`Sign in to MarvelCDB`} />
     ) : (
       <View style={styles.wrapper}>
-        <Button onPress={login} title={t`Sign in to ArkhamDB`} />
+        <Button onPress={login} title={t`Sign in to MarvelCDB`} />
       </View>
     );
   }
