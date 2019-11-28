@@ -54,7 +54,7 @@ export default class PlayerCardImage extends React.Component<Props> {
       case 'minion':
         return styles.minionImage;
       case 'hero':
-        return styles.investigatorImage;
+        return styles.heroImage;
       case 'side_scheme':
         return styles.sideSchemeImage;
       case 'main_scheme':
@@ -189,11 +189,11 @@ const styles = StyleSheet.create({
     width: 142 * 1.4 * SCALE_FACTOR,
     height: 198 * 1.4 * SCALE_FACTOR,
   },
-  investigatorImage: {
-    top: -17 * SCALE_FACTOR,
-    left: -10 * SCALE_FACTOR,
-    width: (166 + 44) * SCALE_FACTOR,
-    height: (136 + 34) * SCALE_FACTOR,
+  heroImage: {
+    top: -14 * SCALE_FACTOR,
+    left: -18 * SCALE_FACTOR,
+    width: 142 * 1.1 * SCALE_FACTOR,
+    height: 198 * 1.1 * SCALE_FACTOR,
   },
   sideSchemeImage: {
     top: -35 * SCALE_FACTOR,

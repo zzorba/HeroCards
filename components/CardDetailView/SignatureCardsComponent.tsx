@@ -81,9 +81,12 @@ export default connectRealm<OwnProps, RealmProps, Card>(
     ): RealmProps {
       const requirements = props.investigator.deck_requirements;
       const card_requirements = requirements && requirements.card;
-      const requiredQuery = map(card_requirements || [], req => {
-        return `code == '${req.code}'`;
-      }).join(' OR ');
+      const requiredQuery = [
+        ...map(card_requirements || [], req => {
+          return `code == '${req.code}'`;
+        }),
+        `(card_set_code == '${props.investigator.card_set_code}' AND set_position > 0)`
+      ].join(' OR ');
       const alternateQuery = map(
         flatMap(card_requirements || [], req => (req.alternates || [])),
         code => `code == '${code}'`).join(' OR ');

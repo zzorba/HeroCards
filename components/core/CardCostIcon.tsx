@@ -41,7 +41,7 @@ export default class CardCostIcon extends React.Component<Props> {
     if (card.faction2_code) {
       return 'elder_sign';
     }
-    if (card.faction_code === 'basic') {
+    if (card.faction_code === 'basic' || card.faction_code === 'hero') {
       return 'elder_sign';
     }
     if (card.faction_code) {

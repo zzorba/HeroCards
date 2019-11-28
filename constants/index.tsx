@@ -77,6 +77,7 @@ export const FACTION_COLORS: { [faction_code: string]: string } = {
   protection: '#107116',
   justice: '#c0c000',
   basic: '#808080',
+  hero: '#808080',
 };
 
 export const FACTION_LIGHT_GRADIENTS: { [faction_code: string]: string[] } = {
