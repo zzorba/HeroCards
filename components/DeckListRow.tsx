@@ -8,16 +8,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ngettext, msgid, t } from 'ttag';
+import { t } from 'ttag';
 
-import { Deck, ParsedDeck } from '../actions/types';
+import { Deck } from '../actions/types';
 import Card, { CardsMap } from '../data/Card';
-import InvestigatorImage from './core/InvestigatorImage';
-import FactionGradient from './core/FactionGradient';
+import HeroImage from './core/HeroImage';
+import HeroGradient from './core/HeroGradient';
 import DeckTitleBarComponent from './DeckTitleBarComponent';
 import DeckProblemRow from './DeckProblemRow';
 import { toRelativeDateString } from '../lib/datetime';
-import { parseDeck } from '../lib/parseDeck';
 import typography from '../styles/typography';
 import { s } from '../styles/space';
 
@@ -25,8 +24,8 @@ interface Props {
   deck: Deck;
   fontScale: number;
   cards: CardsMap;
-  investigator?: Card;
-  onPress?: (deck: Deck, investigator?: Card) => void;
+  hero?: Card;
+  onPress?: (deck: Deck, hero?: Card) => void;
   details?: ReactNode;
   subDetails?: ReactNode;
   titleButton?: ReactNode;
@@ -38,16 +37,15 @@ export default class DeckListRow extends React.Component<Props> {
   _onPress = () => {
     const {
       deck,
-      investigator,
+      hero,
       onPress,
     } = this.props;
-    onPress && onPress(deck, investigator);
+    onPress && onPress(deck, hero);
   };
 
   renderDeckDetails() {
     const {
       deck,
-      cards,
       details,
       fontScale,
     } = this.props;
@@ -57,12 +55,6 @@ export default class DeckListRow extends React.Component<Props> {
     if (!deck) {
       return null;
     }
-    const parsedDeck = parseDeck(
-      deck,
-      deck.slots,
-      deck.ignoreDeckLimitSlots || {},
-      cards
-    );
 
     const date: undefined | string = deck.date_update || deck.date_creation;
     const parsedDate: number | undefined = date ? Date.parse(date) : undefined;
@@ -88,13 +80,13 @@ export default class DeckListRow extends React.Component<Props> {
   renderContents() {
     const {
       deck,
-      investigator,
+      hero,
       titleButton,
       compact,
       subDetails,
       fontScale,
     } = this.props;
-    if (!deck || !investigator) {
+    if (!deck || !hero) {
       return (
         <View style={styles.row}>
           <ActivityIndicator
@@ -109,24 +101,24 @@ export default class DeckListRow extends React.Component<Props> {
       <View>
         <View style={styles.column}>
           <DeckTitleBarComponent
-            name={compact && investigator ? investigator.name : deck.name}
-            investigator={investigator}
+            name={compact && hero ? hero.name : deck.name}
+            hero={hero}
             button={titleButton}
             fontScale={fontScale}
             compact
           />
-          <FactionGradient
-            faction_code={investigator.factionCode()}
+          <HeroGradient
+            card_set_code={hero.card_set_code}
           >
             <View style={styles.investigatorBlock}>
               <View style={styles.investigatorBlockRow}>
                 <View style={styles.image}>
-                  { !!investigator && <InvestigatorImage card={investigator} /> }
+                  { !!hero && <HeroImage card={hero} /> }
                 </View>
                 <View style={[styles.column, styles.titleColumn]}>
                   { !compact && (
                     <Text style={typography.label}>
-                      { investigator.name }
+                      { hero.name }
                     </Text>
                   ) }
                   { this.renderDeckDetails() }
@@ -134,10 +126,10 @@ export default class DeckListRow extends React.Component<Props> {
               </View>
               { subDetails }
             </View>
-          </FactionGradient>
+          </HeroGradient>
         </View>
-        <FactionGradient
-          faction_code={investigator.factionCode()}
+        <HeroGradient
+          card_set_code={hero.card_set_code}
           style={styles.footer}
           dark
         />
@@ -148,10 +140,10 @@ export default class DeckListRow extends React.Component<Props> {
   render() {
     const {
       deck,
-      investigator,
+      hero,
       viewDeckButton,
     } = this.props;
-    if (!deck || !investigator) {
+    if (!deck || !hero) {
       return (
         <View style={styles.row}>
           <ActivityIndicator
@@ -176,7 +168,7 @@ export default class DeckListRow extends React.Component<Props> {
       <TouchableNativeFeedback useForeground onPress={this._onPress}>
         { this.renderContents() }
       </TouchableNativeFeedback>
-    )
+    );
   }
 }
 

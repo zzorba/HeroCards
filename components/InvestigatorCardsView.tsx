@@ -1,12 +1,10 @@
 import React from 'react';
 import Realm from 'realm';
-import { connect } from 'react-redux';
 import { head } from 'lodash';
 import { connectRealm, CardResults } from 'react-native-realm';
 
 import { queryForInvestigator } from '../lib/InvestigatorRequirements';
 import Card from '../data/Card';
-import { AppState } from '../reducers';
 import { NavigationProps } from './types';
 import CardSearchComponent from './CardSearchComponent';
 

@@ -1,12 +1,10 @@
 import React from 'react';
-import { forEach, map } from 'lodash';
+import { forEach } from 'lodash';
 import {
-  Alert,
   Platform,
   Keyboard,
   SafeAreaView,
   ScrollView,
-  Share,
   StyleSheet,
 } from 'react-native';
 import { bindActionCreators, Dispatch, Action } from 'redux';

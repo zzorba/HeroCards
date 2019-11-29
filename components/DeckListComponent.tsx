@@ -25,7 +25,7 @@ import space, { s } from '../styles/space';
 
 interface OwnProps {
   deckIds: number[];
-  deckClicked: (deck: Deck, investigator?: Card) => void;
+  deckClicked: (deck: Deck, hero?: Card) => void;
   onRefresh?: () => void;
   refreshing?: boolean;
   customHeader?: ReactNode;
@@ -65,9 +65,9 @@ class DeckListComponent extends React.Component<Props, State> {
     };
   }
 
-  _deckClicked = (deck: Deck, investigator?: Card) => {
+  _deckClicked = (deck: Deck, hero?: Card) => {
     Keyboard.dismiss();
-    this.props.deckClicked(deck, investigator);
+    this.props.deckClicked(deck, hero);
   };
 
   _searchChanged = (searchTerm: string) => {
@@ -91,7 +91,7 @@ class DeckListComponent extends React.Component<Props, State> {
 
   _renderItem = ({ item: { deckId } }: { item: Item }) => {
     const {
-      investigators,
+      heroes,
       decks,
       cards,
       fontScale,
@@ -107,7 +107,7 @@ class DeckListComponent extends React.Component<Props, State> {
         fontScale={fontScale}
         deck={deck}
         cards={cards}
-        investigator={deck ? investigators[deck.investigator_code] : undefined}
+        hero={deck ? heroes[deck.investigator_code] : undefined}
         onPress={this._deckClicked}
       />
     );
@@ -169,7 +169,7 @@ class DeckListComponent extends React.Component<Props, State> {
     const {
       deckIds,
       decks,
-      investigators,
+      heroes,
     } = this.props;
 
     const {
@@ -178,11 +178,11 @@ class DeckListComponent extends React.Component<Props, State> {
     return map(
       filter(deckIds, deckId => {
         const deck = decks[deckId];
-        const investigator = deck && investigators[deck.investigator_code];
-        if (!deck || !investigator) {
+        const hero = deck && heroes[deck.investigator_code];
+        if (!deck || !hero) {
           return true;
         }
-        return searchMatchesText(searchTerm, [deck.name, investigator.name]);
+        return searchMatchesText(searchTerm, [deck.name, hero.name]);
       }), deckId => {
         return {
           key: `${deckId}`,

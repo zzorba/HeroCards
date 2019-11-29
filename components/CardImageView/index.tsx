@@ -4,7 +4,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { connect } from 'react-redux';
 import { CachedImage } from 'react-native-cached-image';
 import { connectRealm, CardResults } from 'react-native-realm';
 import ViewControl from 'react-native-zoom-view';
@@ -14,7 +13,6 @@ import { t } from 'ttag';
 import withDimensions, { DimensionsProps } from '../core/withDimensions';
 import { iconsMap } from '../../app/NavIcons';
 import Card from '../../data/Card';
-import { AppState } from '../../reducers';
 import { HEADER_HEIGHT } from '../../styles/sizes';
 import { COLORS } from '../../styles/colors';
 import { NavigationProps } from '../types';
@@ -26,7 +24,6 @@ interface RealmProps {
 export interface CardImageProps {
   id: string;
 }
-
 
 type Props = CardImageProps & NavigationProps & DimensionsProps & RealmProps;
 

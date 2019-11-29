@@ -1,4 +1,3 @@
-import { forEach, range } from 'lodash';
 import Config from 'react-native-config';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { Action, ActionCreator } from 'redux';

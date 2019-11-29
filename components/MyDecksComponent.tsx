@@ -29,7 +29,7 @@ interface OwnProps {
   deckClicked: (deck: Deck, investigator?: Card) => void;
   onlyDeckIds?: number[];
   filterDeckIds?: number[];
-  filterInvestigators?: string[];
+  filterHeroes?: string[];
   customHeader?: ReactNode;
   customFooter?: ReactNode;
 }
@@ -169,7 +169,7 @@ class MyDecksComponent extends React.Component<Props> {
     const {
       deckClicked,
       filterDeckIds = [],
-      filterInvestigators = [],
+      filterHeroes = [],
       myDecks,
       decks,
       refreshing,
@@ -178,11 +178,11 @@ class MyDecksComponent extends React.Component<Props> {
     } = this.props;
 
     const filterDeckIdsSet = new Set(filterDeckIds);
-    const filterInvestigatorsSet = new Set(filterInvestigators);
+    const filterHeroesSet = new Set(filterHeroes);
     const deckIds = filter(onlyDeckIds || myDecks, deckId => {
       const deck = decks[deckId];
       return !filterDeckIdsSet.has(deckId) && (
-        !deck || !filterInvestigatorsSet.has(deck.investigator_code)
+        !deck || !filterHeroesSet.has(deck.investigator_code)
       );
     });
     return (

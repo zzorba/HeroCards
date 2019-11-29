@@ -148,7 +148,7 @@ export default class Card extends BaseCard {
 
     const name = json.name.replace('', '');
     let renderName = name;
-    let renderSubname = json.subname;
+    const renderSubname = json.subname;
     const linked_card = json.linked_card ?
       Card.fromJson(json.linked_card, packsByCode, lang) :
       null;

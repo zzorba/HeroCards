@@ -329,10 +329,7 @@ class CardDetailSwipeView extends React.Component<Props, State> {
 }
 
 const EMPTY_SPOILERS: { [code: string]: boolean } = {};
-function mapStateToProps(
-  state: AppState,
-  props: NavigationProps & CardDetailSwipeProps
-): ReduxProps {
+function mapStateToProps(state: AppState): ReduxProps {
   return {
     showSpoilers: state.packs.show_spoilers || EMPTY_SPOILERS,
   };

@@ -15,17 +15,6 @@ function update(value: number | null, minMax: [number, number]): [number, number
 }
 
 export default function calculateDefaultFilterState(cards: Results<Card> | Card[]) {
-  const fields = [
-    'cost',
-  ];
-  const enemyFields = [
-    'health',
-    'enemy_damage',
-    'enemy_horror',
-    'enemy_fight',
-    'enemy_evade',
-  ];
-
   const result: { [field: string]: [number, number]} = {
     cost: [10, 0],
     health: [10, 0],

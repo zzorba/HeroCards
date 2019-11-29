@@ -1,5 +1,4 @@
 import React from 'react';
-import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 
 import MarvelIcon from './MarvelIcon';
 

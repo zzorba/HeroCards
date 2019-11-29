@@ -1,4 +1,4 @@
-import { flatMap, forEach, groupBy, head, map, sortBy, uniq } from 'lodash';
+import { forEach, head } from 'lodash';
 import Realm from 'realm';
 import { Alert } from 'react-native';
 

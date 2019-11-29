@@ -21,7 +21,7 @@ interface State {
   advancedOpen: boolean;
 }
 
-export default class InvestigatorSearchBox extends React.Component<Props, State> {
+export default class HeroSearchBox extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 

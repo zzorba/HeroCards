@@ -5,46 +5,44 @@ import {
 } from 'react-native';
 
 import Card from '../data/Card';
-import FactionGradient from './core/FactionGradient';
-import MarvelIcon from '../assets/MarvelIcon';
+import HeroGradient from './core/HeroGradient';
 import typography from '../styles/typography';
-import { s, iconSizeScale } from '../styles/space';
+import { s } from '../styles/space';
 
 interface Props {
   name: string;
   fontScale: number;
-  investigator?: Card;
+  hero?: Card;
   compact?: boolean;
   button?: ReactNode;
 }
 
 export default function DeckTitleBarComponent({
   name,
-  investigator,
+  hero,
   compact,
   button,
-  fontScale,
 }: Props) {
-  const hasFactionColor = !!(investigator && investigator.faction_code);
-  const faction_code = (investigator && investigator.faction_code) || 'basic';
-  const iconName = investigator &&
-    (investigator.faction_code === 'basic' ? 'elder_sign' : investigator.faction_code);
+  const card_set_code = (hero && hero.card_set_code) || 'hero';
   return (
-    <FactionGradient
-      faction_code={faction_code}
+    <HeroGradient
+      card_set_code={card_set_code}
       style={styles.titleBar}
       dark
     >
-      { !!iconName && <MarvelIcon name={iconName} size={28 * iconSizeScale * fontScale} color="#FFFFFF" /> }
       <Text
-        style={[typography.text, styles.title, { color: hasFactionColor ? '#FFFFFF' : '#000000' }]}
+        style={[
+          typography.text,
+          styles.title,
+          { color: '#FFFFFF' },
+        ]}
         numberOfLines={compact ? 1 : 2}
         ellipsizeMode="tail"
       >
         { name }
       </Text>
       { !!button && button }
-    </FactionGradient>
+    </HeroGradient>
   );
 }
 

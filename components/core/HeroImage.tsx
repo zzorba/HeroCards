@@ -1,18 +1,14 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { CachedImage } from 'react-native-cached-image';
 
 import { showCard } from '../navHelper';
-import { createFactionIcons, FACTION_COLORS } from '../../constants';
 import Card from '../../data/Card';
 import { isBig } from '../../styles/space';
-
-const FACTION_ICONS = createFactionIcons('#FFF');
 
 const scaleFactor = isBig ? 1.2 : 1.0;
 
@@ -22,7 +18,7 @@ interface Props {
   small?: boolean;
 }
 
-export default class InvestigatorImage extends React.Component<Props> {
+export default class HeroImage extends React.Component<Props> {
   _onPress = () => {
     const {
       card,
@@ -39,25 +35,8 @@ export default class InvestigatorImage extends React.Component<Props> {
       small,
     } = this.props;
     const size = (small ? 65 : 100) * scaleFactor;
-    const faction_icon = FACTION_ICONS[card.factionCode()];
     return (
       <View style={[styles.container, { width: size, height: size }]}>
-        { !!faction_icon && (
-          <View style={styles.relative}>
-            <View style={[
-              styles.placeholder,
-              {
-                width: size,
-                height: size,
-                backgroundColor: FACTION_COLORS[card.factionCode()],
-              },
-            ]}>
-              <Text style={styles.placeholderIcon} allowFontScaling={false}>
-                { faction_icon(small ? 40 : 55) }
-              </Text>
-            </View>
-          </View>
-        ) }
         { !!card.imagesrc && (
           <View style={styles.relative}>
             <CachedImage
@@ -96,28 +75,16 @@ const styles = StyleSheet.create({
   },
   image: {
     position: 'absolute',
-    top: -17 * scaleFactor,
-    left: -14 * scaleFactor,
-    width: (166 + 44) * scaleFactor,
-    height: (136 + 34) * scaleFactor,
+    top: -14 * scaleFactor,
+    left: -18 * scaleFactor,
+    width: 142 * 1.1 * scaleFactor,
+    height: 198 * 1.1 * scaleFactor,
   },
   bigImage: {
     position: 'absolute',
-    top: -22 * scaleFactor,
-    left: -10 * scaleFactor,
-    width: (166 + 44) * 1.25 * scaleFactor,
-    height: (136 + 34) * 1.25 * scaleFactor,
-  },
-  placeholder: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    borderRadius: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  placeholderIcon: {
-    textAlign: 'center',
+    top: -16 * scaleFactor,
+    left: -18 * scaleFactor,
+    width: 142 * 1.25 * scaleFactor,
+    height: 198 * 1.25 * scaleFactor,
   },
 });

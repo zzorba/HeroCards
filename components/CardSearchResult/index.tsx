@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { flatMap, map, range, repeat } from 'lodash';
+import { flatMap, map, range } from 'lodash';
 import {
   Keyboard,
   StyleSheet,
@@ -199,6 +199,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
   renderCardName() {
     const {
       card,
+      fontScale,
     } = this.props;
     const color = card.faction2_code ?
       FACTION_COLORS.dual :
@@ -209,6 +210,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
           <Text style={[typography.text, { color }]} numberOfLines={1} ellipsizeMode="clip">
             { card.renderName }
           </Text>
+          { !!card.is_unique && <MarvelIcon name="unique" color={color} size={16 * (isBig ? 1.2 : 1) * fontScale} /> }
         </View>
         <View style={styles.row}>
           { this.renderSkillIcons() }
@@ -406,12 +408,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  extraXp: {
-    color: 'purple',
-    marginRight: xs,
-  },
-  upgradeButton: {
-    marginRight: s,
   },
 });

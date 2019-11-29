@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { forEach, keys, map, sum, sumBy } from 'lodash';
+import { forEach, map, sumBy } from 'lodash';
 import {
   StyleSheet,
   SectionList,
@@ -12,9 +12,8 @@ import { t } from 'ttag';
 
 import { CardId, Deck, DeckMeta, DeckProblem, ParsedDeck, SplitCards, Slots } from '../../actions/types';
 import { showCard, showCardSwipe } from '../navHelper';
-import MarvelIcon from '../../assets/MarvelIcon';
 import AppIcon from '../../assets/AppIcon';
-import InvestigatorImage from '../core/InvestigatorImage';
+import HeroImage from '../core/HeroImage';
 import InvestigatorOptionsModule from './InvestigatorOptionsModule';
 import CardSectionHeader, { CardSectionHeaderData } from './CardSectionHeader';
 import CardSearchResult from '../CardSearchResult';
@@ -205,9 +204,6 @@ export default class DeckViewTab extends React.Component<Props> {
 
   renderProblem() {
     const {
-      parsedDeck: {
-        investigator,
-      },
       problem,
       fontScale,
     } = this.props;
@@ -233,7 +229,6 @@ export default class DeckViewTab extends React.Component<Props> {
         normalCards,
         specialCards,
         investigator,
-        slots,
       },
       meta,
       showEditCards,
@@ -264,10 +259,8 @@ export default class DeckViewTab extends React.Component<Props> {
       parsedDeck: {
         investigator,
       },
-      fontScale,
     } = this.props;
 
-    const ICON_SIZE = fontScale * (isBig ? 1.2 : 1.0) * 20;
     const health = investigator.health || 0;
     const handSize = investigator.hand_size || 0;
     return (
@@ -334,7 +327,7 @@ export default class DeckViewTab extends React.Component<Props> {
         <TouchableOpacity onPress={this._showInvestigator}>
           <View style={styles.header}>
             <View style={styles.image}>
-              <InvestigatorImage
+              <HeroImage
                 card={investigator}
                 componentId={componentId}
               />

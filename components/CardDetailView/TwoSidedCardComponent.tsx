@@ -11,7 +11,6 @@ import DeviceInfo from 'react-native-device-info';
 import { msgid, ngettext, t } from 'ttag';
 
 import {
-  CORE_FACTION_CODES,
   FACTION_COLORS,
   FACTION_BACKGROUND_COLORS,
 } from '../../constants';
@@ -35,8 +34,6 @@ const ENCOUNTER_BACK = require('../../assets/encounter-back.png');
 const PER_HERO_ICON = (
   <MarvelIcon name="per_investigator" size={isBig ? 22 : 12} color="#000000" />
 );
-const ICON_SIZE = isBig ? 44 : 28;
-const SMALL_ICON_SIZE = isBig ? 26 : 16;
 const RESOURCE_ICON_SIZE = isBig ? 26 : 16;
 
 const RESOURCE_FIELDS = [
@@ -232,40 +229,6 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     return null;
   }
 
-  renderFactionIcon(card: BaseCard) {
-    const color = card.isPlayerDeckCard() ? '#FFF' : '#222';
-
-    if (card.spoiler) {
-      // Encounter Icon
-      return null;
-    }
-    if (card.isPlayerDeckCard()) {
-      if (card.faction2_code) {
-        return (
-          <React.Fragment>
-            <View style={styles.factionIcon}>
-              { !!card.faction_code &&
-                (CORE_FACTION_CODES.indexOf(card.faction_code) !== -1) &&
-                <MarvelIcon name={card.faction_code} size={28} color="#FFF" /> }
-            </View>
-            <View style={styles.factionIcon}>
-              { !!card.faction2_code &&
-                (CORE_FACTION_CODES.indexOf(card.faction2_code) !== -1) &&
-                <MarvelIcon name={card.faction2_code} size={28} color="#FFF" /> }
-            </View>
-          </React.Fragment>
-        );
-      }
-      return (
-        <View style={styles.factionIcon}>
-          { (!!card.faction_code && CORE_FACTION_CODES.indexOf(card.faction_code) !== -1) &&
-            <MarvelIcon name={card.faction_code} size={ICON_SIZE + 4} color={color} /> }
-        </View>
-      );
-    }
-    return null;
-  }
-
   renderTitleContent(
     card: BaseCard,
     name: string,
@@ -307,7 +270,6 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
             ) }
           </View>
         </View>
-        { this.renderFactionIcon(card) }
       </React.Fragment>
     );
   }
@@ -691,9 +653,6 @@ const styles = StyleSheet.create({
   statsBlock: {
     marginBottom: s,
   },
-  slotBlock: {
-    marginBottom: s,
-  },
   setRow: {
     marginBottom: xs,
   },
@@ -727,7 +686,5 @@ const styles = StyleSheet.create({
   },
   resourceIcon: {
     marginLeft: 2,
-  },
-  factionIcon: {
   },
 });

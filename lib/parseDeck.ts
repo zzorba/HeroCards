@@ -1,5 +1,4 @@
-import { filter, forEach, keys, map, mapValues, range, groupBy, pullAt, sortBy, sum, uniqBy, union } from 'lodash';
-import { t } from 'ttag';
+import { filter, forEach, keys, map, mapValues, range, groupBy, sortBy, sum, uniqBy } from 'lodash';
 
 import {
   CardId,
@@ -17,7 +16,6 @@ import {
   FactionCodeType,
   ResourceCodeType,
 } from '../constants';
-import DeckValidation from './DeckValidation';
 import Card, { CardKey, CardsMap } from '../data/Card';
 
 function filterBy(

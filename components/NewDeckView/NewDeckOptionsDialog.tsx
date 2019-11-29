@@ -30,7 +30,7 @@ import starterDecks from '../../assets/starter-decks';
 interface OwnProps {
   componentId: string;
   toggleVisible: () => void;
-  investigatorId?: string;
+  heroId?: string;
   viewRef?: View;
   onCreateDeck: (deck: Deck) => void;
 }
@@ -70,9 +70,9 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props) {
     const {
-      investigatorId,
+      heroId,
     } = this.props;
-    if (investigatorId && investigatorId !== prevProps.investigatorId) {
+    if (heroId && heroId !== prevProps.heroId) {
       this.resetForm();
     }
   }
@@ -214,10 +214,10 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
 
   investigator() {
     const {
-      investigatorId,
-      investigators,
+      heroId,
+      heroes,
     } = this.props;
-    return investigatorId ? investigators[investigatorId] : undefined;
+    return heroId ? heroes[heroId] : undefined;
   }
 
   deckName() {
@@ -267,7 +267,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
 
   renderFormContent() {
     const {
-      investigatorId,
+      heroId,
       signedIn,
       refreshNetworkStatus,
       networkType,
@@ -277,7 +277,6 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       saving,
       deckName,
       offlineDeck,
-      optionSelected,
       starterDeck,
     } = this.state;
     if (saving) {
@@ -289,10 +288,9 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
         />
       );
     }
-    const cardOptions = this.requiredCardOptions();
     let hasStarterDeck = false;
-    if (investigatorId) {
-      hasStarterDeck = starterDecks[investigatorId] !== undefined;
+    if (heroId) {
+      hasStarterDeck = starterDecks[heroId] !== undefined;
     }
     return (
       <React.Fragment>
@@ -343,7 +341,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     const {
       toggleVisible,
       viewRef,
-      investigatorId,
+      heroId,
     } = this.props;
     const {
       saving,
@@ -357,7 +355,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     return (
       <Dialog
         title={t`New Deck`}
-        visible={!!investigatorId}
+        visible={!!heroId}
         viewRef={viewRef}
       >
         { this.renderFormContent() }

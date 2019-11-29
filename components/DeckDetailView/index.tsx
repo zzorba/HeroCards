@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  find,
   findIndex,
   flatMap,
   forEach,
@@ -22,7 +21,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Results } from 'realm';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Navigation, EventSubscription, OptionsTopBarButton } from 'react-native-navigation';
@@ -68,7 +66,7 @@ import {
 import { m } from '../../styles/space';
 import typography from '../../styles/typography';
 import { COLORS } from '../../styles/colors';
-import { getDeckOptions, showCardCharts, showDrawSimulator } from '../navHelper';
+import { showCardCharts, showDrawSimulator } from '../navHelper';
 
 export interface DeckDetailProps {
   id: number;
@@ -215,9 +213,6 @@ class DeckDetailView extends React.Component<Props, State> {
     const {
       deck,
       id,
-      isPrivate,
-      fetchPrivateDeck,
-      fetchPublicDeck,
     } = this.props;
     if (deck !== prevProps.deck) {
       if (!deck) {
@@ -390,7 +385,7 @@ class DeckDetailView extends React.Component<Props, State> {
       this.setState({
         saving: true,
       });
-      uploadLocalDeck(deck).then(newDeck => {
+      uploadLocalDeck(deck).then(() => {
         this.setState({
           saving: false,
           hasPendingEdits: false,
@@ -437,12 +432,6 @@ class DeckDetailView extends React.Component<Props, State> {
 
       const problemObj = this.getProblem();
       const problem = problemObj ? problemObj.reason : '';
-
-      const addedBasicWeaknesses = this.addedBasicWeaknesses(
-        deck,
-        slots,
-        ignoreDeckLimitSlots
-      );
 
       this.setState({
         saving: true,
@@ -710,7 +699,7 @@ class DeckDetailView extends React.Component<Props, State> {
     });
   };
 
-  renderEditDetailsDialog(deck: Deck, parsedDeck: ParsedDeck) {
+  renderEditDetailsDialog(deck: Deck) {
     const {
       viewRef,
     } = this.props;
@@ -1100,7 +1089,7 @@ class DeckDetailView extends React.Component<Props, State> {
           />
           { this._renderFooter() }
         </View>
-        { this.renderEditDetailsDialog(deck, parsedDeck) }
+        { this.renderEditDetailsDialog(deck) }
       </View>
     );
   }

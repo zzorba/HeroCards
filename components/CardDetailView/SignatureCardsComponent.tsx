@@ -1,6 +1,5 @@
 import React from 'react';
 import Realm, { Results } from 'realm';
-import { connect } from 'react-redux';
 import { flatMap, map } from 'lodash';
 import {
   StyleSheet,
@@ -85,7 +84,7 @@ export default connectRealm<OwnProps, RealmProps, Card>(
         ...map(card_requirements || [], req => {
           return `code == '${req.code}'`;
         }),
-        `(card_set_code == '${props.investigator.card_set_code}' AND set_position > 0)`
+        `(card_set_code == '${props.investigator.card_set_code}' AND set_position > 0)`,
       ].join(' OR ');
       const alternateQuery = map(
         flatMap(card_requirements || [], req => (req.alternates || [])),

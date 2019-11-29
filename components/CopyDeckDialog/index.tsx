@@ -7,8 +7,6 @@ import DialogComponent from 'react-native-dialog';
 import { NetInfoStateType } from '@react-native-community/netinfo';
 import { t } from 'ttag';
 
-import SelectDeckSwitch from './SelectDeckSwitch';
-import { parseDeck } from '../../lib/parseDeck';
 import withPlayerCards, { PlayerCardProps } from '../withPlayerCards';
 import { showDeckModal } from '../navHelper';
 import Dialog from '../core/Dialog';
@@ -198,9 +196,9 @@ class CopyDeckDialog extends React.Component<Props, State> {
   hero() {
     const {
       deck,
-      investigators,
+      heroes,
     } = this.props;
-    return deck && investigators[deck.investigator_code];
+    return deck && heroes[deck.investigator_code];
   }
 
   renderFormContent() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { filter, map } from 'lodash';
+import { map } from 'lodash';
 import {
   FlatList,
   StyleSheet,
@@ -31,7 +31,6 @@ export default class PackListComponent extends React.Component<Props> {
 
   _renderItem = ({ item }: { item: Pack }) => {
     const {
-      packs,
       checkState,
       setChecked,
       whiteBackground,

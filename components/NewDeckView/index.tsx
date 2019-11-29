@@ -2,7 +2,7 @@ import React from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
 import { Navigation, EventSubscription } from 'react-native-navigation';
 
-import InvestigatorsListComponent from '../InvestigatorsListComponent';
+import HeroesListComponent from '../HeroesListComponent';
 import NewDeckOptionsDialog from './NewDeckOptionsDialog';
 import { NavigationProps } from '../types';
 import { t } from 'ttag';
@@ -13,7 +13,7 @@ import { COLORS } from '../../styles/colors';
 
 export interface NewDeckProps {
   onCreateDeck: (deck: Deck) => void;
-  filterInvestigators?: string[];
+  filterHeroes?: string[];
 }
 
 type Props = NewDeckProps & NavigationProps;
@@ -21,7 +21,7 @@ type Props = NewDeckProps & NavigationProps;
 interface State {
   saving: boolean;
   viewRef?: View;
-  activeInvestigatorId?: string;
+  activeHeroId?: string;
   selectedSort: SortType;
 }
 
@@ -97,7 +97,7 @@ export default class NewDeckView extends React.Component<Props, State> {
 
   _closeDialog = () => {
     this.setState({
-      activeInvestigatorId: undefined,
+      activeHeroId: undefined,
     });
   };
 
@@ -112,10 +112,10 @@ export default class NewDeckView extends React.Component<Props, State> {
     }
   }
 
-  _onPress = (investigator: Card) => {
-    if (!this.state.activeInvestigatorId) {
+  _onPress = (hero: Card) => {
+    if (!this.state.activeHeroId) {
       this.setState({
-        activeInvestigatorId: investigator.code,
+        activeHeroId: hero.code,
       });
     }
   };
@@ -124,19 +124,19 @@ export default class NewDeckView extends React.Component<Props, State> {
     const {
       componentId,
       onCreateDeck,
-      filterInvestigators,
+      filterHeroes,
     } = this.props;
     const {
       viewRef,
-      activeInvestigatorId,
+      activeHeroId,
       selectedSort,
     } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.container} ref={this._captureViewRef}>
-          <InvestigatorsListComponent
+          <HeroesListComponent
             componentId={componentId}
-            filterInvestigators={filterInvestigators}
+            filterHeroes={filterHeroes}
             sort={selectedSort}
             onPress={this._onPress}
           />
@@ -146,7 +146,7 @@ export default class NewDeckView extends React.Component<Props, State> {
           viewRef={viewRef}
           onCreateDeck={onCreateDeck}
           toggleVisible={this._closeDialog}
-          investigatorId={activeInvestigatorId}
+          heroId={activeHeroId}
         />
       </View>
     );

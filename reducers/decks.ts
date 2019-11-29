@@ -12,10 +12,6 @@ import {
   CLEAR_DECKS,
   REPLACE_LOCAL_DECK,
   DecksActions,
-  NewDeckAvailableAction,
-  ReplaceLocalDeckAction,
-  UpdateDeckAction,
-  Deck,
   DecksMap,
 } from '../actions/types';
 
@@ -154,7 +150,6 @@ export default function(
   }
   if (action.type === DELETE_DECK) {
     const all = Object.assign({}, state.all);
-    let deck = all[action.id];
     const toDelete = [action.id];
     delete all[action.id];
     const toDeleteSet = new Set(toDelete);

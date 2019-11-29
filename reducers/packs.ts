@@ -1,5 +1,3 @@
-import { forEach } from 'lodash';
-
 import {
   UPDATE_PROMPT_DISMISSED,
   PACKS_FETCH_START,

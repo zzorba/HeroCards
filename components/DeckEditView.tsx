@@ -112,9 +112,6 @@ class DeckEditView extends React.Component<Props, State> {
       meta,
       investigator,
     } = this.props;
-    const {
-      deckCardCounts,
-    } = this.state;
     const parts = investigator ? [
       `(${queryForInvestigator(investigator, meta)})`,
     ] : [];

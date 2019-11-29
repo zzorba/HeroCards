@@ -4,7 +4,6 @@ declare module 'react-native-realm' {
   import { Subtract } from 'utility-types';
 
   export type Sort = [string, boolean];
-  
   export interface CardResults<Card> {
     cards: Results<Card>;
   }

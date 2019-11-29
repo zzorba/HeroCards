@@ -839,7 +839,7 @@ class CardResultList extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: AppState, props: OwnProps): ReduxProps {
+function mapStateToProps(state: AppState): ReduxProps {
   const in_collection = getPacksInCollection(state);
   return {
     singleCardView: state.settings.singleCardView || false,

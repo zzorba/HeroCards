@@ -182,13 +182,6 @@ const styles = StyleSheet.create({
     width: 142 * 1.4 * SCALE_FACTOR,
     height: 198 * 1.4 * SCALE_FACTOR,
   },
-  locationImage: {
-    position: 'absolute',
-    top: -17 * SCALE_FACTOR,
-    left: -25 * SCALE_FACTOR,
-    width: 142 * 1.4 * SCALE_FACTOR,
-    height: 198 * 1.4 * SCALE_FACTOR,
-  },
   heroImage: {
     top: -14 * SCALE_FACTOR,
     left: -18 * SCALE_FACTOR,

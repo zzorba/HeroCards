@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Platform,
   StyleSheet,
   TextInput,
   View,
@@ -10,7 +9,7 @@ import DialogComponent from 'react-native-dialog';
 
 import Dialog from '../core/Dialog';
 import { COLORS } from '../../styles/colors';
-import space, { m } from '../../styles/space';
+import space from '../../styles/space';
 import typography from '../../styles/typography';
 
 interface Props {
@@ -109,27 +108,4 @@ const styles = StyleSheet.create({
   column: {
     flexDirection: 'column',
   },
-  buttonsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingRight: Platform.OS === 'ios' ? 28 : 8,
-    paddingLeft: Platform.OS === 'ios' ? 28 : 8,
-    marginBottom: m,
-  },
-  buttonLabel: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  label: Platform.select({
-    ios: {
-      fontSize: 13,
-      color: 'black',
-    },
-    android: {
-      fontSize: 16,
-      color: '#33383D',
-    },
-  }),
 });

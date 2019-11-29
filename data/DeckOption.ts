@@ -1,6 +1,5 @@
 import Realm from 'realm';
 import { indexOf, map } from 'lodash';
-import { t } from 'ttag';
 
 import { DeckMeta } from '../actions/types';
 import DeckAtLeastOption from './DeckAtLeastOption';

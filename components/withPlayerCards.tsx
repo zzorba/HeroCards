@@ -9,7 +9,7 @@ import FaqEntry from '../data/FaqEntry';
 export interface PlayerCardProps {
   realm: Realm;
   cards: CardsMap;
-  investigators: CardsMap;
+  heroes: CardsMap;
 }
 
 export default function withPlayerCards<Props, ExtraProps={}>(
@@ -19,40 +19,39 @@ export default function withPlayerCards<Props, ExtraProps={}>(
 
   // @ts-ignore TS2345
   const result = connectRealm<Props, PlayerCardProps & ExtraProps, Card, FaqEntry>(
-      WrappedComponent, {
-        schemas: ['Card'],
-        mapToProps(
-          results: CardResults<Card>,
-          realm: Realm,
-          props: Props
-        ): PlayerCardProps & ExtraProps {
-          const playerCards = results.cards.filtered(
-            `(type_code == "investigator" OR deck_limit > 0)`
-          );
-          const investigators: CardsMap = {};
-          const cards: CardsMap = {};
-          forEach(
-            playerCards,
-            card => {
-              cards[card.code] = card;
-              if (card.type_code === 'hero') {
-                investigators[card.code] = card;
-              }
-            });
-          const playerCardProps: PlayerCardProps = {
-            realm,
-            cards,
-            investigators,
-          };
-          const extraProps: ExtraProps = computeExtraProps ?
-            computeExtraProps(playerCards) :
-            ({} as ExtraProps);
-          return {
-            ...extraProps,
-            ...playerCardProps,
-          };
-        },
-      });
+    WrappedComponent, {
+      schemas: ['Card'],
+      mapToProps(
+        results: CardResults<Card>,
+        realm: Realm
+      ): PlayerCardProps & ExtraProps {
+        const playerCards = results.cards.filtered(
+          `(type_code == "hero" OR deck_limit > 0)`
+        );
+        const heroes: CardsMap = {};
+        const cards: CardsMap = {};
+        forEach(
+          playerCards,
+          card => {
+            cards[card.code] = card;
+            if (card.type_code === 'hero') {
+              heroes[card.code] = card;
+            }
+          });
+        const playerCardProps: PlayerCardProps = {
+          realm,
+          cards,
+          heroes,
+        };
+        const extraProps: ExtraProps = computeExtraProps ?
+          computeExtraProps(playerCards) :
+          ({} as ExtraProps);
+        return {
+          ...extraProps,
+          ...playerCardProps,
+        };
+      },
+    });
   hoistNonReactStatic(result, WrappedComponent);
   return result as React.ComponentType<Props>;
 }

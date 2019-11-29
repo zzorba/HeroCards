@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { concat, find, filter, flatMap, forEach, keys, map, max, minBy, last, sortBy, values } from 'lodash';
+import { concat, find, forEach, keys, map, minBy, sortBy } from 'lodash';
 import { persistReducer } from 'redux-persist';
 import { createSelector } from 'reselect';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -11,8 +11,7 @@ import decks from './decks';
 import packs from './packs';
 import settings from './settings';
 import { FilterState } from '../lib/filters';
-import { Deck, DecksMap, Pack, SortType } from '../actions/types';
-import Card, { CardsMap } from '../data/Card';
+import { Deck, Pack, SortType } from '../actions/types';
 
 const packsPersistConfig = {
   key: 'packs',
@@ -62,7 +61,6 @@ const DEFAULT_OBJECT = {};
 const DEFAULT_PACK_LIST: Pack[] = [];
 
 const allPacksSelector = (state: AppState) => state.packs.all;
-const allDecksSelector = (state: AppState) => state.decks.all;
 
 export function getShowSpoilers(state: AppState, packCode: string): boolean {
   const show_spoilers = state.packs.show_spoilers || {};
@@ -102,14 +100,12 @@ export function getAllDecks(state: AppState) {
 
 export function getBaseDeck(state: AppState, deckId: number): Deck | undefined {
   const decks = getAllDecks(state);
-  let deck = decks[deckId];
-  return deck;
+  return decks[deckId];
 }
 
 export function getLatestDeck(state: AppState, deckId: number): Deck | undefined {
   const decks = getAllDecks(state);
-  let deck = decks[deckId];
-  return deck;
+  return decks[deckId];
 }
 
 const EMPTY_MY_DECKS: number[] = [];
@@ -152,7 +148,7 @@ export function getDeck(state: AppState, id: number): Deck | null {
 }
 
 
-const getDecksAllDecksSelector = (state: AppState, deckIds: number[]) => state.decks.all;
+const getDecksAllDecksSelector = (state: AppState) => state.decks.all;
 const getDecksDeckIdsSelector = (state: AppState, deckIds: number[]) => deckIds;
 export const getDecks = createSelector(
   getDecksAllDecksSelector,

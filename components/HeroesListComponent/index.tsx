@@ -21,10 +21,10 @@ import { SORT_BY_FACTION, SORT_BY_TITLE, SORT_BY_PACK, SortType } from '../../ac
 import Card, { CardsMap } from '../../data/Card';
 import withDimensions, { DimensionsProps } from '../core/withDimensions';
 import { searchMatchesText } from '../searchHelpers';
-import InvestigatorSearchBox from './InvestigatorSearchBox';
+import HeroSearchBox from './HeroSearchBox';
 import ShowNonCollectionFooter, { rowNonCollectionHeight } from '../CardSearchResultsComponent/ShowNonCollectionFooter';
-import InvestigatorRow from './InvestigatorRow';
-import InvestigatorSectionHeader from './InvestigatorSectionHeader';
+import HeroRow from './HeroRow';
+import HeroSectionHeader from './HeroSectionHeader';
 import { getPacksInCollection, AppState } from '../../reducers';
 import typography from '../../styles/typography';
 
@@ -33,8 +33,8 @@ const SCROLL_DISTANCE_BUFFER = 50;
 interface OwnProps {
   componentId: string;
   sort: SortType;
-  onPress: (investigator: Card) => void;
-  filterInvestigators?: string[];
+  onPress: (hero: Card) => void;
+  filterHeroes?: string[];
 }
 
 interface ReduxProps {
@@ -42,7 +42,7 @@ interface ReduxProps {
 }
 
 interface RealmProps {
-  investigators: Card[];
+  heroes: Card[];
   cards: CardsMap;
 }
 
@@ -62,7 +62,7 @@ interface Section {
   nonCollectionCount: number;
 }
 
-class InvestigatorsListComponent extends React.Component<Props, State> {
+class HeroesListComponent extends React.Component<Props, State> {
   lastOffsetY: number = 0;
 
   _navEventListener?: EventSubscription;
@@ -139,8 +139,8 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
     });
   };
 
-  _onPress = (investigator: Card) => {
-    this.props.onPress(investigator);
+  _onPress = (hero: Card) => {
+    this.props.onPress(hero);
   };
 
   _editCollection = () => {
@@ -164,9 +164,9 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
 
   _renderItem = ({ item }: { item: Card }) => {
     return (
-      <InvestigatorRow
+      <HeroRow
         key={item.code}
-        investigator={item}
+        hero={item}
         cards={this.props.cards}
         onPress={this._onPress}
       />
@@ -174,38 +174,38 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
   };
 
   static headerForInvestigator(
-    investigator: Card,
+    hero: Card,
     sort: SortType
   ): string {
     switch (sort) {
       case SORT_BY_FACTION:
-        return investigator.faction_name || t`N/A`;
+        return hero.faction_name || t`N/A`;
       case SORT_BY_TITLE:
-        return t`All Investigators`;
+        return t`All Heroes`;
       case SORT_BY_PACK:
-        return investigator.pack_name;
+        return hero.pack_name;
       default:
         return t`N/A`;
     }
   }
 
-  groupedInvestigators(): Section[] {
+  groupedHeroes(): Section[] {
     const {
-      investigators,
+      heroes,
       in_collection,
-      filterInvestigators = [],
+      filterHeroes = [],
       sort,
     } = this.props;
     const {
       showNonCollection,
       searchTerm,
     } = this.state;
-    const filterInvestigatorsSet = new Set(filterInvestigators);
-    const allInvestigators = sortBy(
+    const filterHeroesSet = new Set(filterHeroes);
+    const allHeroes = sortBy(
       filter(
-        investigators,
+        heroes,
         i => {
-          if (filterInvestigatorsSet.has(i.code)) {
+          if (filterHeroesSet.has(i.code)) {
             return false;
           }
           return searchMatchesText(
@@ -213,23 +213,23 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
             [i.name, i.faction_name || '', i.traits || '']
           );
         }),
-      investigator => {
+      hero => {
         switch (sort) {
           case SORT_BY_FACTION:
-            return investigator.factionCode();
+            return hero.factionCode();
           case SORT_BY_TITLE:
-            return investigator.name;
+            return hero.name;
           case SORT_BY_PACK:
           default:
-            return investigator.code;
+            return hero.code;
         }
       });
 
     const results: Section[] = [];
     let nonCollectionCards: Card[] = [];
     let currentBucket: Section | undefined = undefined;
-    forEach(allInvestigators, i => {
-      const header = InvestigatorsListComponent.headerForInvestigator(i, sort);
+    forEach(allHeroes, i => {
+      const header = HeroesListComponent.headerForInvestigator(i, sort);
       if (!currentBucket || currentBucket.title !== header) {
         if (currentBucket && nonCollectionCards.length > 0) {
           if (showNonCollection[currentBucket.id]) {
@@ -275,7 +275,7 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
   }
 
   _renderSectionHeader = ({ section }: { section: SectionListData<Section> }) => {
-    return <InvestigatorSectionHeader title={section.title} />;
+    return <HeroSectionHeader title={section.title} />;
   };
 
   _renderSectionFooter = ({ section }: { section: SectionListData<Section> }) => {
@@ -301,8 +301,8 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
       <ShowNonCollectionFooter
         id={section.id}
         title={ngettext(
-          msgid`Show ${section.nonCollectionCount} Non-Collection Investigator`,
-          `Show ${section.nonCollectionCount} Non-Collection Investigators`,
+          msgid`Show ${section.nonCollectionCount} Non-Collection Hero`,
+          `Show ${section.nonCollectionCount} Non-Collection Heroes`,
           section.nonCollectionCount
         )}
         onPress={this._showNonCollectionCards}
@@ -311,8 +311,8 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
     );
   };
 
-  _investigatorToCode = (investigator: Card) => {
-    return investigator.code;
+  _investigatorToCode = (hero: Card) => {
+    return hero.code;
   };
 
   showHeader() {
@@ -337,7 +337,7 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
 
   renderHeader() {
     return (
-      <InvestigatorSearchBox
+      <HeroSearchBox
         value={this.state.searchTerm}
         visible={this.state.headerVisible}
         onChangeText={this._searchUpdated}
@@ -349,11 +349,11 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
     const {
       searchTerm,
     } = this.state;
-    if (searchTerm && this.groupedInvestigators().length === 0) {
+    if (searchTerm && this.groupedHeroes().length === 0) {
       return (
         <View style={styles.footer}>
           <Text style={[typography.text, typography.center]}>
-            { t`No matching investigators for "${searchTerm}".` }
+            { t`No matching heroes for "${searchTerm}".` }
           </Text>
         </View>
       );
@@ -371,7 +371,7 @@ class InvestigatorsListComponent extends React.Component<Props, State> {
         <SectionList
           onScroll={this._handleScroll}
           onScrollBeginDrag={this._handleScrollBeginDrag}
-          sections={this.groupedInvestigators()}
+          sections={this.groupedHeroes()}
           renderSectionHeader={this._renderSectionHeader}
           renderSectionFooter={this._renderSectionFooter}
           ListFooterComponent={this._renderFooter}
@@ -397,35 +397,33 @@ function mapStateToProps(state: AppState): ReduxProps {
 export default connect<ReduxProps, {}, OwnProps, AppState>(
   mapStateToProps
 )(connectRealm<OwnProps & ReduxProps, RealmProps, Card>(
-  withDimensions(InvestigatorsListComponent),
+  withDimensions(HeroesListComponent),
   {
     schemas: ['Card'],
     mapToProps(
-      results: CardResults<Card>,
-      realm: Realm,
-      props: OwnProps & ReduxProps
+      results: CardResults<Card>
     ): RealmProps {
-      const investigators: Card[] = [];
+      const heroes: Card[] = [];
       const names: { [name: string]: boolean } = {};
       forEach(
         results.cards.filtered(
-          `(type_code == "investigator")`)
+          `(type_code == "hero")`)
           .sorted('code', false),
         card => {
           if (!names[card.name]) {
             names[card.name] = true;
-            investigators.push(card);
+            heroes.push(card);
           }
         });
 
       const cards: CardsMap = {};
       forEach(
-        results.cards.filtered(`(has_restrictions == true)`),
+        results.cards.filtered(`(faction_code == "hero")`),
         card => {
           cards[card.code] = card;
         });
       return {
-        investigators,
+        heroes,
         cards,
       };
     },
