@@ -12,6 +12,7 @@ import AppIcon from '../assets/AppIcon';
 import typography, { SMALL_FONT_SIZE } from '../styles/typography';
 
 const DECK_PROBLEM_MESSAGES: { [error in DeckProblemType]: string } = {
+  aspect: t`Aspect not selected`,
   too_few_cards: t`Not enough cards.`,
   too_many_cards: t`Too many cards.`,
   too_many_copies: t`Too many copies of a card with the same name.`,

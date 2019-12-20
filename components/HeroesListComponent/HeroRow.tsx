@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { t } from 'ttag';
 
 import HeroGradient from '../core/HeroGradient';
 import HeroImage from '../core/HeroImage';
@@ -26,6 +27,14 @@ export default class HeroRow extends React.Component<Props> {
     onPress(hero);
   };
 
+  name() {
+    const { hero } = this.props;
+    if (hero.linked_card) {
+      return `${hero.name} / ${hero.linked_card.name}`;
+    }
+    return hero.name;
+  }
+
   render() {
     const {
       hero,
@@ -35,13 +44,20 @@ export default class HeroRow extends React.Component<Props> {
         <HeroGradient
           card_set_code={hero.card_set_code}
           style={styles.row}
+          color="primary"
         >
           <View style={styles.image}>
             <HeroImage card={hero} />
           </View>
           <View style={styles.titleColumn}>
-            <Text style={[typography.text, styles.text]}>
-              { hero.name }
+            <Text style={[typography.text, styles.titleText]}>
+              { this.name() }
+            </Text>
+            <Text style={[typography.text, styles.detailText]}>
+              { t`Deck Size: 40-50` }
+            </Text>
+            <Text style={[typography.text, styles.detailText]}>
+              { t`15 Hero Cards` }
             </Text>
           </View>
         </HeroGradient>
@@ -73,7 +89,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 4,
   },
-  text: {
+  titleText: {
     color: '#FFF',
+    fontFamily: 'Dosis',
+    fontWeight: '600',
+  },
+  detailText: {
+    color: '#FFF',
+    fontFamily: 'Dosis',
+    fontWeight: '400',
   },
 });

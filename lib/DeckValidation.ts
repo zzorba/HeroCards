@@ -84,6 +84,9 @@ export default class DeckValidation {
   }
 
   getProblemHelper(cards: Card[]): DeckProblemType | null {
+    if (!this.meta || !this.meta.aspect) {
+      return 'aspect';
+    }
 	  // get investigator data
   	var card = this.investigator;
   	// store list of all problems

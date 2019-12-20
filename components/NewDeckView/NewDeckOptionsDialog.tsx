@@ -20,6 +20,7 @@ import withLoginState, { LoginStateProps } from '../withLoginState';
 import withPlayerCards, { PlayerCardProps } from '../withPlayerCards';
 import { saveNewDeck, NewDeckParams } from '../decks/actions';
 import { Deck, Slots } from '../../actions/types';
+import { FactionCodeType } from '../../constants';
 import Card from '../../data/Card';
 import { t } from 'ttag';
 import typography from '../../styles/typography';
@@ -46,6 +47,7 @@ type Props = OwnProps &
 interface State {
   saving: boolean;
   deckName?: string;
+  aspect: FactionCodeType;
   offlineDeck: boolean;
   starterDeck: boolean;
   optionSelected: boolean[];
@@ -63,6 +65,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       offlineDeck: !props.signedIn || !props.isConnected || props.networkType === NetInfoStateType.none,
       optionSelected: [true],
       starterDeck: false,
+      aspect: 'aggression',
     };
 
     this._onOkayPress = throttle(this.onOkayPress.bind(this), 200);
@@ -110,7 +113,6 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
 
   resetForm() {
     this.setState({
-      deckName: this.deckName(),
       saving: false,
       optionSelected: [true],
     });
@@ -170,6 +172,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       saveNewDeck,
     } = this.props;
     const {
+      aspect,
       deckName,
       offlineDeck,
       saving,
@@ -187,8 +190,9 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       });
       saveNewDeck({
         local,
-        deckName: deckName || t`New Deck`,
+        deckName: deckName || this.deckName() || t`New Deck`,
         investigatorCode: hero.code,
+        meta: { aspect },
         slots: slots,
       }).then(
         this._showNewDeck,
@@ -210,12 +214,13 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     return heroId ? heroes[heroId] : undefined;
   }
 
-  deckName() {
+  deckName(): string | undefined {
     const hero = this.hero();
     if (!hero) {
       return undefined;
     }
-    switch (hero.faction_code) {
+    const { aspect } = this.state;
+    switch (aspect) {
       case 'protection':
         return t`${hero.name} Protects the World`;
       case 'justice':
@@ -223,7 +228,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       case 'aggression':
         return t`${hero.name}'s Vengeance`;
       case 'leadership':
-        return t`${hero.name} Leads`;
+        return t`${hero.name} Leads the Team`;
       default:
         return t`${hero.name} Does It All`;
     }
@@ -253,6 +258,69 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       }
     );
     return result;
+  }
+
+  _onSelectAggression = () => {
+    this.setState({
+      aspect: 'aggression',
+    });
+  };
+
+  _onSelectLeadership = () => {
+    this.setState({
+      aspect: 'leadership',
+    });
+  };
+
+  _onSelectJustice = () => {
+    this.setState({
+      aspect: 'justice',
+    });
+  };
+
+  _onSelectProtection = () => {
+    this.setState({
+      aspect: 'protection',
+    });
+  };
+
+  renderAspects() {
+    const { aspect } = this.state;
+    return (
+      <>
+        <DialogComponent.Description style={[typography.dialogLabel, space.marginBottomS]}>
+          { t`Aspect` }
+        </DialogComponent.Description>
+        <DialogComponent.Switch
+          label={t`Aggression`}
+          value={aspect === 'aggression'}
+          disabled={aspect === 'aggression'}
+          onValueChange={this._onSelectAggression}
+          trackColor={COLORS.switchTrackColor}
+        />
+        <DialogComponent.Switch
+          label={t`Leadership`}
+          value={aspect === 'leadership'}
+          disabled={aspect === 'leadership'}
+          onValueChange={this._onSelectLeadership}
+          trackColor={COLORS.switchTrackColor}
+        />
+        <DialogComponent.Switch
+          label={t`Justice`}
+          value={aspect === 'justice'}
+          disabled={aspect === 'justice'}
+          onValueChange={this._onSelectJustice}
+          trackColor={COLORS.switchTrackColor}
+        />
+        <DialogComponent.Switch
+          label={t`Protection`}
+          value={aspect === 'protection'}
+          disabled={aspect === 'protection'}
+          onValueChange={this._onSelectProtection}
+          trackColor={COLORS.switchTrackColor}
+        />
+      </>
+    );
   }
 
   renderFormContent() {
@@ -290,9 +358,11 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
         <DialogComponent.Input
           textInputRef={this._captureTextInputRef}
           value={deckName}
+          placeholder={this.deckName()}
           onChangeText={this._onDeckNameChange}
           returnKeyType="done"
         />
+        { this.renderAspects() }
         <DialogComponent.Description style={[typography.dialogLabel, space.marginBottomS]}>
           { t`Deck Type` }
         </DialogComponent.Description>

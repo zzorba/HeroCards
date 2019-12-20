@@ -57,6 +57,7 @@ export interface ParsedDeck {
 export interface Slots {
   [code: string]: number;
 }
+const ASPECT = 'aspect';
 const INVESTIGATOR = 'hero';
 const TOO_MANY_COPIES = 'too_many_copies';
 const INVALID_CARDS = 'invalid_cards';
@@ -65,6 +66,7 @@ const TOO_MANY_CARDS = 'too_many_cards';
 const DECK_OPTIONS_LIMIT = 'deck_options_limit';
 
 export type DeckProblemType =
+  typeof ASPECT |
   typeof INVESTIGATOR |
   typeof TOO_MANY_COPIES |
   typeof INVALID_CARDS |

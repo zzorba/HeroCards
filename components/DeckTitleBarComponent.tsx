@@ -28,7 +28,7 @@ export default function DeckTitleBarComponent({
     <HeroGradient
       card_set_code={card_set_code}
       style={styles.titleBar}
-      dark
+      color="primary"
     >
       <Text
         style={[
