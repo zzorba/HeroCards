@@ -28,6 +28,7 @@ import {
   SORT_BY_PACK,
   SORT_BY_TITLE,
   SORT_BY_CARD_SET,
+  Deck,
   SortType,
   Slots,
 } from '../../actions/types';
@@ -65,8 +66,8 @@ interface OwnProps {
   termQuery?: string;
   searchTerm?: string;
   sort?: SortType;
+  deck?: Deck;
   investigator?: Card;
-  originalDeckSlots?: Slots;
   deckCardCounts?: Slots;
   onDeckCountChange?: (code: string, count: number) => void;
   limits?: Slots;
@@ -444,7 +445,7 @@ class CardResultList extends React.Component<Props, State> {
   deckSections(): CardBucket[] {
     const {
       realm,
-      originalDeckSlots,
+      deck,
       searchTerm,
       termQuery,
       filterQuery,
@@ -454,12 +455,12 @@ class CardResultList extends React.Component<Props, State> {
     const {
       deckCardCounts,
     } = this.state;
-    if (!originalDeckSlots) {
+    if (!deck || !deck.slots) {
       return [];
     }
     const codes = filter(
-      uniq(concat(keys(originalDeckSlots), keys(deckCardCounts))),
-      code => originalDeckSlots[code] > 0 ||
+      uniq(concat(keys(deck.slots), keys(deckCardCounts))),
+      code => deck.slots[code] > 0 ||
         (deckCardCounts && deckCardCounts[code] > 0));
     const deckQuery = map(codes, code => ` (code == '${code}')`).join(' OR ');
     const queryParts = [`(${deckQuery})`];
@@ -540,6 +541,7 @@ class CardResultList extends React.Component<Props, State> {
       componentId,
       onDeckCountChange,
       investigator,
+      deck,
       renderFooter,
       singleCardView,
     } = this.props;
@@ -576,6 +578,7 @@ class CardResultList extends React.Component<Props, State> {
       showSpoilerCards,
       deckCardCounts,
       onDeckCountChange,
+      deck,
       investigator,
       renderFooter,
     );

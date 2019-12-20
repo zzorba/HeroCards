@@ -9,15 +9,16 @@ import { CardDetailProps } from './CardDetailView';
 import { CardDetailSwipeProps } from './CardDetailSwipeView';
 import { DeckDetailProps } from './DeckDetailView';
 import { Deck, ParsedDeck, Slots } from '../actions/types';
-import { FACTION_DARK_GRADIENTS } from '../constants';
+import { deckColor } from '../constants';
 import Card from '../data/Card';
 import { iconsMap } from '../app/NavIcons';
 import { COLORS } from '../styles/colors';
 
-export function getDeckOptions(
-  investigator?: Card,
+
+function basicDeckOptions(
+  deck: Deck,
+  titleAndSubtitle: any,
   modal?: boolean,
-  title?: string
 ): Options {
   return {
     statusBar: {
@@ -39,19 +40,9 @@ export function getDeckOptions(
           color: 'white',
         },
       ] : [],
-      title: {
-        fontWeight: 'bold',
-        text: (investigator ? investigator.name : t`Deck`),
-        color: '#FFFFFF',
-      },
-      subtitle: {
-        text: title,
-        color: '#FFFFFF',
-      },
+      ...titleAndSubtitle,
       background: {
-        color: FACTION_DARK_GRADIENTS[
-          (investigator ? investigator.faction_code : null) || 'neutral'
-        ][0],
+        color: deckColor(deck.meta),
       },
     },
     bottomTabs: {
@@ -60,6 +51,46 @@ export function getDeckOptions(
       animate: true,
     },
   };
+}
+export function getDeckEditOptions(deck: Deck) {
+  return basicDeckOptions(
+    deck,
+    {
+      title: {
+        fontWeight: 'bold',
+        text: (t`Edit Deck`),
+        color: 'white',
+      },
+      subtitle: {
+        text: deck.name,
+        color: 'white',
+      },
+    },
+    false
+  );
+}
+
+export function getDeckOptions(
+  deck: Deck,
+  hero?: Card,
+  modal?: boolean,
+  title?: string
+): Options {
+  return basicDeckOptions(
+    deck,
+    {
+      title: {
+        fontWeight: 'bold',
+        text: (hero ? hero.name : t`Deck`),
+        color: 'white',
+      },
+      subtitle: {
+        text: title,
+        color: 'white',
+      },
+    },
+    modal
+  );
 }
 
 export function showDeckModal(
@@ -80,7 +111,7 @@ export function showDeckModal(
         component: {
           name: 'Deck',
           passProps,
-          options: getDeckOptions(investigator, true, deck.name),
+          options: getDeckOptions(deck, investigator, true, deck.name),
         },
       }],
     },
@@ -122,7 +153,12 @@ export function showCardCharts(
       passProps: {
         parsedDeck,
       },
-      options: getDeckOptions(parsedDeck.investigator, false, t`Charts`),
+      options: getDeckOptions(
+        parsedDeck.deck,
+        parsedDeck.investigator,
+        false,
+        t`Charts`
+      ),
     },
   });
 }
@@ -141,7 +177,12 @@ export function showDrawSimulator(
       passProps: {
         slots,
       },
-      options: getDeckOptions(investigator, false, t`Draw`),
+      options: getDeckOptions(
+        parsedDeck.deck,
+        investigator,
+        false,
+        t`Draw`
+      ),
     },
   });
 }
@@ -153,11 +194,12 @@ export function showCardSwipe(
   showSpoilers?: boolean,
   deckCardCounts?: Slots,
   onDeckCountChange?: (code: string, count: number) => void,
-  investigator?: Card,
+  deck?: Deck,
+  hero?: Card,
   renderFooter?: (slots?: Slots, controls?: React.ReactNode) => React.ReactNode,
 ) {
-  const options = investigator ?
-    getDeckOptions(investigator, false, '') :
+  const options = deck ?
+    getDeckOptions(deck, hero, false, '') :
     {
       topBar: {
         backButton: {

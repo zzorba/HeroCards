@@ -5,7 +5,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { t } from 'ttag';
 
 import { ParsedDeck } from '../../actions/types';
-import MarvelIcon from '../../assets/MarvelIcon';
+import Card from '../../data/Card';
 import { PLAYER_FACTION_CODES, FACTION_COLORS, FactionCodeType } from '../../constants';
 import typography from '../../styles/typography';
 
@@ -15,6 +15,7 @@ interface Props {
 
 interface Item {
   faction: FactionCodeType;
+  factionName: string;
   hero: number;
   protection: number;
   leadership: number;
@@ -49,6 +50,7 @@ export default class FactionChart extends React.PureComponent<Props> {
     return {
       ...DEFAULT_ITEM,
       faction,
+      factionName: Card.factionCodeToName(faction, faction),
       dual: counts[0],
       [faction]: counts[1],
       total: counts[0] + counts[1],
@@ -80,19 +82,7 @@ export default class FactionChart extends React.PureComponent<Props> {
             top: y(0) + 4,
             width: width / barData.length,
           }]}>
-            { value.faction === 'basic' ? (
-              <MarvelIcon
-                name="elder_sign"
-                size={32}
-                color="#444"
-              />
-            ) : (
-              <MarvelIcon
-                name={value.faction}
-                size={32}
-                color={FACTION_COLORS[value.faction]}
-              />
-            ) }
+            <Text>{ value.factionName }</Text>
           </View>
           { value.total > 0 && (
             <Text

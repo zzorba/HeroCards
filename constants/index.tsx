@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { mapValues } from 'lodash';
 
+import { DeckMeta } from '../actions/types';
 import MarvelIcon from '../assets/MarvelIcon';
 
 
@@ -75,10 +76,15 @@ export const FACTION_COLORS: { [faction_code: string]: string } = {
   leadership: '#2b80c5',
   aggression: '#cc3038',
   protection: '#107116',
-  justice: '#c0c000',
+  justice: '#e5a109',
   basic: '#808080',
   hero: '#808080',
 };
+
+export function deckColor(meta?: DeckMeta): string {
+  const aspect = (meta || {}).aspect || 'basic';
+  return FACTION_COLORS[aspect];
+}
 
 export const FACTION_LIGHT_GRADIENTS: { [faction_code: string]: string[] } = {
   mystic: ['#d9d6f1', '#a198dc'],
@@ -91,6 +97,7 @@ export const FACTION_LIGHT_GRADIENTS: { [faction_code: string]: string[] } = {
 };
 
 export const FACTION_DARK_GRADIENTS: { [faction_code: string]: string[] } = {
+  hero: ['#4331b9', '#2f2282'],
   mystic: ['#4331b9', '#2f2282'],
   seeker: ['#ec8426', '#bd6a1e'],
   guardian: ['#2b80c5', '#22669e'],

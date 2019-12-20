@@ -12,6 +12,7 @@ import {
   SORT_BY_CARD_SET,
   SortType,
   Slots,
+  Deck,
 } from '../../actions/types';
 import CardSearchBox from './CardSearchBox';
 import CardResultList from './CardResultList';
@@ -34,8 +35,8 @@ interface Props {
   toggleMythosMode: () => void;
   clearSearchFilters: () => void;
 
+  deck?: Deck;
   investigator?: Card;
-  originalDeckSlots?: Slots;
   deckCardCounts?: Slots;
   onDeckCountChange?: (code: string, count: number) => void;
   limits?: Slots;
@@ -291,7 +292,6 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
   render() {
     const {
       componentId,
-      originalDeckSlots,
       deckCardCounts,
       onDeckCountChange,
       limits,
@@ -302,6 +302,7 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
       investigator,
       storyOnly,
       fontScale,
+      deck,
     } = this.props;
     const {
       searchTerm,
@@ -318,8 +319,8 @@ export default class CardSearchResultsComponent extends React.Component<Props, S
             termQuery={this.termQuery()}
             searchTerm={searchTerm}
             sort={selectedSort}
+            deck={deck}
             investigator={investigator}
-            originalDeckSlots={originalDeckSlots}
             deckCardCounts={deckCardCounts}
             onDeckCountChange={onDeckCountChange}
             limits={limits}

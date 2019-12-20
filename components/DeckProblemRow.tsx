@@ -15,7 +15,7 @@ const DECK_PROBLEM_MESSAGES: { [error in DeckProblemType]: string } = {
   too_few_cards: t`Not enough cards.`,
   too_many_cards: t`Too many cards.`,
   too_many_copies: t`Too many copies of a card with the same name.`,
-  invalid_cards: t`Contains forbidden cards (cards not permitted by Faction)`,
+  invalid_cards: t`Contains cards from wrong aspect.`,
   deck_options_limit: t`Contains too many limited cards.`,
   hero: t`Doesn't comply with the Investigator requirements.`,
 };

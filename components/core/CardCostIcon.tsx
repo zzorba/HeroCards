@@ -5,7 +5,6 @@ import {
   View,
 } from 'react-native';
 
-import AppIcon from '../../assets/AppIcon';
 import MarvelIcon from '../../assets/MarvelIcon';
 import { FACTION_COLORS } from '../../constants';
 import Card from '../../data/Card';
@@ -13,7 +12,7 @@ import { isBig } from '../../styles/space';
 
 export function costIconSize(fontScale: number) {
   const scaleFactor = ((fontScale - 1) / 2 + 1);
-  return (isBig ? 48 : 36) * scaleFactor;
+  return (isBig ? 48 : 42) * scaleFactor;
 }
 
 interface Props {
@@ -37,17 +36,8 @@ export default class CardCostIcon extends React.Component<Props> {
     return `${card.cost !== null ? card.cost : 'X'}`;
   }
 
-  static factionIcon(card: Card): string {
-    if (card.faction2_code) {
-      return 'elder_sign';
-    }
-    if (card.faction_code === 'basic' || card.faction_code === 'hero') {
-      return 'elder_sign';
-    }
-    if (card.faction_code) {
-      return card.faction_code;
-    }
-    return 'elder_sign';
+  static factionIcon(): string {
+    return 'special';
   }
 
   color() {
@@ -71,22 +61,22 @@ export default class CardCostIcon extends React.Component<Props> {
     } = this.props;
     const color = this.color();
     const scaleFactor = ((fontScale - 1) / 2 + 1);
-    const ICON_SIZE = (isBig ? 46 : 32) * scaleFactor;
+    const ICON_SIZE = (isBig ? 46 : 42) * scaleFactor;
     const style = { width: costIconSize(fontScale), height: costIconSize(fontScale) };
     return (
       <View style={[styles.level, style]}>
         <View style={[styles.levelIcon, style]}>
-          <AppIcon
-            name={`${inverted ? 'inverted_' : ''}level_0`}
+          <MarvelIcon
+            name="pow"
             size={ICON_SIZE}
             color={inverted ? '#FFF' : color}
           />
         </View>
-        <View style={[styles.levelIcon, style, styles.cost]}>
+        <View style={[styles.levelIcon, style, styles.costIcon]}>
           { card.type_code === 'resource' ? (
             <View>
               <MarvelIcon
-                name={CardCostIcon.factionIcon(card)}
+                name="special"
                 color="#FFF"
                 size={ICON_SIZE / 2}
               />
@@ -94,7 +84,8 @@ export default class CardCostIcon extends React.Component<Props> {
           ) : (
             <Text style={[
               styles.costNumber,
-              { fontSize: (isBig ? 32 : 23) * scaleFactor },
+              { fontSize: (isBig ? 32 : 20) * scaleFactor },
+              { color: inverted ? color : '#FFF' },
             ]} allowFontScaling={false}>
               { this.cardCost() }
             </Text>
@@ -111,18 +102,20 @@ const styles = StyleSheet.create({
   },
   levelIcon: {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: -4,
+    left: -4,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  cost: {
-    paddingBottom: 6,
+  costIcon: {
+    paddingBottom: 2,
+    left: -2,
   },
   costNumber: {
-    paddingTop: 3,
-    fontFamily: 'Teutonic',
+    paddingTop: 4,
+    fontWeight: '600',
+    fontFamily: 'Dosis',
     color: '#FFF',
   },
 });

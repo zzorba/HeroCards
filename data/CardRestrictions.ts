@@ -6,7 +6,7 @@ export default class CardRestrictions {
     name: 'CardRestrictions',
     properties: {
       'investigators': 'string[]',
-      'hero': 'string',
+      'investigator': 'string',
     },
   };
 

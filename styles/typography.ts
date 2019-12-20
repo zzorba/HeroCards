@@ -54,19 +54,19 @@ export default StyleSheet.create({
     color: '#222',
   },
   gameFont: {
-    fontFamily: 'Teutonic',
+    fontFamily: 'Dosis',
     fontSize: 18 * sizeScale,
     lineHeight: 26 * sizeScale,
     color: '#222',
   },
   mediumGameFont: {
-    fontFamily: 'Teutonic',
+    fontFamily: 'Dosis',
     fontSize: 24 * sizeScale,
     lineHeight: 30 * sizeScale,
     color: '#222',
   },
   bigGameFont: {
-    fontFamily: 'Teutonic',
+    fontFamily: 'Dosis',
     fontSize: 28 * sizeScale,
     lineHeight: 36 * sizeScale,
     color: '#222',

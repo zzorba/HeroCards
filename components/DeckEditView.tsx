@@ -133,7 +133,7 @@ class DeckEditView extends React.Component<Props, State> {
       <CardSearchComponent
         componentId={componentId}
         baseQuery={this.baseQuery()}
-        originalDeckSlots={deck.slots}
+        deck={deck}
         investigator={investigator}
         deckCardCounts={deckCardCounts}
         onDeckCountChange={this._onDeckCountChange}

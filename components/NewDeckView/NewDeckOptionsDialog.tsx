@@ -7,7 +7,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { find, forEach, sumBy, throttle } from 'lodash';
+import { find, forEach, throttle } from 'lodash';
 import { bindActionCreators, Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import DialogComponent from 'react-native-dialog';
@@ -122,7 +122,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       onCreateDeck,
       toggleVisible,
     } = this.props;
-    const investigator = this.investigator();
+    const hero = this.hero();
     this.setState({
       saving: false,
     });
@@ -131,44 +131,34 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     }
     // Change the deck options for required cards, if present.
     onCreateDeck && onCreateDeck(deck);
-    showDeckModal(componentId, deck, investigator);
+    showDeckModal(componentId, deck, hero);
   };
 
   getSlots() {
     const {
       cards,
     } = this.props;
-    const {
-      optionSelected,
-    } = this.state;
     const slots: Slots = {};
 
-    // Seed all the 'basic' requirements from the investigator.
-    const investigator = this.investigator();
-    if (investigator && investigator.deck_requirements) {
-      forEach(investigator.deck_requirements.card, cardRequirement => {
-        const card = cards[cardRequirement.code];
-        slots[cardRequirement.code] = card.deck_limit || card.quantity || 0;
-      });
-    }
-
-    if (optionSelected[0] !== true ||
-      sumBy(optionSelected, x => x ? 1 : 0) !== 1) {
-      // Now sub in the options that were asked for if we aren't going
-      // with the defaults.
-      const options = this.requiredCardOptions();
-      forEach(optionSelected, (include, index) => {
-        const cards = options[index];
-        forEach(cards, card => {
-          if (include) {
-            slots[card.code] = card.deck_limit || card.quantity || 0;
-          } else if (slots[card.code]) {
-            delete slots[card.code];
-          }
+    // Seed all the 'basic' requirements from the hero.
+    const hero = this.hero();
+    if (hero) {
+      if (hero.deck_requirements) {
+        forEach(hero.deck_requirements.card, cardRequirement => {
+          const card = cards[cardRequirement.code];
+          slots[cardRequirement.code] = card.deck_limit || card.quantity || 0;
         });
+      }
+      forEach(cards, card => {
+        if (card.deck_limit &&
+          card.faction_code === 'hero' &&
+          card.card_set_code === hero.card_set_code &&
+          card.code !== hero.code
+        ) {
+          slots[card.code] = card.deck_limit;
+        }
       });
     }
-
     return slots;
   }
 
@@ -185,12 +175,12 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       saving,
       starterDeck,
     } = this.state;
-    const investigator = this.investigator();
-    if (investigator && (!saving || isRetry)) {
+    const hero = this.hero();
+    if (hero && (!saving || isRetry)) {
       const local = (offlineDeck || !signedIn || !isConnected || networkType === NetInfoStateType.none);
       let slots = this.getSlots();
-      if (starterDeck && starterDecks[investigator.code]) {
-        slots = starterDecks[investigator.code];
+      if (starterDeck && starterDecks[hero.code]) {
+        slots = starterDecks[hero.code];
       }
       this.setState({
         saving: true,
@@ -198,7 +188,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       saveNewDeck({
         local,
         deckName: deckName || t`New Deck`,
-        investigatorCode: investigator.code,
+        investigatorCode: hero.code,
         slots: slots,
       }).then(
         this._showNewDeck,
@@ -212,7 +202,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     }
   }
 
-  investigator() {
+  hero() {
     const {
       heroId,
       heroes,
@@ -221,21 +211,21 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
   }
 
   deckName() {
-    const investigator = this.investigator();
-    if (!investigator) {
+    const hero = this.hero();
+    if (!hero) {
       return undefined;
     }
-    switch (investigator.faction_code) {
+    switch (hero.faction_code) {
       case 'protection':
-        return t`${investigator.name} Protects the World`;
+        return t`${hero.name} Protects the World`;
       case 'justice':
-        return t`${investigator.name} Fights for Justice`;
+        return t`${hero.name} Fights for Justice`;
       case 'aggression':
-        return t`${investigator.name}'s Vengeance`;
+        return t`${hero.name}'s Vengeance`;
       case 'leadership':
-        return t`${investigator.name} Leads`;
+        return t`${hero.name} Leads`;
       default:
-        return t`${investigator.name} Does It All`;
+        return t`${hero.name} Does It All`;
     }
   }
 
@@ -243,13 +233,13 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
     const {
       cards,
     } = this.props;
-    const investigator = this.investigator();
-    if (!investigator) {
+    const hero = this.hero();
+    if (!hero) {
       return [];
     }
     const result: Card[][] = [[]];
     forEach(
-      investigator.deck_requirements ? investigator.deck_requirements.card : [],
+      hero.deck_requirements ? hero.deck_requirements.card : [],
       cardRequirement => {
         result[0].push(cards[cardRequirement.code]);
         if (cardRequirement.alternates && cardRequirement.alternates.length) {
@@ -320,7 +310,11 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
         ) }
         { (!isConnected || networkType === NetInfoStateType.none) && (
           <TouchableOpacity onPress={refreshNetworkStatus}>
-            <DialogComponent.Description style={[typography.small, { color: COLORS.red }, space.marginBottomS]}>
+            <DialogComponent.Description style={[
+              typography.small,
+              { color: COLORS.red },
+              space.marginBottomS,
+            ]}>
               { t`You seem to be offline. Refresh Network?` }
             </DialogComponent.Description>
           </TouchableOpacity>
@@ -347,8 +341,8 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       saving,
       optionSelected,
     } = this.state;
-    const investigator = this.investigator();
-    if (!investigator) {
+    const hero = this.hero();
+    if (!hero) {
       return null;
     }
     const okDisabled = saving || !find(optionSelected, selected => selected);

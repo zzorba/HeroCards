@@ -50,7 +50,6 @@ import {
 import { Deck, DeckMeta, ParsedDeck, Slots } from '../../actions/types';
 import withPlayerCards, { PlayerCardProps } from '../withPlayerCards';
 import DeckValidation from '../../lib/DeckValidation';
-import { FACTION_DARK_GRADIENTS } from '../../constants';
 import Card from '../../data/Card';
 import { parseDeck } from '../../lib/parseDeck';
 import { EditDeckProps } from '../DeckEditView';
@@ -66,7 +65,7 @@ import {
 import { m } from '../../styles/space';
 import typography from '../../styles/typography';
 import { COLORS } from '../../styles/colors';
-import { showCardCharts, showDrawSimulator } from '../navHelper';
+import { getDeckOptions, getDeckEditOptions, showCardCharts, showDrawSimulator } from '../navHelper';
 
 export interface DeckDetailProps {
   id: number;
@@ -200,6 +199,9 @@ class DeckDetailView extends React.Component<Props, State> {
         fetchPublicDeck(id, false);
       }
     }
+    if (deck && deck.investigator_code) {
+      this.loadCards(deck);
+    }
   }
 
   componentWillUnmount() {
@@ -228,6 +230,11 @@ class DeckDetailView extends React.Component<Props, State> {
             }],
           );
         }
+      }
+    }
+    if (deck) {
+      if (deck !== prevProps.deck) {
+        this.loadCards(deck);
       }
     }
   }
@@ -323,7 +330,6 @@ class DeckDetailView extends React.Component<Props, State> {
     const {
       componentId,
       deck,
-      cards,
     } = this.props;
     if (!deck) {
       return;
@@ -331,7 +337,6 @@ class DeckDetailView extends React.Component<Props, State> {
     this.setState({
       menuOpen: false,
     });
-    const investigator = cards[deck.investigator_code];
     const {
       slots,
       meta,
@@ -347,24 +352,7 @@ class DeckDetailView extends React.Component<Props, State> {
           ignoreDeckLimitSlots: ignoreDeckLimitSlots,
           updateSlots: this._updateSlots,
         },
-        options: {
-          statusBar: {
-            style: 'light',
-          },
-          topBar: {
-            title: {
-              text: t`Edit Deck`,
-              color: 'white',
-            },
-            backButton: {
-              title: t`Back`,
-              color: 'white',
-            },
-            background: {
-              color: FACTION_DARK_GRADIENTS[investigator ? investigator.factionCode() : 'neutral'][0],
-            },
-          },
-        },
+        options: getDeckEditOptions(Object.assign({}, deck, { meta })),
       },
     });
   };
@@ -561,7 +549,17 @@ class DeckDetailView extends React.Component<Props, State> {
         this.state.ignoreDeckLimitSlots,
         updatedMeta,
         this.state.nameChange),
-    });
+    }, this._updateNav);
+  };
+
+  _updateNav = () => {
+    const { componentId, deck, cards, modal } = this.props;
+    const { meta } = this.state;
+    if (deck) {
+      const hero = cards[deck.investigator_code];
+      const dynamicDeck = meta ? Object.assign({}, deck, { meta }) : deck;
+      Navigation.mergeOptions(componentId, getDeckOptions(dynamicDeck, hero, modal));
+    }
   };
 
   _updateIgnoreDeckLimitSlots = (newIgnoreDeckLimitSlots: Slots) => {

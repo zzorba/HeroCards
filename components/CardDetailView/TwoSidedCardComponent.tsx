@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import DeviceInfo from 'react-native-device-info';
-import { msgid, ngettext, t } from 'ttag';
+import { t } from 'ttag';
 
 import {
   FACTION_COLORS,
@@ -417,6 +417,13 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
               { ` ${card.illustrator}` }
             </Text>
           ) }
+          { card.faction_code !== 'encounter' && (
+            <View style={styles.setRow}>
+              <Text style={[typography.cardText, typography.bold]}>
+                { card.faction_name }
+              </Text>
+            </View>
+          ) }
           { !!card.pack_name &&
             <View style={styles.setRow}>
               <Text style={typography.cardText}>
@@ -424,13 +431,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
               </Text>
               { !!card.card_set_name &&
                 <Text style={typography.cardText}>
-                  { card.set_position ? `${card.card_set_name} #${card.set_position}. ${card.quantity && card.quantity > 1 ?
-                    ngettext(
-                      msgid`\n${card.quantity} copy.`,
-                      `\n${card.quantity} copies.`,
-                      card.quantity
-                    ) : ''
-                  }` : card.card_set_name }
+                  { card.setText() }
                 </Text>
               }
             </View>

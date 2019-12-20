@@ -24,6 +24,13 @@
 		6543AB8A21C198A20098803A /* libRealmJS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6543AB8921C198A20098803A /* libRealmJS.a */; };
 		6543ABA921C19C580098803A /* EmptySwiftFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6543ABA821C19C580098803A /* EmptySwiftFile.swift */; };
 		655226F4205EEAF10065A1F7 /* app.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 655226C7205EEAF00065A1F7 /* app.ttf */; };
+		6581F74623AD1A9D00F5FDD8 /* Dosis-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6581F73F23AD1A9C00F5FDD8 /* Dosis-ExtraLight.ttf */; };
+		6581F74723AD1A9D00F5FDD8 /* Dosis-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6581F74023AD1A9C00F5FDD8 /* Dosis-Medium.ttf */; };
+		6581F74823AD1A9D00F5FDD8 /* Dosis-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6581F74123AD1A9C00F5FDD8 /* Dosis-Regular.ttf */; };
+		6581F74923AD1A9E00F5FDD8 /* Dosis-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6581F74223AD1A9D00F5FDD8 /* Dosis-SemiBold.ttf */; };
+		6581F74A23AD1A9E00F5FDD8 /* Dosis-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6581F74323AD1A9D00F5FDD8 /* Dosis-Light.ttf */; };
+		6581F74B23AD1A9E00F5FDD8 /* Dosis-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6581F74423AD1A9D00F5FDD8 /* Dosis-Bold.ttf */; };
+		6581F74C23AD1A9E00F5FDD8 /* Dosis-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6581F74523AD1A9D00F5FDD8 /* Dosis-ExtraBold.ttf */; };
 		658915A62311AFEC00558C71 /* marvel.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 658915A52311AFEC00558C71 /* marvel.ttf */; };
 		65D3FA06210FF315000F8B9D /* Teutonic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65D3FA05210FF315000F8B9D /* Teutonic.ttf */; };
 		C33F4E33E74FD219A8D543EB /* libPods-HeroCardsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C85A29E985570113CD069AC0 /* libPods-HeroCardsTests.a */; };
@@ -71,6 +78,14 @@
 		6543ABA721C19C570098803A /* HeroCards-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HeroCards-Bridging-Header.h"; sourceTree = "<group>"; };
 		6543ABA821C19C580098803A /* EmptySwiftFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EmptySwiftFile.swift; path = HeroCards/EmptySwiftFile.swift; sourceTree = "<group>"; };
 		655226C7205EEAF00065A1F7 /* app.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = app.ttf; path = ../assets/app.ttf; sourceTree = "<group>"; };
+		6581F73D23AD1A8E00F5FDD8 /* app.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = app.ttf; path = ../assets/app.ttf; sourceTree = "<group>"; };
+		6581F73F23AD1A9C00F5FDD8 /* Dosis-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Dosis-ExtraLight.ttf"; path = "../assets/Dosis-ExtraLight.ttf"; sourceTree = "<group>"; };
+		6581F74023AD1A9C00F5FDD8 /* Dosis-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Dosis-Medium.ttf"; path = "../assets/Dosis-Medium.ttf"; sourceTree = "<group>"; };
+		6581F74123AD1A9C00F5FDD8 /* Dosis-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Dosis-Regular.ttf"; path = "../assets/Dosis-Regular.ttf"; sourceTree = "<group>"; };
+		6581F74223AD1A9D00F5FDD8 /* Dosis-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Dosis-SemiBold.ttf"; path = "../assets/Dosis-SemiBold.ttf"; sourceTree = "<group>"; };
+		6581F74323AD1A9D00F5FDD8 /* Dosis-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Dosis-Light.ttf"; path = "../assets/Dosis-Light.ttf"; sourceTree = "<group>"; };
+		6581F74423AD1A9D00F5FDD8 /* Dosis-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Dosis-Bold.ttf"; path = "../assets/Dosis-Bold.ttf"; sourceTree = "<group>"; };
+		6581F74523AD1A9D00F5FDD8 /* Dosis-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Dosis-ExtraBold.ttf"; path = "../assets/Dosis-ExtraBold.ttf"; sourceTree = "<group>"; };
 		658915A52311AFEC00558C71 /* marvel.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = marvel.ttf; path = ../assets/marvel.ttf; sourceTree = "<group>"; };
 		65CA4CEA212893160084A1CE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		65CA4CEB2128932A0084A1CE /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -128,6 +143,14 @@
 		13B07FAE1A68108700A75B9A /* HeroCards */ = {
 			isa = PBXGroup;
 			children = (
+				6581F74423AD1A9D00F5FDD8 /* Dosis-Bold.ttf */,
+				6581F74523AD1A9D00F5FDD8 /* Dosis-ExtraBold.ttf */,
+				6581F73F23AD1A9C00F5FDD8 /* Dosis-ExtraLight.ttf */,
+				6581F74323AD1A9D00F5FDD8 /* Dosis-Light.ttf */,
+				6581F74023AD1A9C00F5FDD8 /* Dosis-Medium.ttf */,
+				6581F74123AD1A9C00F5FDD8 /* Dosis-Regular.ttf */,
+				6581F74223AD1A9D00F5FDD8 /* Dosis-SemiBold.ttf */,
+				6581F73D23AD1A8E00F5FDD8 /* app.ttf */,
 				658915A52311AFEC00558C71 /* marvel.ttf */,
 				652EB741226BAFA800F6D790 /* it.po.json */,
 				652EB73F226BAF9C00F6D790 /* fr.po.json */,
@@ -339,15 +362,22 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				652EB73C226BAF8400F6D790 /* en.po.json in Resources */,
 				652EB742226BAFA800F6D790 /* it.po.json in Resources */,
+				6581F74C23AD1A9E00F5FDD8 /* Dosis-ExtraBold.ttf in Resources */,
+				6581F74623AD1A9D00F5FDD8 /* Dosis-ExtraLight.ttf in Resources */,
+				6581F74923AD1A9E00F5FDD8 /* Dosis-SemiBold.ttf in Resources */,
 				655226F4205EEAF10065A1F7 /* app.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				652EB740226BAF9C00F6D790 /* fr.po.json in Resources */,
 				65D3FA06210FF315000F8B9D /* Teutonic.ttf in Resources */,
 				F607A526C444481AAEA01704 /* MaterialCommunityIcons.ttf in Resources */,
+				6581F74A23AD1A9E00F5FDD8 /* Dosis-Light.ttf in Resources */,
 				652EB73A226BAF7800F6D790 /* de.po.json in Resources */,
 				652EB73E226BAF9300F6D790 /* es.po.json in Resources */,
+				6581F74723AD1A9D00F5FDD8 /* Dosis-Medium.ttf in Resources */,
+				6581F74B23AD1A9E00F5FDD8 /* Dosis-Bold.ttf in Resources */,
 				658915A62311AFEC00558C71 /* marvel.ttf in Resources */,
 				31D495278C154F3F8F3C04EF /* MaterialIcons.ttf in Resources */,
+				6581F74823AD1A9D00F5FDD8 /* Dosis-Regular.ttf in Resources */,
 				02D002FD495C486485296EE5 /* AppCenter-Config.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,8 +10,8 @@ import {
 // @ts-ignore
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
 
-import { FACTION_DARK_GRADIENTS } from '../../constants';
-import Card from '../../data/Card';
+import { DeckMeta } from '../../actions/types';
+import { deckColor } from '../../constants';
 import typography from '../../styles/typography';
 import { m, s, xs, iconSizeScale } from '../../styles/space';
 
@@ -24,13 +24,17 @@ export interface CardSectionHeaderData {
 }
 
 interface Props {
-  investigator: Card;
+  meta?: DeckMeta;
   fontScale: number;
   section: CardSectionHeaderData;
 }
 
 export default class CardSectionHeader extends React.Component<Props> {
-  renderSuperTitle(investigator: Card, superTitle: string, noIcon?: boolean) {
+  renderSuperTitle(
+    superTitle: string,
+    meta?: DeckMeta,
+    noIcon?: boolean
+  ) {
     const {
       fontScale,
     } = this.props;
@@ -38,7 +42,7 @@ export default class CardSectionHeader extends React.Component<Props> {
     return (
       <View style={[
         styles.superHeaderRow,
-        { backgroundColor: FACTION_DARK_GRADIENTS[investigator.factionCode()][0] },
+        { backgroundColor: deckColor(meta) },
       ]}>
         <View style={styles.superHeaderPadding}>
           <Text style={[typography.text, styles.superHeaderText]}>
@@ -57,9 +61,10 @@ export default class CardSectionHeader extends React.Component<Props> {
       </View>
     );
   }
+
   render() {
     const {
-      investigator,
+      meta,
       section,
     } = this.props;
     if (section.placeholder) {
@@ -72,7 +77,7 @@ export default class CardSectionHeader extends React.Component<Props> {
         if (Platform.OS === 'ios') {
           return (
             <TouchableOpacity onPress={section.onPress}>
-              { this.renderSuperTitle(investigator, section.superTitle) }
+              { this.renderSuperTitle(section.superTitle, meta) }
             </TouchableOpacity>
           );
         }
@@ -81,11 +86,11 @@ export default class CardSectionHeader extends React.Component<Props> {
             onPress={section.onPress}
             useForeground
           >
-            { this.renderSuperTitle(investigator, section.superTitle) }
+            { this.renderSuperTitle(section.superTitle, meta) }
           </TouchableNativeFeedback>
         );
       }
-      return this.renderSuperTitle(investigator, section.superTitle, true);
+      return this.renderSuperTitle(section.superTitle, meta, true);
     }
     if (section.subTitle) {
       return (

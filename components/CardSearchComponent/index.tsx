@@ -9,8 +9,9 @@ import { t } from 'ttag';
 
 import Card from '../../data/Card';
 import {
-  SortType,
+  Deck,
   Slots,
+  SortType,
 } from '../../actions/types';
 import CardSearchResultsComponent from '../CardSearchResultsComponent';
 import withDimensions, { DimensionsProps } from '../core/withDimensions';
@@ -47,8 +48,8 @@ interface OwnProps {
   showNonCollection?: boolean;
   sort?: SortType;
 
+  deck?: Deck;
   investigator?: Card;
-  originalDeckSlots?: Slots;
   deckCardCounts?: Slots;
   onDeckCountChange?: (code: string, count: number) => void;
   limits?: Slots;
@@ -229,7 +230,6 @@ class CardSearchComponent extends React.Component<Props, State> {
   render() {
     const {
       componentId,
-      originalDeckSlots,
       deckCardCounts,
       onDeckCountChange,
       limits,
@@ -244,6 +244,7 @@ class CardSearchComponent extends React.Component<Props, State> {
       selectedSort,
       storyOnly,
       fontScale,
+      deck,
     } = this.props;
     const {
       visible,
@@ -260,8 +261,8 @@ class CardSearchComponent extends React.Component<Props, State> {
         filters={this.state.filters || filters || defaultFilterState}
         toggleMythosMode={this._toggleMythosMode}
         clearSearchFilters={this._clearSearchFilters}
+        deck={deck}
         investigator={investigator}
-        originalDeckSlots={originalDeckSlots}
         deckCardCounts={deckCardCounts}
         onDeckCountChange={onDeckCountChange}
         limits={limits}

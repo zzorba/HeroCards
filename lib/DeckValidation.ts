@@ -35,18 +35,18 @@ export default class DeckValidation {
     this.meta = meta;
   }
 
-  getDeckSize(): number {
-    var size: number = 30;
-  	if (this.investigator.deck_requirements) {
-      if (this.investigator.deck_requirements.size) {
-  			size = this.investigator.deck_requirements.size;
-  		}
-    }
+  getDeckSize(): [number, number] {
+    var size: [number, number] = [40, 50];
     return size;
   }
 
   getPhysicalDrawDeck(cards: Card[]) {
-    return filter(cards, card => card && !card.double_sided);
+    return filter(cards, card => (
+      card &&
+      !card.double_sided &&
+      card.type_code !== 'hero' &&
+      card.type_code !== 'alter_ego'
+    ));
   }
 
   getDrawDeck(cards: Card[]) {
@@ -109,7 +109,7 @@ export default class DeckValidation {
   	} else {
 
   	}
-    const size = this.getDeckSize();
+    const [minDeckSize, maxDeckSize] = this.getDeckSize();
 
   	// too many copies of one card
   	if(findKey(
@@ -119,7 +119,9 @@ export default class DeckValidation {
     }
 
   	// no invalid card
-  	if(this.getInvalidCards(cards).length > 0) {
+    const invalidCards = this.getInvalidCards(cards);
+  	if(invalidCards.length > 0) {
+      // console.log('Invalid cards:' + map(invalidCards, card => card.code))
   		return 'invalid_cards';
   	}
 
@@ -158,12 +160,12 @@ export default class DeckValidation {
 
     const drawDeckSize = this.getDrawDeckSize(cards);
   		// at least 60 others cards
-  	if(drawDeckSize < size) {
+  	if(drawDeckSize < minDeckSize) {
   		return 'too_few_cards';
   	}
 
   	// at least 60 others cards
-  	if(drawDeckSize > size) {
+  	if(drawDeckSize > maxDeckSize) {
   		return 'too_many_cards';
   	}
     return null;
@@ -172,7 +174,7 @@ export default class DeckValidation {
   getInvalidCards(cards: Card[]) {
     this.deck_options_counts = [];
   	if (this.investigator) {
-  		for (var i = 0; i < this.investigator.deck_options.length; i++){
+  		for (var i = 0; i < this.investigator.heroSelectOptions().length; i++){
   			this.deck_options_counts.push({
           limit: 0,
           atleast: {}
@@ -184,10 +186,10 @@ export default class DeckValidation {
 
   deckOptions(): DeckOption[] {
     var deck_options: DeckOption[] = [];
-  	if (this.investigator &&
-        this.investigator.deck_options &&
-        this.investigator.deck_options.length) {
-      forEach(this.investigator.deck_options, deck_option => deck_options.push(deck_option));
+  	if (this.investigator) {
+      forEach(this.investigator.heroSelectOptions(),
+        deck_option => deck_options.push(deck_option)
+      );
     }
     return deck_options;
   }
@@ -213,10 +215,15 @@ export default class DeckValidation {
   		return false;
   	}
 
+    // reject cards from other heroes
+    if (card.faction_code === 'hero' && card.card_set_code) {
+      return (card.card_set_code === investigator.card_set_code);
+    }
+
   	//var investigator = app.data.cards.findById(investigator_code);
     const deck_options: DeckOption[] = this.deckOptions();
     if (deck_options.length) {
-  		//console.log(card);
+  		// console.log(card);
   		for (var i = 0; i < deck_options.length; i++) {
         const finalOption = (i === deck_options.length - 1);
   			var option = deck_options[i];
@@ -230,10 +237,23 @@ export default class DeckValidation {
           }
           if (card.faction_code != selected_faction &&
             card.faction2_code != selected_faction){
+            // console.log(`${card.faction_code} does not match selected faction: ${selected_faction}`);
             continue;
           }
         }
-
+        if (option.aspect && option.aspect.length) {
+          var aspect_valid = false;
+  				for(var j = 0; j < option.aspect.length; j++){
+  					var aspect = option.aspect[j];
+  					if (card.faction_code == aspect ||
+              card.faction2_code == aspect){
+  						aspect_valid = true;
+  					}
+  				}
+  				if (!aspect_valid){
+  					continue;
+  				}
+        }
   			if (option.type_code && option.type_code.length){
   				// needs to match at least one faction
   				var type_valid = false;

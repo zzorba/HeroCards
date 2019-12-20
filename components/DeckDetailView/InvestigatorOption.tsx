@@ -40,7 +40,7 @@ export default class InvestigatorOption extends React.Component<Props> {
       ) ? meta.aspect : undefined;
       return (
         <AspectSelectPicker
-          name={t`Select Aspect`}
+          name={t`Aspect`}
           aspects={option.aspect_select}
           onChange={this._onChange}
           selection={selection}

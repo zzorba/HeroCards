@@ -245,6 +245,16 @@ export default class BaseCard {
     }
   }
 
+  setText(): string | null {
+    if (this.set_position) {
+      if (this.quantity && this.quantity > 1) {
+        return `${this.card_set_name} #${this.set_position}-${this.set_position + this.quantity - 1}.`;
+      }
+      return `${this.card_set_name} #${this.set_position}.`;
+    }
+    return this.card_set_name;
+  }
+
   heroSelectOptions(): DeckOption[] {
     if (this.type_code === 'hero') {
       return concat(
@@ -253,8 +263,13 @@ export default class BaseCard {
             aspect_select: [
               'leadership',
               'justice',
-              'aggession',
+              'aggression',
               'protection',
+            ],
+          },
+          {
+            aspect: [
+              'basic',
             ],
           },
         ]),

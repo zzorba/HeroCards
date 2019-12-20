@@ -48,7 +48,9 @@ export default class AboutView extends React.Component {
           { '\n' }
           • 'flip over' icon by Nathan Smith from the Noun Project.
           { '\n' }
-          • 'books'  by Mr Balind from the Noun Project.
+          • 'books' icon by Mr Balind from the Noun Project.
+          { '\n' }
+          • 'speech' icon by Natalia from the Noun Project
         </Text>
         <TouchableOpacity onPress={this._octopusLink}>
           <Text style={typography.small}>

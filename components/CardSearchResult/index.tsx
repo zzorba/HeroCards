@@ -78,8 +78,13 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       const icon = FACTION_ICONS.dual;
       return !!icon && icon(size === ICON_SIZE ? ICON_SIZE : SMALL_ICON_SIZE);
     }
-    const icon = FACTION_ICONS[card.factionCode()];
-    return !!icon && icon(size === ICON_SIZE ? ICON_SIZE : SMALL_ICON_SIZE);
+    return (
+      <MarvelIcon
+        name="special"
+        size={ICON_SIZE}
+        color="#222"
+      />
+    );
   }
 
   static cardCost(card: Card): string {

@@ -9,6 +9,7 @@ export default class DeckOption {
   public static schema: Realm.ObjectSchema = {
     name: 'DeckOption',
     properties: {
+      aspect: 'string[]',
       aspect_select: 'string[]',
       uses: 'string[]',
       trait: 'string[]',
@@ -29,11 +30,25 @@ export default class DeckOption {
   public limit?: number;
   public error?: string;
   public not?: boolean;
+  public aspect!: FactionCodeType[];
   public aspect_select!: FactionCodeType[];
 
   toQuery(meta?: DeckMeta) {
     let query = this.not ? 'NOT (' : '(';
     let dirty = false;
+    if (this.aspect && this.aspect.length) {
+      if (dirty) {
+        query += ' AND';
+      }
+      query += ' (';
+      query +=
+        map(this.aspect, aspect =>
+          ` faction_code == '${aspect}' OR faction2_code == '${aspect}'`
+        ).join(' OR');
+      query += ' )';
+
+      dirty = true;
+    }
     if (this.aspect_select && this.aspect_select.length) {
       if (dirty) {
         query += ' AND';
@@ -104,6 +119,7 @@ export default class DeckOption {
   static parseList(jsonList: any[]): DeckOption[] {
     return map(jsonList, json => {
       const deck_option = new DeckOption();
+      deck_option.aspect = json.aspect || [];
       deck_option.aspect_select = json.aspect_select || [];
       deck_option.uses = json.uses || [];
       deck_option.text = json.text || [];

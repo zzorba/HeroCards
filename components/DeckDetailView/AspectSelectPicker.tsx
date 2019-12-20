@@ -16,7 +16,7 @@ interface Props {
   disabled?: boolean;
 }
 
-export default class FactionSelectPicker extends React.Component<Props> {
+export default class AspectSelectPicker extends React.Component<Props> {
   ref?: SettingsPicker<FactionCodeType>;
 
   _captureRef = (ref: SettingsPicker<FactionCodeType>) => {
@@ -32,7 +32,7 @@ export default class FactionSelectPicker extends React.Component<Props> {
   };
 
   _codeToLabel = (faction: string) => {
-    return Card.factionCodeToName(faction, t`Select Faction`);
+    return Card.factionCodeToName(faction, t`Select`);
   };
 
   render() {

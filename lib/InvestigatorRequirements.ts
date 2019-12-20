@@ -15,7 +15,7 @@ export function negativeQueryForInvestigator(investigator: Card, meta?: DeckMeta
  * Turn the given realm card into a realm-query string.
  */
 export function queryForInvestigator(investigator: Card, meta?: DeckMeta) {
-  const normal = filter(investigator.deck_options, opt => !opt.not);
+  const normal = filter(investigator.heroSelectOptions(), opt => !opt.not);
   // We assume that there is always at least one normalClause.
   const invertedClause = negativeQueryForInvestigator(investigator, meta);
   const normalClause = filter(map(normal, option => option.toQuery(meta))).join(' OR');

@@ -121,7 +121,16 @@ export function parseDeck(
   }
   const cardIds = map(
     sortBy(
-      filter(keys(slots), id => !!cards[id]),
+      filter(keys(slots), id => {
+        const card = cards[id];
+        if (!card) {
+          return false;
+        }
+        if (card.type_code === 'hero' || card.type_code === 'alter_ego') {
+          return false;
+        }
+        return true;
+      }),
       id => cards[id].name
     ),
     id => {

@@ -12,7 +12,6 @@ import { t } from 'ttag';
 
 import { CardId, Deck, DeckMeta, DeckProblem, ParsedDeck, SplitCards, Slots } from '../../actions/types';
 import { showCard, showCardSwipe } from '../navHelper';
-import AppIcon from '../../assets/AppIcon';
 import HeroImage from '../core/HeroImage';
 import InvestigatorOptionsModule from './InvestigatorOptionsModule';
 import CardSectionHeader, { CardSectionHeaderData } from './CardSectionHeader';
@@ -114,6 +113,7 @@ export default class DeckViewTab extends React.Component<Props> {
       parsedDeck: {
         investigator,
         slots,
+        deck,
       },
       renderFooter,
       onDeckCountChange,
@@ -147,6 +147,7 @@ export default class DeckViewTab extends React.Component<Props> {
       false,
       slots,
       onDeckCountChange,
+      deck,
       investigator,
       renderFooter,
     );
@@ -156,16 +157,14 @@ export default class DeckViewTab extends React.Component<Props> {
     section: SectionListData<CardSection>;
   }) => {
     const {
-      parsedDeck: {
-        investigator,
-      },
       fontScale,
+      meta,
     } = this.props;
     return (
       <CardSectionHeader
         key={section.id}
         section={section as CardSectionHeaderData}
-        investigator={investigator}
+        meta={meta}
         fontScale={fontScale}
       />
     );
@@ -227,7 +226,6 @@ export default class DeckViewTab extends React.Component<Props> {
     const {
       parsedDeck: {
         normalCards,
-        specialCards,
         investigator,
       },
       meta,
@@ -245,12 +243,6 @@ export default class DeckViewTab extends React.Component<Props> {
         onPress: showEditCards,
       },
       ...deckToSections(normalCards, cards, validation, false),
-      {
-        id: 'special',
-        superTitle: t`Special Cards`,
-        data: [],
-      },
-      ...deckToSections(specialCards, cards, validation, true),
     ];
   }
 
@@ -344,18 +336,10 @@ export default class DeckViewTab extends React.Component<Props> {
   _renderHeader = () => {
     const {
       buttons,
-      width,
     } = this.props;
 
     return (
       <View style={styles.headerWrapper}>
-        <View style={[styles.kraken, { width: width * 2, top: -width / 3, left: -width * 0.75 }]}>
-          <AppIcon
-            name="kraken"
-            size={width}
-            color={COLORS.veryLightGray}
-          />
-        </View>
         <View style={styles.headerBlock}>
           { this.renderProblem() }
           <View style={styles.container}>
@@ -398,10 +382,6 @@ const styles = StyleSheet.create({
   },
   headerWrapper: {
     position: 'relative',
-  },
-  kraken: {
-    position: 'absolute',
-    top: -50,
   },
   column: {
     flex: 1,

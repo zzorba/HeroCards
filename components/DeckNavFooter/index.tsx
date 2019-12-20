@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 // @ts-ignore
 import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
-import LinearGradient from 'react-native-linear-gradient';
 import { msgid, ngettext } from 'ttag';
 
 import { DeckMeta, ParsedDeck } from '../../actions/types';
@@ -21,7 +20,7 @@ import { COLORS } from '../../styles/colors';
 import DeckValidation from '../../lib/DeckValidation';
 import { showCardCharts, showDrawSimulator } from '../navHelper';
 import { FOOTER_HEIGHT } from './constants';
-import { FACTION_DARK_GRADIENTS } from '../../constants';
+import { deckColor } from '../../constants';
 
 const SHOW_CHARTS_BUTTON = true;
 
@@ -117,10 +116,10 @@ export default class DeckNavFooter extends React.Component<Props> {
   render() {
     const {
       parsedDeck: {
-        investigator,
         normalCardCount,
         totalCardCount,
       },
+      meta,
     } = this.props;
     const cardCountString = ngettext(
       msgid`${normalCardCount} Card (${totalCardCount} Total)`,
@@ -129,10 +128,7 @@ export default class DeckNavFooter extends React.Component<Props> {
     );
     return (
       <View style={styles.borderWrapper}>
-        <LinearGradient
-          style={styles.wrapper}
-          colors={FACTION_DARK_GRADIENTS[investigator.factionCode()]}
-        >
+        <View style={[styles.wrapper, { backgroundColor: deckColor(meta) }]}>
           <View style={styles.left}>
             <View style={styles.row}>
               <Text style={[
@@ -149,7 +145,7 @@ export default class DeckNavFooter extends React.Component<Props> {
           <View style={styles.right}>
             { this.renderControls() }
           </View>
-        </LinearGradient>
+        </View>
       </View>
     );
   }
