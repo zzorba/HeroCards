@@ -4,8 +4,8 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-
 import { t } from 'ttag';
+
 import SliderChooser from './SliderChooser';
 import ToggleFilter from '../core/ToggleFilter';
 import withFilterFunctions, { FilterProps } from './withFilterFunctions';
@@ -126,7 +126,7 @@ class CardMinionFilterView extends React.Component<FilterProps> {
       filters: {
         enemyHealth,
         enemyHealthEnabled,
-        enemyHealthPerInvestigator,
+        enemyHealthPerHero,
         enemyDamage,
         enemyDamageEnabled,
         enemyHorror,
@@ -171,8 +171,8 @@ class CardMinionFilterView extends React.Component<FilterProps> {
           <View>
             <ToggleFilter
               label={t`Per Investigator`}
-              setting="enemyHealthPerInvestigator"
-              value={enemyHealthPerInvestigator}
+              setting="enemyHealthPerHero"
+              value={enemyHealthPerHero}
               onChange={onToggleChange}
             />
           </View>
@@ -225,7 +225,7 @@ export default withFilterFunctions(
   [
     'enemyHealth',
     'enemyHealthEnabled',
-    'enemyHealthPerInvestigator',
+    'enemyHealthPerHero',
     'enemyDamage',
     'enemyDamageEnabled',
     'enemyHorror',

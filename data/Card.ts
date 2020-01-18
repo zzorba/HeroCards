@@ -124,10 +124,34 @@ export default class Card extends BaseCard {
             return t`Upgrade`;
           case 'obligation':
             return t`Obligation`;
+          case 'minion':
+            return t`Minion`;
+          case 'villain':
+            return t`Villain`;
+          case 'main_scheme':
+            return t`Main Scheme`;
+          case 'side_scheme':
+            return t`Side Scheme`;
+          case 'treachery':
+            return t`Treachery`;
+          case 'attachment':
+            return t`Attachment`
+          case 'environment':
+            return t`Environment`;
           default:
             return t`Scenario`;
         }
     }
+  }
+
+  static cardName(json: any): string {
+    const name = json.name.replace('', '');
+
+    if (json.type_code === 'villain' && json.stage) {
+      const stages = ['0', 'I', 'II', 'III', 'IV', 'V'];
+      return `${name} (${stages[json.stage] || json.stage})`;
+    }
+    return name;
   }
 
   static fromJson(
@@ -146,8 +170,7 @@ export default class Card extends BaseCard {
       DeckOption.parseList(json.deck_options) :
       [];
 
-    const name = json.name.replace('', '');
-    let renderName = name;
+    let renderName = Card.cardName(json);
     const renderSubname = json.subname;
     const linked_card = json.linked_card ?
       Card.fromJson(json.linked_card, packsByCode, lang) :
@@ -184,7 +207,7 @@ export default class Card extends BaseCard {
       json,
       {
         id: json.code,
-        name,
+        name: json.name.replace('', ''),
         renderName,
         renderSubname,
         deck_requirements,

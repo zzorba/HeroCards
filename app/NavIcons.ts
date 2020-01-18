@@ -16,7 +16,7 @@ const icons: {
 } = {
   elder_sign: [30, COLORS.button, MarvelIcon],
   intellect: [26, COLORS.button, MarvelIcon],
-  per_investigator: [24, COLORS.button, MarvelIcon],
+  per_hero: [24, COLORS.button, MarvelIcon],
   auto_fail: [24, COLORS.button, MarvelIcon],
   edit: [26, COLORS.button],
   tune: [28, COLORS.button],

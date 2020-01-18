@@ -24,6 +24,7 @@ export default class BaseCard {
     position: 'int',
     attack: 'int?',
     attack_cost: 'int?',
+    attack_text: 'string?',
     thwart: 'int?',
     thwart_cost: 'int?',
     defense: 'int?',
@@ -32,6 +33,7 @@ export default class BaseCard {
     boost: 'int?',
     boost_text: 'string?',
     scheme: 'int?',
+    scheme_text: 'string?',
     card_set_code: 'string?',
     card_set_name: 'string?',
     set_position: 'int?',
@@ -52,6 +54,7 @@ export default class BaseCard {
     spoiler: 'bool?',
     stage: 'int?', // Act/Agenda deck
     base_threat: 'int?',
+    base_threat_fixed: 'bool?',
     escalation_threat: 'int?',
     escalation_threat_fixed: 'bool?',
     scheme_acceleration: 'int?',
@@ -111,6 +114,7 @@ export default class BaseCard {
 
   public attack!: number | null;
   public attack_cost!: number | null;
+  public attack_text!: string | null;
   public thwart!: number | null;
   public thwart_cost!: number | null;
   public defense!: number | null;
@@ -119,10 +123,7 @@ export default class BaseCard {
   public boost!: number | null;
   public boost_text!: string | null;
   public scheme!: number | null;
-  public enemy_damage!: number | null;
-  public enemy_horror!: number | null;
-  public enemy_fight!: number | null;
-  public enemy_evade!: number | null;
+  public scheme_text!: string | null;
   public card_set_code!: string | null;
   public card_set_name!: string | null;
   public set_position!: number | null;
@@ -161,6 +162,7 @@ export default class BaseCard {
   public linked_to_code!: string | null;
   public linked_to_name!: string | null;
   public base_threat!: number | null;
+  public base_threat_fixed!: boolean | null;
   public escalation_threat!: number | null;
   public escalation_threat_fixed!: boolean | null;
   public scheme_acceleration!: number | null;

@@ -211,7 +211,7 @@ class CardFilterView extends React.Component<Props, State> {
         enemyMassive,
         enemyHealthEnabled,
         enemyHealth,
-        enemyHealthPerInvestigator,
+        enemyHealthPerHero,
         enemyDamageEnabled,
         enemyDamage,
         enemyHorrorEnabled,
@@ -257,7 +257,7 @@ class CardFilterView extends React.Component<Props, State> {
       parts.push(t`Massive`);
     }
     if (enemyHealthEnabled) {
-      if (enemyHealthPerInvestigator) {
+      if (enemyHealthPerHero) {
         parts.push(CardFilterView.rangeText(t`HPI`, enemyHealth));
       } else {
         parts.push(CardFilterView.rangeText(t`Health`, enemyHealth));

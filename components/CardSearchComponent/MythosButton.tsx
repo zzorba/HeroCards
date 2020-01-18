@@ -51,7 +51,7 @@ class MythosButton extends React.Component<Props> {
         <TouchableOpacity onPress={this._onPress}>
           <View style={styles.touchable}>
             <MarvelIcon
-              name={mythosMode ? 'auto_fail' : 'per_investigator'}
+              name={mythosMode ? 'special' : 'per_hero'}
               size={24}
               color={lightButton ? 'white' : defaultColor}
             />

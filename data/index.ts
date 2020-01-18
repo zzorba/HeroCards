@@ -9,7 +9,7 @@ import DeckAtLeastOption from './DeckAtLeastOption';
 import DeckOption from './DeckOption';
 import FaqEntry from './FaqEntry';
 
-const SCHEMA_VERSION = 11;
+const SCHEMA_VERSION = 13;
 export default new Realm({
   schema: [
     Card,

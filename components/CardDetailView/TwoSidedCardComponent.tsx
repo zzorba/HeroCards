@@ -32,7 +32,10 @@ const FAQ_BUTTON = false;
 const PLAYER_BACK = require('../../assets/player-back.png');
 const ENCOUNTER_BACK = require('../../assets/encounter-back.png');
 const PER_HERO_ICON = (
-  <MarvelIcon name="per_investigator" size={isBig ? 22 : 12} color="#000000" />
+  <MarvelIcon name="per_hero" size={isBig ? 22 : 12} color="#000000" />
+);
+const SPECIAL_ICON = (
+  <MarvelIcon name="special" size={isBig ? 22 : 12} color="#000000" />
 );
 const RESOURCE_ICON_SIZE = isBig ? 26 : 16;
 
@@ -43,12 +46,23 @@ const RESOURCE_FIELDS = [
   'resource_wild',
 ];
 
-function num(value: number | null) {
+function num(value: number | null, special?: string | null) {
   if (value === null) {
-    return '-';
+    if (special) {
+      return SPECIAL_ICON;
+    } else {
+      return '-';
+    }
   }
   if (value < 0) {
     return 'X';
+  }
+  if (special) {
+    return (
+      <>
+        {value}{SPECIAL_ICON}
+      </>
+    );
   }
   return value;
 }
@@ -190,6 +204,9 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
 
   renderPlaydata(card: BaseCard) {
     const costString = card.costString(this.props.linked);
+    const escalation_threat = num(card.escalation_threat);
+    const plusEscalation = escalation_threat > 0 ? '+' : '';
+    const base_threat = num(card.base_threat);
     const threat = num(card.threat);
     return (
       <View style={styles.statsBlock}>
@@ -200,23 +217,44 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
         ) }
         { (card.type_code === 'main_scheme' || card.type_code === 'side_scheme') && (
           <Text style={typography.cardText}>
-            { t`Threat: ${threat}` }
+            { t`Starting Threat: ${base_threat}`}{ card.base_threat_fixed ? '' : PER_HERO_ICON }
+          </Text>
+        ) }
+        { (card.type_code === 'main_scheme' || card.type_code === 'side_scheme') && !!(card.escalation_threat) && (
+          <Text style={typography.cardText}>
+            { t`Escalation Threat: ${plusEscalation}${escalation_threat}`}{ card.escalation_threat_fixed ? '' : PER_HERO_ICON }
+          </Text>
+        ) }
+        { (card.type_code === 'main_scheme') && (
+          <Text style={typography.cardText}>
+            { t`Threat Limit: ${threat}` }{ card.threat_fixed ? '' : PER_HERO_ICON }
           </Text>
         ) }
         { this.renderResourceIcons(card) }
-        { this.renderHealthAndSanity(card) }
+        { this.renderStats(card) }
+        { this.renderHealth(card) }
       </View>
     );
   }
 
-  renderHealthAndSanity(card: BaseCard) {
+  renderStats(card: BaseCard) {
+    return null;
+  }
+
+  renderHealth(card: BaseCard) {
     if (card.type_code === 'minion' || card.type_code === 'villain') {
       return (
-        <Text style={typography.cardText}>
-          { `${t`Fight`}: ${num(card.enemy_fight)}. ${t`Health`}: ${num(card.health)}` }
-          { !!card.health_per_hero && PER_HERO_ICON }
-          { `. ${t`Evade`}: ${num(card.enemy_evade)}. ` }
-        </Text>
+        <>
+          <Text style={typography.cardText}>
+            { t`ATK` }: {num(card.attack, card.attack_text)}.
+          </Text>
+          <Text style={typography.cardText}>
+            { t`SCH` }: {num(card.scheme, card.scheme_text)}.
+          </Text>
+          <Text style={typography.cardText}>
+            { t`Health`}: {num(card.health)}{card.health_per_hero ? PER_HERO_ICON : '' }.
+          </Text>
+        </>
       );
     }
     if (card.health && card.health > 0) {
@@ -360,7 +398,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
                 <Text style={[typography.cardText, styles.typeText]}>
                   { card.type_name }
                   { card.type_code === 'main_scheme' ?
-                    ` ${card.stage}` :
+                    ` ${card.stage}A` :
                     '' }
                 </Text>
                 { !!card.traits && (

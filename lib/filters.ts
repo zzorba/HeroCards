@@ -25,7 +25,7 @@ export interface FilterState {
   unique: boolean;
   resources: ResourceFilters;
   enemyHealthEnabled: boolean;
-  enemyHealthPerInvestigator: boolean;
+  enemyHealthPerHero: boolean;
   enemyDamageEnabled: boolean;
   enemyHorrorEnabled: boolean;
   enemyFightEnabled: boolean;
@@ -71,7 +71,7 @@ export const defaultFilterState: FilterState = {
     doubleIcons: false,
   },
   enemyHealthEnabled: false,
-  enemyHealthPerInvestigator: false,
+  enemyHealthPerHero: false,
   enemyDamageEnabled: false,
   enemyHorrorEnabled: false,
   enemyFightEnabled: false,
@@ -168,7 +168,7 @@ function applyEnemyFilters(filters: FilterState, query: string[]) {
     enemyFightEnabled,
     enemyHealth,
     enemyHealthEnabled,
-    enemyHealthPerInvestigator,
+    enemyHealthPerHero,
     enemyDamage,
     enemyDamageEnabled,
     enemyHorror,
@@ -222,7 +222,7 @@ function applyEnemyFilters(filters: FilterState, query: string[]) {
   }
   if (enemyHealthEnabled) {
     applyRangeFilter(query, 'health', enemyHealth, true);
-    query.push(`((type_code == 'enemy' and health_per_investigator == ${enemyHealthPerInvestigator}) or (linked_card.type_code == 'enemy' && linked_card.health_per_investigator == ${enemyHealthPerInvestigator}))`);
+    query.push(`((type_code == 'enemy' and health_per_hero == ${enemyHealthPerHero}) or (linked_card.type_code == 'enemy' && linked_card.health_per_investigator == ${enemyHealthPerHero}))`);
   }
   if (query.length !== oldLength ||
     (enemyHunter && enemyNonHunter) ||
