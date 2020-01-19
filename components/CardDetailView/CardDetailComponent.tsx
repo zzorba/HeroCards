@@ -67,17 +67,7 @@ export default class CardDetailComponent extends React.Component<Props> {
       return null;
     }
     return (
-      <View style={styles.investigatorContent}>
-        <Text style={[typography.header, styles.sectionHeader]}>
-          { t`Deckbuilding` }
-        </Text>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={this._showInvestigatorCards}
-            text={t`Deckbuilding Cards`}
-            icon={<AppIcon name="deck" size={22 * fontScale} color="white" />}
-          />
-        </View>
+      <View style={styles.investigatorContent}>      
         <SignatureCardsComponent
           componentId={componentId}
           investigator={card}

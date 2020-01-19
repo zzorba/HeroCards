@@ -7,6 +7,7 @@ import {
 
 import MarvelIcon from '../../assets/MarvelIcon';
 import { FACTION_COLORS } from '../../constants';
+import HeroGradient from '../core/HeroGradient';
 import Card from '../../data/Card';
 import { isBig } from '../../styles/space';
 
@@ -44,6 +45,9 @@ export default class CardCostIcon extends React.Component<Props> {
     const {
       card,
     } = this.props;
+    if (card.faction_code === 'hero') {
+      return HeroGradient.color(card.card_set_code).primary;
+    }
     if (card.faction2_code) {
       return FACTION_COLORS.dual;
     }

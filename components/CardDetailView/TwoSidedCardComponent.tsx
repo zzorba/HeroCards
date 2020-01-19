@@ -22,6 +22,7 @@ import CardFlavorTextComponent from '../CardFlavorTextComponent';
 import { InvestigatorCardsProps } from '../InvestigatorCardsView';
 import CardTextComponent from '../CardTextComponent';
 import Button from '../core/Button';
+import HeroGradient from '../core/HeroGradient';
 import CardCostIcon from '../core/CardCostIcon';
 import BaseCard from '../../data/BaseCard';
 import { CardFaqProps } from '../CardFaqView';
@@ -312,13 +313,20 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     );
   }
 
+  factionColor(card: BaseCard) {
+    if (card.faction_code === 'hero') {
+      return HeroGradient.color(card.card_set_code).primary;
+    }
+    return card.faction2_code ? FACTION_BACKGROUND_COLORS.dual :
+      (card.faction_code && FACTION_BACKGROUND_COLORS[card.faction_code]);
+  }
+
   renderTitle(
     card: BaseCard,
     name: string,
     subname: string | null,
   ) {
-    const factionColor = card.faction2_code ? FACTION_BACKGROUND_COLORS.dual :
-      (card.faction_code && FACTION_BACKGROUND_COLORS[card.faction_code]);
+    const factionColor = this.factionColor(card);
     return (
       <View style={[styles.cardTitle, {
         backgroundColor: factionColor || '#FFFFFF',
@@ -383,13 +391,12 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
       );
     }
 
+    const factionColor = this.factionColor(card);
     return (
       <View style={[styles.container, { width }]}>
         <View style={[styles.card, {
           backgroundColor: '#FFFFFF',
-          borderColor: card.faction2_code ?
-            FACTION_BACKGROUND_COLORS.dual :
-            ((card.faction_code && FACTION_COLORS[card.faction_code]) || '#000000'),
+          borderColor: factionColor,
         }]}>
           { this.renderTitle(card, card.back_name || card.name, null) }
           <View style={styles.cardBody}>
@@ -412,9 +419,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
               }
               { !!card.back_text && (
                 <View style={[styles.gameTextBlock, {
-                  borderColor: card.faction2_code ?
-                    FACTION_BACKGROUND_COLORS.dual :
-                    ((card.faction_code && FACTION_COLORS[card.faction_code]) || '#000000'),
+                  borderColor: factionColor,
                 }]}>
                   <CardTextComponent text={card.back_text} />
                 </View>)
@@ -503,13 +508,12 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     isHorizontal: boolean,
     flavorFirst: boolean
   ) {
+    const factionColor = this.factionColor(card);
     return (
       <React.Fragment>
         { !!card.text && (
           <View style={[styles.gameTextBlock, {
-            borderColor: card.faction2_code ?
-              FACTION_BACKGROUND_COLORS.dual :
-              ((card.faction_code && FACTION_COLORS[card.faction_code]) || '#000000'),
+            borderColor: factionColor,
           }]}>
             <CardTextComponent text={card.text} />
           </View>)
@@ -540,16 +544,14 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
         </View>
       );
     }
-
+    const factionColor = this.factionColor(card);
     const isTablet = Platform.OS === 'ios' && DeviceInfo.isTablet();
     return (
       <View style={styles.container}>
         <View style={[
           styles.card,
           {
-            borderColor: card.faction2_code ?
-              FACTION_BACKGROUND_COLORS.dual :
-              ((card.faction_code && FACTION_COLORS[card.faction_code]) || '#000000'),
+            borderColor: factionColor,
           },
         ]}>
           { this.renderTitle(card, card.name, card.subname) }

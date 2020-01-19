@@ -171,7 +171,7 @@ export function getNextLocalDeckId(state: AppState): number {
   const smallestDeckId = minBy(
     map(
       concat(
-        keys(state.decks.all),
+        keys(state.decks.all || []),
         keys(state.decks.replacedLocalIds || DEFAULT_OBJECT)
       ),
       x => parseInt(x, 10)

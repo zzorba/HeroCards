@@ -10,6 +10,7 @@ import {
 
 import MarvelIcon from '../../assets/MarvelIcon';
 import CardCostIcon, { costIconSize } from '../core/CardCostIcon';
+import HeroGradient from '../core/HeroGradient';
 import Switch from '../core/Switch';
 import Card from '../../data/Card';
 import { createFactionIcons, FACTION_COLORS, RESOURCES, ResourceCodeType } from '../../constants';
@@ -152,6 +153,26 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     ));
   }
 
+  backgroundColor() {
+    const {
+      card,
+    } = this.props;
+    if (card.faction_code === 'hero') {
+      return HeroGradient.color(card.card_set_code).background;
+    }
+    return '#222';
+  }
+
+  factionColor() {
+    const {
+      card,
+    } = this.props;
+    if (card.faction_code === 'hero') {
+      return HeroGradient.color(card.card_set_code).primary;
+    }
+    return FACTION_COLORS[card.factionCode()];
+  }
+
   renderDualFactionIcons() {
     const {
       card,
@@ -161,20 +182,21 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       return null;
     }
     const SKILL_ICON_SIZE = (isBig ? 26 : 16) * fontScale;
+    const color = this.factionColor();
     return (
       <View style={styles.dualFactionIcons}>
         <View style={styles.resourceIcon}>
           <MarvelIcon
             name={card.factionCode()}
             size={SKILL_ICON_SIZE}
-            color={FACTION_COLORS[card.factionCode()]}
+            color={color}
           />
         </View>
         <View style={styles.resourceIcon}>
           <MarvelIcon
             name={card.faction2_code}
             size={SKILL_ICON_SIZE}
-            color={FACTION_COLORS[card.faction2_code]}
+            color={color}
           />
         </View>
       </View>
@@ -206,9 +228,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       card,
       fontScale,
     } = this.props;
-    const color = card.faction2_code ?
-      FACTION_COLORS.dual :
-      (FACTION_COLORS[card.factionCode()] || '#000000');
+    const color = this.factionColor();
     return (
       <View style={styles.cardNameBlock}>
         <View style={styles.row}>
@@ -295,7 +315,13 @@ export default class CardSearchResult extends React.PureComponent<Props> {
       fontScale,
     } = this.props;
     return (
-      <View style={[styles.rowContainer, { minHeight: rowHeight(fontScale) }]}>
+      <View style={[
+        styles.rowContainer,
+        {
+          minHeight: rowHeight(fontScale),
+          backgroundColor: this.backgroundColor(),
+        },
+      ]}>
         <TouchableOpacity
           onPress={this._onPress}
           disabled={!onPress && !onPressId}
@@ -331,7 +357,12 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     } = this.props;
     if (!card) {
       return (
-        <View style={[styles.rowContainer, { minHeight: rowHeight(fontScale) }]}>
+        <View style={[
+          styles.rowContainer,
+          {
+            minHeight: rowHeight(fontScale),
+          },
+        ]}>
           <View style={styles.cardNameBlock}>
             <View style={styles.row}>
               <Text style={typography.text}>
@@ -344,7 +375,13 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     }
     if (!card.name) {
       return (
-        <View style={[styles.rowContainer, { minHeight: rowHeight(fontScale) }]}>
+        <View style={[
+          styles.rowContainer,
+          {
+            minHeight: rowHeight(fontScale),
+            backgroundColor: this.backgroundColor(),
+          },
+        ]}>
           <Text>No Text</Text>;
         </View>
       );
@@ -356,7 +393,6 @@ export default class CardSearchResult extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   rowContainer: {
-    backgroundColor: '#FFF',
     position: 'relative',
     width: '100%',
     flexDirection: 'row',

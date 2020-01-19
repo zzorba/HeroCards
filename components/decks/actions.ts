@@ -181,6 +181,7 @@ export const saveNewDeck: ActionCreator<
     return new Promise<Deck>((resolve, reject) => {
       if (params.local) {
         const nextLocalDeckId = getNextLocalDeckId(getState());
+        console.log(nextLocalDeckId);
         const deck = newLocalDeck(
           nextLocalDeckId,
           params.deckName,

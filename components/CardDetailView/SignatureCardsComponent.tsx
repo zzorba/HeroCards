@@ -38,7 +38,7 @@ class SignatureCardsComponent extends React.Component<Props> {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.header}>{ t`Required Cards` }</Text>
+        <Text style={styles.header}>{ t`Hero Cards` }</Text>
         { !!(requiredCards && requiredCards.length) && (
           map(requiredCards, card => (
             <SignatureCardItem

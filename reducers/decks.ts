@@ -201,7 +201,7 @@ export default function(
         ),
         myDecks: [
           action.id,
-          state.myDecks,
+          ...state.myDecks,
         ],
       });
   }
