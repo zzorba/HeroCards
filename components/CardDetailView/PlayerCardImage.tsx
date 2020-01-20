@@ -53,6 +53,8 @@ export default class PlayerCardImage extends React.Component<Props> {
     switch (card.type_code) {
       case 'minion':
         return styles.minionImage;
+      case 'attachment':
+        return styles.attachmentImage;
       case 'hero':
         return styles.heroImage;
       case 'side_scheme':
@@ -177,10 +179,17 @@ const styles = StyleSheet.create({
   },
   minionImage: {
     position: 'absolute',
-    top: -90 * SCALE_FACTOR,
-    left: -25 * SCALE_FACTOR,
-    width: 142 * 1.4 * SCALE_FACTOR,
-    height: 198 * 1.4 * SCALE_FACTOR,
+    top: -16 * SCALE_FACTOR,
+    left: -18 * SCALE_FACTOR,
+    width: 142 * 1.2 * SCALE_FACTOR,
+    height: 198 * 1.2 * SCALE_FACTOR,
+  },
+  attachmentImage: {
+    position: 'absolute',
+    top: 0,
+    left: -18 * SCALE_FACTOR,
+    width: 142 * 1.1 * SCALE_FACTOR,
+    height: 198 * 1.1 * SCALE_FACTOR,
   },
   heroImage: {
     top: -14 * SCALE_FACTOR,
@@ -189,7 +198,7 @@ const styles = StyleSheet.create({
     height: 198 * 1.1 * SCALE_FACTOR,
   },
   sideSchemeImage: {
-    top: -35 * SCALE_FACTOR,
+    top: -20 * SCALE_FACTOR,
     left: 0,
     height: 136 * 1.35 * SCALE_FACTOR,
     width: 166 * 1.35 * SCALE_FACTOR,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { flatMap, map, range } from 'lodash';
+import { flatMap, isEqual, keys, map, range } from 'lodash';
 import {
   Platform,
   StyleSheet,
@@ -39,6 +39,7 @@ const SPECIAL_ICON = (
   <MarvelIcon name="special" size={isBig ? 22 : 12} color="#000000" />
 );
 const RESOURCE_ICON_SIZE = isBig ? 26 : 16;
+const SCHEME_ICON_SIZE = isBig ? 64 : 52;
 
 const RESOURCE_FIELDS = [
   'resource_physical',
@@ -47,7 +48,13 @@ const RESOURCE_FIELDS = [
   'resource_wild',
 ];
 
-function num(value: number | null, special?: string | null) {
+const SCHEME_ICONS = {
+  scheme_acceleration: 'acceleration',
+  scheme_crisis: 'crisis',
+  scheme_hazard: 'hazard',
+};
+
+function num(value: number | null, special?: string | null, showModifier?: boolean) {
   if (value === null) {
     if (special) {
       return SPECIAL_ICON;
@@ -61,11 +68,11 @@ function num(value: number | null, special?: string | null) {
   if (special) {
     return (
       <>
-        {value}{SPECIAL_ICON}
+        {showModifier ? '+' : ''}{value}{SPECIAL_ICON}
       </>
     );
   }
-  return value;
+  return `${showModifier ? '+' : ''}${value}`;
 }
 
 interface Props {
@@ -175,6 +182,34 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     );
   }
 
+  renderSchemeIcons(card: BaseCard) {
+    if (card.type_code !== 'side_scheme') {
+      return null;
+    }
+    const icons = flatMap(SCHEME_ICONS, (icon, field) => {
+      // @ts-ignore
+      const count = card[field] || 0;
+      return range(0, count).map(() => icon);
+    });
+
+    if (icons.length === 0) {
+      return null;
+    }
+    return (
+      <View style={styles.schemeIconRow}>
+        { map(icons, (icon, idx) => (
+          <MarvelIcon
+            style={styles.schemeIcon}
+            key={idx}
+            name={icon}
+            size={SCHEME_ICON_SIZE}
+            color="#222"
+          />))
+        }
+      </View>
+    );
+  }
+
   renderResourceIcons(card: BaseCard) {
     const resources = flatMap(RESOURCE_FIELDS, resource => {
       // @ts-ignore
@@ -205,8 +240,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
 
   renderPlaydata(card: BaseCard) {
     const costString = card.costString(this.props.linked);
-    const escalation_threat = num(card.escalation_threat);
-    const plusEscalation = escalation_threat > 0 ? '+' : '';
+    const escalation_threat = num(card.escalation_threat, null, true);
     const base_threat = num(card.base_threat);
     const threat = num(card.threat);
     return (
@@ -223,7 +257,7 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
         ) }
         { (card.type_code === 'main_scheme' || card.type_code === 'side_scheme') && !!(card.escalation_threat) && (
           <Text style={typography.cardText}>
-            { t`Escalation Threat: ${plusEscalation}${escalation_threat}`}{ card.escalation_threat_fixed ? '' : PER_HERO_ICON }
+            { t`Escalation Threat: ${escalation_threat}`}{ card.escalation_threat_fixed ? '' : PER_HERO_ICON }
           </Text>
         ) }
         { (card.type_code === 'main_scheme') && (
@@ -243,18 +277,26 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
   }
 
   renderHealth(card: BaseCard) {
-    if (card.type_code === 'minion' || card.type_code === 'villain') {
+    const isAttachment = card.type_code === 'attachment';
+    if (card.type_code === 'minion' || card.type_code === 'villain' ||
+      isAttachment) {
       return (
         <>
-          <Text style={typography.cardText}>
-            { t`ATK` }: {num(card.attack, card.attack_text)}.
-          </Text>
-          <Text style={typography.cardText}>
-            { t`SCH` }: {num(card.scheme, card.scheme_text)}.
-          </Text>
-          <Text style={typography.cardText}>
-            { t`Health`}: {num(card.health)}{card.health_per_hero ? PER_HERO_ICON : '' }.
-          </Text>
+          { !!(!isAttachment || card.attack || card.attack_text) && (
+            <Text style={typography.cardText}>
+              { t`ATK` }: {num(card.attack, card.attack_text, isAttachment)}.
+            </Text>
+          ) }
+          { !!(!isAttachment || card.scheme || card.scheme_text) && (
+            <Text style={typography.cardText}>
+              { t`SCH` }: {num(card.scheme, card.scheme_text, isAttachment)}.
+            </Text>
+          ) }
+          { !!(!isAttachment || card.health) && (
+            <Text style={typography.cardText}>
+              { t`Health`}: {num(card.health)}{card.health_per_hero ? PER_HERO_ICON : '' }.
+            </Text>
+          ) }
         </>
       );
     }
@@ -509,18 +551,36 @@ export default class TwoSidedCardComponent extends React.Component<Props, State>
     flavorFirst: boolean
   ) {
     const factionColor = this.factionColor(card);
+    const hasNonBoostText = !!(card.text || card.attack_text || card.scheme_text);
+    const hasText = !!(hasNonBoostText || card.boost_text);
     return (
       <React.Fragment>
-        { !!card.text && (
+        { hasText && (
           <View style={[styles.gameTextBlock, {
             borderColor: factionColor,
           }]}>
-            <CardTextComponent text={card.text} />
+            { !!card.text && <CardTextComponent text={card.text} /> }
+            { !!card.attack_text && (
+              <CardTextComponent text={`[special] ${card.attack_text}`} />
+            ) }
+            { !!card.scheme_text && !isEqual(card.scheme_text, card.attack_text) && (
+              <Text>
+                { SPECIAL_ICON } <CardTextComponent text={card.scheme_text} />
+              </Text>
+            )}
+            { !!card.boost_text && (
+              <CardTextComponent text={
+                hasNonBoostText ?
+                t`<hr>[special] Boost: ${card.boost_text}` :
+                t`[special] Boost: ${card.boost_text}`
+              } />
+            )}
           </View>)
         }
         { !!card.flavor && !flavorFirst &&
           <CardFlavorTextComponent text={card.flavor} />
         }
+        { this.renderSchemeIcons(card) }
       </React.Fragment>
     );
   }
@@ -727,5 +787,14 @@ const styles = StyleSheet.create({
   },
   resourceIcon: {
     marginLeft: 2,
+  },
+  schemeIconRow: {
+    marginTop: s,
+    marginBottom: s,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  schemeIcon: {
+    marginLeft: s,
   },
 });
