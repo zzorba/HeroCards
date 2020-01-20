@@ -3,6 +3,7 @@ import { indexOf } from 'lodash';
 import { t } from 'ttag';
 
 import AspectSelectPicker from './AspectSelectPicker';
+import HeroGradient from '../core/HeroGradient';
 import { DeckMeta } from '../../actions/types';
 import Card from '../../data/Card';
 import DeckOption from '../../data/DeckOption';
@@ -44,7 +45,7 @@ export default class InvestigatorOption extends React.Component<Props> {
           aspects={option.aspect_select}
           onChange={this._onChange}
           selection={selection}
-          investigatorFaction={investigator.faction_code}
+          color={HeroGradient.color(investigator.card_set_code).primary}
           disabled={disabled}
         />
       );

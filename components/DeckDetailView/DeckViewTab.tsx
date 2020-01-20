@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { forEach, map, sumBy } from 'lodash';
+import { filter, forEach, map, sumBy } from 'lodash';
 import {
   StyleSheet,
   SectionList,
@@ -8,6 +8,7 @@ import {
   Text,
   SectionListData,
 } from 'react-native';
+import { SettingsSwitch } from 'react-native-settings-components';
 import { t } from 'ttag';
 
 import { CardId, Deck, DeckMeta, DeckProblem, ParsedDeck, SplitCards, Slots } from '../../actions/types';
@@ -36,6 +37,7 @@ function deckToSections(
   halfDeck: SplitCards,
   cards: CardsMap,
   validation: DeckValidation,
+  showHeroCards: boolean,
   special: boolean
 ): CardSection[] {
   const result: CardSection[] = [];
@@ -47,17 +49,23 @@ function deckToSections(
     [t`Upgrade`]: halfDeck.Upgrade,
   }, (cardSplitGroup, localizedName) => {
     if (cardSplitGroup) {
-      const count = sumBy(cardSplitGroup, c => c.quantity);
-      result.push({
-        id: `${localizedName}-${special ? '-special' : ''}`,
-        title: `${localizedName} (${count})`,
-        data: map(cardSplitGroup, c => {
-          return {
-            ...c,
-            special,
-          };
-        }),
+      const filteredCards = filter(cardSplitGroup, c => {
+        const card = cards[c.id];
+        return showHeroCards || (card && card.faction_code !== 'hero');
       });
+      const count = sumBy(filteredCards, c => c.quantity);
+      if (count > 0) {
+        result.push({
+          id: `${localizedName}-${special ? '-special' : ''}`,
+          title: `${localizedName} (${count})`,
+          data: map(filteredCards, c => {
+            return {
+              ...c,
+              special,
+            };
+          }),
+        });
+      }
     }
   });
   return result;
@@ -87,7 +95,15 @@ interface Props {
   width: number;
 }
 
-export default class DeckViewTab extends React.Component<Props> {
+interface State {
+  showHeroCards: boolean;
+}
+
+export default class DeckViewTab extends React.Component<Props, State> {
+  state: State = {
+    showHeroCards: false,
+  };
+
   _keyForCard = (item: SectionCardId) => {
     return item.id;
   };
@@ -232,9 +248,8 @@ export default class DeckViewTab extends React.Component<Props> {
       showEditCards,
       cards,
     } = this.props;
-
+    const { showHeroCards } = this.state;
     const validation = new DeckValidation(investigator, meta);
-
     return [
       {
         id: 'cards',
@@ -242,7 +257,7 @@ export default class DeckViewTab extends React.Component<Props> {
         data: [],
         onPress: showEditCards,
       },
-      ...deckToSections(normalCards, cards, validation, false),
+      ...deckToSections(normalCards, cards, validation, showHeroCards, false),
     ];
   }
 
@@ -285,6 +300,12 @@ export default class DeckViewTab extends React.Component<Props> {
     );
   }
 
+  _setShowHeroCards = (value: boolean) => {
+    this.setState({
+      showHeroCards: value,
+    });
+  };
+
   renderInvestigatorOptions() {
     const {
       parsedDeck: {
@@ -301,6 +322,11 @@ export default class DeckViewTab extends React.Component<Props> {
           meta={meta}
           setMeta={setMeta}
           disabled={!editable}
+        />
+        <SettingsSwitch
+          title={t`Required Hero Cards`}
+          onValueChange={this._setShowHeroCards}
+          value={this.state.showHeroCards}
         />
       </View>
     );

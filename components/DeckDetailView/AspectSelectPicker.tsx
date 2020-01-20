@@ -12,7 +12,7 @@ interface Props {
   aspects: FactionCodeType[];
   selection?: FactionCodeType;
   onChange: (faction: FactionCodeType) => void;
-  investigatorFaction?: FactionCodeType;
+  color: string;
   disabled?: boolean;
 }
 
@@ -40,8 +40,8 @@ export default class AspectSelectPicker extends React.Component<Props> {
       aspects,
       selection,
       name,
-      investigatorFaction,
       disabled,
+      color,
     } = this.props;
     const options = map(aspects, aspect => {
       return {
@@ -49,9 +49,6 @@ export default class AspectSelectPicker extends React.Component<Props> {
         value: aspect,
       };
     });
-    const color = investigatorFaction ?
-      FACTION_COLORS[investigatorFaction] :
-      COLORS.lightBlue;
     return (
       <SettingsPicker
         ref={this._captureRef}

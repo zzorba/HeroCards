@@ -66,7 +66,7 @@ interface Props {
   card_set_code: string | null;
   style?: ViewStyle;
   children?: ReactNode;
-  color: 'primary' | 'secondary' | 'accent';
+  color: 'primary' | 'secondary' | 'accent' | 'background';
 }
 
 export default class HeroGradient extends React.Component<Props> {

@@ -109,7 +109,7 @@ export default class DeckListRow extends React.Component<Props> {
           />
           <HeroGradient
             card_set_code={hero.card_set_code}
-            color="accent"
+            color="background"
           >
             <View style={styles.investigatorBlock}>
               <View style={styles.investigatorBlockRow}>

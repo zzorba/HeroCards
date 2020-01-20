@@ -160,7 +160,7 @@ export default class CardSearchResult extends React.PureComponent<Props> {
     if (card.faction_code === 'hero') {
       return HeroGradient.color(card.card_set_code).background;
     }
-    return '#222';
+    return '#fff';
   }
 
   factionColor() {
