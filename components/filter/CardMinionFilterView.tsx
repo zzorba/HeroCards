@@ -31,15 +31,10 @@ class CardMinionFilterView extends React.Component<FilterProps> {
       filters: {
         enemyElite,
         enemyNonElite,
-        enemyParley,
         enemyRetaliate,
-        enemyAlert,
-        enemyHunter,
-        enemyNonHunter,
-        enemySpawn,
-        enemyPrey,
-        enemyAloof,
-        enemyMassive,
+        enemyGuard,
+        enemyQuickstrike,
+        enemyTough,
       },
       onToggleChange,
     } = this.props;
@@ -54,33 +49,15 @@ class CardMinionFilterView extends React.Component<FilterProps> {
             onChange={onToggleChange}
           />
           <ToggleFilter
-            label={t`Hunter`}
-            setting="enemyHunter"
-            value={enemyHunter}
+            label={t`Guard`}
+            setting="enemyGuard"
+            value={enemyGuard}
             onChange={onToggleChange}
           />
           <ToggleFilter
-            label={t`Alert`}
-            setting="enemyAlert"
-            value={enemyAlert}
-            onChange={onToggleChange}
-          />
-          <ToggleFilter
-            label={t`Spawn`}
-            setting="enemySpawn"
-            value={enemySpawn}
-            onChange={onToggleChange}
-          />
-          <ToggleFilter
-            label={t`Aloof`}
-            setting="enemyAloof"
-            value={enemyAloof}
-            onChange={onToggleChange}
-          />
-          <ToggleFilter
-            label={t`Massive`}
-            setting="enemyMassive"
-            value={enemyMassive}
+            label={t`Quickstrike`}
+            setting="enemyQuickstrike"
+            value={enemyQuickstrike}
             onChange={onToggleChange}
           />
         </View>
@@ -92,27 +69,15 @@ class CardMinionFilterView extends React.Component<FilterProps> {
             onChange={onToggleChange}
           />
           <ToggleFilter
-            label={t`Non-Hunter`}
-            setting="enemyNonHunter"
-            value={enemyNonHunter}
-            onChange={onToggleChange}
-          />
-          <ToggleFilter
             label={t`Retaliate`}
             setting="enemyRetaliate"
             value={enemyRetaliate}
             onChange={onToggleChange}
           />
           <ToggleFilter
-            label={t`Parley`}
-            setting="enemyParley"
-            value={enemyParley}
-            onChange={onToggleChange}
-          />
-          <ToggleFilter
-            label={t`Prey`}
-            setting="enemyPrey"
-            value={enemyPrey}
+            label={t`Tough`}
+            setting="enemyTough"
+            value={enemyTough}
             onChange={onToggleChange}
           />
         </View>
@@ -127,14 +92,10 @@ class CardMinionFilterView extends React.Component<FilterProps> {
         enemyHealth,
         enemyHealthEnabled,
         enemyHealthPerHero,
-        enemyDamage,
-        enemyDamageEnabled,
-        enemyHorror,
-        enemyHorrorEnabled,
-        enemyFight,
-        enemyFightEnabled,
-        enemyEvade,
-        enemyEvadeEnabled,
+        enemyAttack,
+        enemyAttackEnabled,
+        enemyScheme,
+        enemySchemeEnabled,
       },
       width,
       onToggleChange,
@@ -144,14 +105,26 @@ class CardMinionFilterView extends React.Component<FilterProps> {
     return (
       <ScrollView>
         <SliderChooser
-          label={t`Fight`}
+          label={t`Attack`}
           width={width}
-          max={defaultFilterState.enemyFight[1]}
-          values={enemyFight}
-          setting="enemyFight"
+          max={defaultFilterState.enemyAttack[1]}
+          values={enemyAttack}
+          setting="enemyAttack"
           onFilterChange={onFilterChange}
-          enabled={enemyFightEnabled}
-          toggleName="enemyFightEnabled"
+          enabled={enemyAttackEnabled}
+          toggleName="enemyAttackEnabled"
+          onToggleChange={onToggleChange}
+          fontScale={fontScale}
+        />
+        <SliderChooser
+          label={t`Scheme`}
+          width={width}
+          max={defaultFilterState.enemyScheme[1]}
+          values={enemyScheme}
+          setting="enemyScheme"
+          onFilterChange={onFilterChange}
+          enabled={enemySchemeEnabled}
+          toggleName="enemySchemeEnabled"
           onToggleChange={onToggleChange}
           fontScale={fontScale}
         />
@@ -177,42 +150,6 @@ class CardMinionFilterView extends React.Component<FilterProps> {
             />
           </View>
         </SliderChooser>
-        <SliderChooser
-          label={t`Evade`}
-          width={width}
-          max={defaultFilterState.enemyEvade[1]}
-          values={enemyEvade}
-          setting="enemyEvade"
-          onFilterChange={onFilterChange}
-          enabled={enemyEvadeEnabled}
-          toggleName="enemyEvadeEnabled"
-          onToggleChange={onToggleChange}
-          fontScale={fontScale}
-        />
-        <SliderChooser
-          label={t`Damage`}
-          width={width}
-          max={defaultFilterState.enemyDamage[1]}
-          values={enemyDamage}
-          setting="enemyDamage"
-          onFilterChange={onFilterChange}
-          enabled={enemyDamageEnabled}
-          toggleName="enemyDamageEnabled"
-          onToggleChange={onToggleChange}
-          fontScale={fontScale}
-        />
-        <SliderChooser
-          label={t`Horror`}
-          width={width}
-          max={defaultFilterState.enemyHorror[1]}
-          values={enemyHorror}
-          setting="enemyHorror"
-          onFilterChange={onFilterChange}
-          enabled={enemyHorrorEnabled}
-          toggleName="enemyHorrorEnabled"
-          onToggleChange={onToggleChange}
-          fontScale={fontScale}
-        />
         { this.renderToggles() }
       </ScrollView>
     );
@@ -226,14 +163,10 @@ export default withFilterFunctions(
     'enemyHealth',
     'enemyHealthEnabled',
     'enemyHealthPerHero',
-    'enemyDamage',
-    'enemyDamageEnabled',
-    'enemyHorror',
-    'enemyHorrorEnabled',
-    'enemyFight',
-    'enemyFightEnabled',
-    'enemyEvade',
-    'enemyEvadeEnabled',
+    'enemyAttack',
+    'enemyAttackEnabled',
+    'enemyScheme',
+    'enemySchemeEnabled',
   ]
 );
 

@@ -18,29 +18,23 @@ export default function calculateDefaultFilterState(cards: Results<Card> | Card[
   const result: { [field: string]: [number, number]} = {
     cost: [10, 0],
     health: [10, 0],
-    enemy_damage: [10, 0],
-    enemy_horror: [10, 0],
-    enemy_fight: [10, 0],
-    enemy_evade: [10, 0],
+    enemy_attack: [10, 0],
+    enemy_scheme: [10, 0],
   };
   forEach(cards, card => {
     result.cost = update(card.cost, result.cost);
 
     if (card.type_code === 'minion') {
       result.health = update(card.health, result.health);
-      result.enemy_damage = update(card.enemy_damage, result.enemy_damage);
-      result.enemy_horror = update(card.enemy_horror, result.enemy_horror);
-      result.enemy_fight = update(card.enemy_fight, result.enemy_fight);
-      result.enemy_evade = update(card.enemy_evade, result.enemy_evade);
+      result.enemy_attack = update(card.attack, result.enemy_attack);
+      result.enemy_scheme = update(card.scheme, result.enemy_scheme);
     }
     if (card.linked_card) {
       result.cost = update(card.linked_card.cost, result.cost);
       if (card.linked_card.type_code === 'minion') {
         result.health = update(card.linked_card.health, result.health);
-        result.enemy_damage = update(card.linked_card.enemy_damage, result.enemy_damage);
-        result.enemy_horror = update(card.linked_card.enemy_horror, result.enemy_horror);
-        result.enemy_fight = update(card.linked_card.enemy_fight, result.enemy_fight);
-        result.enemy_evade = update(card.linked_card.enemy_evade, result.enemy_evade);
+        result.enemy_attack = update(card.linked_card.attack, result.enemy_attack);
+        result.enemy_scheme = update(card.linked_card.scheme, result.enemy_scheme);
       }
     }
   });
@@ -51,10 +45,8 @@ export default function calculateDefaultFilterState(cards: Results<Card> | Card[
     {
       cost: result.cost,
       enemyHealth: result.health,
-      enemyDamage: result.enemy_damage,
-      enemyHorror: result.enemy_horror,
-      enemyFight: result.enemy_fight,
-      enemyEvade: result.enemy_evade,
+      enemyAttack: result.enemy_attack,
+      enemyScheme: result.enemy_scheme,
     },
   );
 }

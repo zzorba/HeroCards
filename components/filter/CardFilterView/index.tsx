@@ -200,26 +200,17 @@ class CardFilterView extends React.Component<Props, State> {
       filters: {
         enemyElite,
         enemyNonElite,
-        enemyHunter,
-        enemyNonHunter,
-        enemyParley,
+        enemyGuard,
+        enemyQuickstrike,
         enemyRetaliate,
-        enemyAlert,
-        enemySpawn,
-        enemyPrey,
-        enemyAloof,
-        enemyMassive,
+        enemyTough,
         enemyHealthEnabled,
         enemyHealth,
         enemyHealthPerHero,
-        enemyDamageEnabled,
-        enemyDamage,
-        enemyHorrorEnabled,
-        enemyHorror,
-        enemyFightEnabled,
-        enemyFight,
-        enemyEvadeEnabled,
-        enemyEvade,
+        enemyAttackEnabled,
+        enemyAttack,
+        enemySchemeEnabled,
+        enemyScheme,
       },
     } = this.props;
     const parts = [];
@@ -229,32 +220,17 @@ class CardFilterView extends React.Component<Props, State> {
     if (enemyNonElite) {
       parts.push(t`Non-Elite`);
     }
-    if (enemyHunter) {
-      parts.push(t`Hunter`);
-    }
-    if (enemyNonHunter) {
-      parts.push(t`Non-Hunter`);
-    }
-    if (enemyParley) {
-      parts.push(t`Parley`);
+    if (enemyGuard) {
+      parts.push(t`Guard`);
     }
     if (enemyRetaliate) {
       parts.push(t`Retaliate`);
     }
-    if (enemyAlert) {
-      parts.push(t`Alert`);
+    if (enemyQuickstrike) {
+      parts.push(t`Quickstrike`);
     }
-    if (enemySpawn) {
-      parts.push(t`Spawn`);
-    }
-    if (enemyPrey) {
-      parts.push(t`Prey`);
-    }
-    if (enemyAloof) {
-      parts.push(t`Aloof`);
-    }
-    if (enemyMassive) {
-      parts.push(t`Massive`);
+    if (enemyTough) {
+      parts.push(t`Tough`);
     }
     if (enemyHealthEnabled) {
       if (enemyHealthPerHero) {
@@ -263,24 +239,18 @@ class CardFilterView extends React.Component<Props, State> {
         parts.push(CardFilterView.rangeText(t`Health`, enemyHealth));
       }
     }
-    if (enemyDamageEnabled) {
-      parts.push(CardFilterView.rangeText(t`Damage`, enemyDamage));
+    if (enemyAttackEnabled) {
+      parts.push(CardFilterView.rangeText(t`ATK`, enemyAttack));
     }
-    if (enemyHorrorEnabled) {
-      parts.push(CardFilterView.rangeText(t`Horror`, enemyHorror));
-    }
-    if (enemyFightEnabled) {
-      parts.push(CardFilterView.rangeText(t`Fight`, enemyFight));
-    }
-    if (enemyEvadeEnabled) {
-      parts.push(CardFilterView.rangeText(t`Evade`, enemyEvade));
+    if (enemySchemeEnabled) {
+      parts.push(CardFilterView.rangeText(t`SCH`, enemyScheme));
     }
 
     if (parts.length === 0) {
-      return t`Enemies: All`;
+      return t`Minions: All`;
     }
     const searchParts = parts.join(', ');
-    return t`Enemies: ${searchParts}`;
+    return t`Minions: ${searchParts}`;
   }
 
 

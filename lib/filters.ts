@@ -26,29 +26,20 @@ export interface FilterState {
   resources: ResourceFilters;
   enemyHealthEnabled: boolean;
   enemyHealthPerHero: boolean;
-  enemyDamageEnabled: boolean;
-  enemyHorrorEnabled: boolean;
-  enemyFightEnabled: boolean;
-  enemyEvadeEnabled: boolean;
+  enemyAttackEnabled: boolean;
+  enemySchemeEnabled: boolean;
   // Misc traits
   enemyElite: boolean;
   enemyNonElite: boolean;
-  enemyHunter: boolean;
-  enemyNonHunter: boolean;
-  enemyParley: boolean;
+  enemyGuard: boolean;
+  enemyQuickstrike: boolean;
+  enemyTough: boolean;
   enemyRetaliate: boolean;
-  enemyAlert: boolean;
-  enemySpawn: boolean;
-  enemyPrey: boolean;
-  enemyAloof: boolean;
-  enemyMassive: boolean;
   // Slider controls that are dynamically sized
   cost: [number, number];
   enemyHealth: [number, number];
-  enemyDamage: [number, number];
-  enemyHorror: [number, number];
-  enemyFight: [number, number];
-  enemyEvade: [number, number];
+  enemyAttack: [number, number];
+  enemyScheme: [number, number];
 }
 
 export const defaultFilterState: FilterState = {
@@ -72,30 +63,21 @@ export const defaultFilterState: FilterState = {
   },
   enemyHealthEnabled: false,
   enemyHealthPerHero: false,
-  enemyDamageEnabled: false,
-  enemyHorrorEnabled: false,
-  enemyFightEnabled: false,
-  enemyEvadeEnabled: false,
+  enemyAttackEnabled: false,
+  enemySchemeEnabled: false,
   // Misc traits
   enemyElite: false,
   enemyNonElite: false,
-  enemyHunter: false,
-  enemyNonHunter: false,
-  enemyParley: false,
+  enemyGuard: false,
+  enemyTough: false,
+  enemyQuickstrike: false,
   enemyRetaliate: false,
-  enemyAlert: false,
-  enemySpawn: false,
-  enemyPrey: false,
-  enemyAloof: false,
-  enemyMassive: false,
 
   // Slider controls that are dynamically sized
   cost: [0, 6],
   enemyHealth: [0, 10],
-  enemyDamage: [0, 5],
-  enemyHorror: [0, 5],
-  enemyFight: [0, 6],
-  enemyEvade: [0, 6],
+  enemyAttack: [0, 5],
+  enemyScheme: [0, 5],
 };
 
 function safeValue(value: any) {
@@ -152,27 +134,18 @@ function applyEnemyFilters(filters: FilterState, query: string[]) {
     // toggle filters
     enemyElite,
     enemyNonElite,
-    enemyHunter,
-    enemyNonHunter,
     enemyRetaliate,
-    enemyAlert,
-    enemyParley,
-    enemySpawn,
-    enemyPrey,
-    enemyAloof,
-    enemyMassive,
+    enemyGuard,
+    enemyQuickstrike,
+    enemyTough,
     // range filters
-    enemyEvade,
-    enemyEvadeEnabled,
-    enemyFight,
-    enemyFightEnabled,
     enemyHealth,
     enemyHealthEnabled,
     enemyHealthPerHero,
-    enemyDamage,
-    enemyDamageEnabled,
-    enemyHorror,
-    enemyHorrorEnabled,
+    enemyAttack,
+    enemyAttackEnabled,
+    enemyScheme,
+    enemySchemeEnabled,
   } = filters;
   const oldLength = query.length;
   if (enemyElite && !enemyNonElite) {
@@ -184,50 +157,28 @@ function applyEnemyFilters(filters: FilterState, query: string[]) {
   if (enemyRetaliate) {
     query.push(`(real_text CONTAINS 'Retaliate.' or linked_card.real_text CONTAINS 'Retaliate.')`);
   }
-  if (enemyAlert) {
-    query.push(`(real_text CONTAINS 'Alert.' or linked_card.real_text CONTAINS 'Alert.')`);
+  if (enemyQuickstrike) {
+    query.push(`(real_text CONTAINS 'Quickstrike.' or linked_card.real_text CONTAINS 'Quickstrike.')`);
   }
-  if (enemyHunter && !enemyNonHunter) {
-    query.push(`(real_text CONTAINS 'Hunter.' or linked_card.real_text CONTAINS 'Hunter.')`);
+  if (enemyTough) {
+    query.push(`(real_text CONTAINS 'Tough.' or linked_card.real_text CONTAINS 'Tough.')`);
   }
-  if (enemyNonHunter && !enemyHunter) {
-    query.push(`((type_code == 'enemy' and !(real_text CONTAINS 'Hunter.')) or (linked_card.type_code == 'enemy' and !(linked_card.real_text CONTAINS 'Hunter.')))`);
+  if (enemyGuard) {
+    query.push(`(real_text CONTAINS 'Guard' or linked_card.real_text CONTAINS 'Guard')`);
   }
-  if (enemySpawn) {
-    query.push(`(real_text CONTAINS 'Spawn' or linked_card.real_text CONTAINS 'Spawn')`);
+  if (enemyAttackEnabled) {
+    applyRangeFilter(query, 'attack', enemyAttack, true);
   }
-  if (enemyPrey) {
-    query.push(`(real_text CONTAINS 'Prey' or linked_card.real_text CONTAINS 'Prey')`);
-  }
-  if (enemyAloof) {
-    query.push(`(real_text CONTAINS 'Aloof.' or linked_card.real_text CONTAINS 'Aloof.')`);
-  }
-  if (enemyParley) {
-    query.push(`(real_text CONTAINS 'Parley.' or linked_card.real_text CONTAINS 'Parley.')`);
-  }
-  if (enemyMassive) {
-    query.push(`(real_text CONTAINS 'Massive.' or linked_card.real_text CONTAINS 'Massive.')`);
-  }
-  if (enemyFightEnabled) {
-    applyRangeFilter(query, 'enemy_fight', enemyFight, true);
-  }
-  if (enemyEvadeEnabled) {
-    applyRangeFilter(query, 'enemy_evade', enemyEvade, true);
-  }
-  if (enemyDamageEnabled) {
-    applyRangeFilter(query, 'enemy_damage', enemyDamage, true);
-  }
-  if (enemyHorrorEnabled) {
-    applyRangeFilter(query, 'enemy_horror', enemyHorror, true);
+  if (enemySchemeEnabled) {
+    applyRangeFilter(query, 'scheme', enemyScheme, true);
   }
   if (enemyHealthEnabled) {
     applyRangeFilter(query, 'health', enemyHealth, true);
-    query.push(`((type_code == 'enemy' and health_per_hero == ${enemyHealthPerHero}) or (linked_card.type_code == 'enemy' && linked_card.health_per_investigator == ${enemyHealthPerHero}))`);
+    query.push(`((type_code == 'minion' and health_per_hero == ${enemyHealthPerHero}) or (linked_card.type_code == 'enemy' && linked_card.health_per_investigator == ${enemyHealthPerHero}))`);
   }
   if (query.length !== oldLength ||
-    (enemyHunter && enemyNonHunter) ||
     (enemyElite && enemyNonElite)) {
-    query.push(`(type_code == 'enemy' or linked_card.type_code == 'enemy')`);
+    query.push(`(type_code == 'minion' or linked_card.type_code == 'minion')`);
   }
 }
 
