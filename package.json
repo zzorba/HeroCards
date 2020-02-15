@@ -68,7 +68,7 @@
     "simple-markdown": "0.6.1",
     "ttag": "1.7.20",
     "utility-types": "3.9.0",
-    "yarn": "1.19.1"
+    "yarn": "1.22.0"
   },
   "devDependencies": {
     "@babel/core": "7.6.2",
