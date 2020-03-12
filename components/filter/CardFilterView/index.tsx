@@ -23,8 +23,6 @@ import { COLORS } from '../../../styles/colors';
 
 const CARD_FACTION_CODES: FactionCodeType[] = [
   ...CORE_FACTION_CODES,
-  'basic',
-  'encounter',
 ];
 
 interface ReduxProps {
@@ -309,6 +307,11 @@ class CardFilterView extends React.Component<Props, State> {
       <ScrollView>
         <FactionChooser
           factions={allFactions}
+          selection={factions}
+          onFilterChange={onFilterChange}
+        />
+        <FactionChooser
+          factions={['basic', 'encounter']}
           selection={factions}
           onFilterChange={onFilterChange}
         />

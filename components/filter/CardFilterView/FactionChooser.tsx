@@ -1,18 +1,11 @@
 import React from 'react';
 import { flatMap, map } from 'lodash';
-import {
-  StyleSheet,
-} from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { ButtonGroup } from 'react-native-elements';
+import { FactionCodeType } from '../../../constants';
 
-import MarvelIcon from '../../../assets/MarvelIcon';
-import { FACTION_COLORS, FactionCodeType } from '../../../constants';
-
-function factionToIconName(faction: FactionCodeType) {
-  if (faction === 'hero') {
-    return 'elder_sign';
-  }
-  return faction;
+function factionToText(faction: FactionCodeType) {
+  return faction.charAt(0).toUpperCase() + faction.slice(1);
 }
 
 interface Props {
@@ -49,13 +42,9 @@ export default class FactionChooser extends React.Component<Props> {
       }
       return {
         element: () => {
-          const iconName = factionToIconName(faction);
+          const iconName = factionToText(faction);
           return (
-            <MarvelIcon
-              name={iconName}
-              size={iconName !== faction ? 28 : 32}
-              color={selected ? FACTION_COLORS[faction] : '#bdbdbd'}
-            />
+            <Text>{ iconName }</Text>
           );
         },
       };

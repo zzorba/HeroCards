@@ -74,7 +74,6 @@ export default class PackRow extends React.Component<Props> {
 
     const backgroundColor = whiteBackground ? '#FFFFFF' : '#f0f0f0';
     const textColor = '#222222';
-    const iconSize = (compact) ? 24 : 28;
     const fontSize = (compact) ? 16 : 22;
     const rowHeight = 60;
     return (
@@ -84,13 +83,6 @@ export default class PackRow extends React.Component<Props> {
       ]}>
         <TouchableOpacity style={styles.touchable} onPress={this._onPress}>
           <View style={styles.touchableContent}>
-            <View style={styles.icon}>
-              <PackIcon
-                pack_code={pack.code}
-                size={iconSize}
-                color="#000000"
-              />
-            </View>
             <Text
               style={[styles.title, { color: textColor, fontSize }]}
               numberOfLines={2}
@@ -136,13 +128,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-  },
-  icon: {
-    marginLeft: 8,
-    width: 36,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   title: {
     marginLeft: 8,
