@@ -92,7 +92,7 @@ class SettingsView extends React.Component<Props> {
   };
 
   _aboutPressed = () => {
-    this.navButtonPressed('About', t`About Arkham Cards`);
+    this.navButtonPressed('About', t`About Hero Cards`);
   };
 
   _clearImageCache = () => {
@@ -173,10 +173,10 @@ class SettingsView extends React.Component<Props> {
           />
           <SettingsItem navigation onPress={this._diagnosticsPressed} text={t`Diagnostics`} />
           <SettingsCategoryHeader
-            title={t`About Arkham Cards`}
+            title={t`About Hero Cards`}
             titleStyle={Platform.OS === 'android' ? styles.androidCategory : undefined}
           />
-          <SettingsItem navigation onPress={this._aboutPressed} text={t`About Arkham Cards`} />
+          <SettingsItem navigation onPress={this._aboutPressed} text={t`About Hero Cards`} />
         </ScrollView>
       </SafeAreaView>
     );

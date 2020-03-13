@@ -1,6 +1,6 @@
 {
-  "name": "arkhamcards",
-  "version": "1.9.0",
+  "name": "herocards",
+  "version": "0.0.9",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
