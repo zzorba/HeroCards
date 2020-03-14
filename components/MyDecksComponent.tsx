@@ -185,7 +185,6 @@ class MyDecksComponent extends React.Component<Props> {
         !deck || !filterHeroesSet.has(deck.investigator_code)
       );
     });
-    console.log(deckIds);
     return (
       <DeckListComponent
         customHeader={this.renderHeader()}
