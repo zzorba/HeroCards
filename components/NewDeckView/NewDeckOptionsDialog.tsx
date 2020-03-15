@@ -88,14 +88,9 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
 
   _onStarterDeckChange = (value: boolean) => {
     const { heroId } = this.props;
-    if (heroId) {
-      const aspect = starterDecks[heroId].aspect;
-      this.setState({
-        aspect,
-      });
-    }
     this.setState({
       starterDeck: value,
+      aspect: heroId ? starterDecks[heroId].aspect : this.state.aspect,
     });
   }
 
