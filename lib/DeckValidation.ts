@@ -36,7 +36,7 @@ export default class DeckValidation {
   }
 
   getDeckSize(): [number, number] {
-    var size: [number, number] = [40, 50];
+    const size: [number, number] = [40, 50];
     return size;
   }
 
@@ -57,19 +57,20 @@ export default class DeckValidation {
   }
 
   getDrawDeckSize(cards: Card[]) {
-    var draw_deck = this.getDrawDeck(cards);
-	  return draw_deck.length;
+    const draw_deck = this.getDrawDeck(cards);
+    return draw_deck.length;
   }
 
   getCopiesAndDeckLimit(cards: Card[]) {
     return mapValues(
-      groupBy(this.getDrawDeck(cards), card => card ? card.real_name : 'Unknown Card'),
+      groupBy(this.getDrawDeck(cards), card => card ? card.code : 'Unknown Card'),
       group => {
         return {
           nb_copies: group.length,
           deck_limit: group[0].deck_limit || 0,
         };
-      });
+      }
+    );
   }
 
   getProblem(cards: Card[]): DeckProblem | null {
@@ -87,109 +88,105 @@ export default class DeckValidation {
     if (!this.meta || !this.meta.aspect) {
       return 'aspect';
     }
-	  // get investigator data
-  	var card = this.investigator;
-  	// store list of all problems
-  	this.problem_list = [];
-  	if (card && card.deck_requirements){
-  		//console.log(card.deck_requirements);
-  		// must have the required cards
-  		if (card.deck_requirements.card){
-  			var req_count = 0;
-  			var req_met_count = 0;
-  			forEach(card.deck_requirements.card, possible => {
-  				req_count++;
+    // get investigator data
+    const card = this.investigator;
+    // store list of all problems
+    this.problem_list = [];
+    if (card && card.deck_requirements) {
+      // must have the required cards
+      if (card.deck_requirements.card) {
+        let req_count = 0;
+        let req_met_count = 0;
+        forEach(card.deck_requirements.card, possible => {
+          req_count++;
           if (find(cards, theCard =>
             theCard.code === possible.code ||
             find(possible.alternates, alt => alt === theCard.code))) {
             req_met_count++;
           }
-  			});
-  			if (req_met_count < req_count) {
-  				return 'hero';
-  			}
-  		}
-  	} else {
+        });
+        if (req_met_count < req_count) {
+          return 'hero';
+        }
+      }
+    }
 
-  	}
     const [minDeckSize, maxDeckSize] = this.getDeckSize();
 
-  	// too many copies of one card
-  	if(findKey(
-        this.getCopiesAndDeckLimit(cards),
-        value => value.nb_copies > value.deck_limit) != null) {
+    // too many copies of one card
+    if (findKey(
+      this.getCopiesAndDeckLimit(cards), value =>  value.nb_copies > value.deck_limit) != null) {
       return 'too_many_copies';
     }
 
-  	// no invalid card
+    // no invalid card
     const invalidCards = this.getInvalidCards(cards);
-  	if(invalidCards.length > 0) {
-      // console.log('Invalid cards:' + map(invalidCards, card => card.code))
-  		return 'invalid_cards';
-  	}
+    if (invalidCards.length > 0) {
+      return 'invalid_cards';
+    }
 
     const deck_options = this.deckOptions();
-  	for (var i = 0; i < deck_options.length; i++) {
+    for (let i = 0; i < deck_options.length; i++) {
       const option = deck_options[i];
       if (!option) {
         continue;
       }
-  		if (this.deck_options_counts[i].limit && option.limit){
-  			if (this.deck_options_counts[i].limit > option.limit){
-  				if (option.error) {
-  					this.problem_list.push(option.error);
-  				}
-  				return 'hero';
-  			}
-  		}
+      if (this.deck_options_counts[i].limit && option.limit) {
+        if (this.deck_options_counts[i].limit > option.limit) {
+          if (option.error) {
+            this.problem_list.push(option.error);
+          }
+          return 'hero';
+        }
+      }
       const atleast = option.atleast;
-  		if (atleast) {
-  			if (atleast.factions && atleast.min){
-  				var faction_count = 0;
+      if (atleast) {
+        if (atleast.factions && atleast.min) {
+          let faction_count = 0;
           forEach(this.deck_options_counts[i].atleast, (value) => {
-  					if (value >= atleast.min){
-  						faction_count++;
-  					}
-  				})
-  				if (faction_count < atleast.factions){
-  					if (option.error){
-  						this.problem_list.push(option.error);
-  					}
-  					return 'hero';
-  				}
-  			}
-  		}
-  	}
+            if (value >= atleast.min) {
+              faction_count++;
+            }
+          })
+          if (faction_count < atleast.factions) {
+            if (option.error) {
+              this.problem_list.push(option.error);
+            }
+            return 'hero';
+          }
+        }
+      }
+    }
 
     const drawDeckSize = this.getDrawDeckSize(cards);
-  		// at least 60 others cards
-  	if(drawDeckSize < minDeckSize) {
-  		return 'too_few_cards';
-  	}
+    // at least 60 others cards
+    if (drawDeckSize < minDeckSize) {
+      return 'too_few_cards';
+    }
 
-  	// at least 60 others cards
-  	if(drawDeckSize > maxDeckSize) {
-  		return 'too_many_cards';
-  	}
+    // at least 60 others cards
+    if (drawDeckSize > maxDeckSize) {
+      return 'too_many_cards';
+    }
     return null;
   }
 
   getInvalidCards(cards: Card[]) {
     this.deck_options_counts = [];
-  	if (this.investigator) {
-  		for (var i = 0; i < this.investigator.heroSelectOptions().length; i++){
-  			this.deck_options_counts.push({
+    if (this.investigator) {
+      for (let i = 0; i < this.investigator.heroSelectOptions().length; i++) {
+        this.deck_options_counts.push({
           limit: 0,
           atleast: {}
         });
-  		}
-  	}
-  	return filter(cards, card => !this.canIncludeCard(card, true));
+      }
+    }
+    return filter(cards, card => !this.canIncludeCard(card, true));
   }
 
   deckOptions(): DeckOption[] {
-    var deck_options: DeckOption[] = [];
-  	if (this.investigator) {
+    const deck_options: DeckOption[] = [];
+    if (this.investigator) {
       forEach(this.investigator.heroSelectOptions(),
         deck_option => deck_options.push(deck_option)
       );
@@ -203,33 +200,32 @@ export default class DeckValidation {
   ): boolean {
     const investigator = this.investigator;
 
-  	// hide investigators
-  	if (card.type_code === 'hero') {
-  		return false;
-  	}
-  	if (card.faction_code === 'encounter') {
-  		return false;
-  	}
+    // hide investigators
+    if (card.type_code === 'hero') {
+      return false;
+    }
+    if (card.faction_code === 'encounter') {
+      return false;
+    }
 
-  	// reject cards restricted
-  	if (card.restrictions &&
-        card.restrictions.investigators &&
-        !find(card.restrictions.investigators, code => code === investigator.code)) {
-  		return false;
-  	}
+    // reject cards restricted
+    if (card.restrictions &&
+      card.restrictions.investigators &&
+      !find(card.restrictions.investigators, code => code === investigator.code)) {
+      return false;
+    }
 
     // reject cards from other heroes
     if (card.faction_code === 'hero' && card.card_set_code) {
       return (card.card_set_code === investigator.card_set_code);
     }
 
-  	//var investigator = app.data.cards.findById(investigator_code);
+    //const investigator = app.data.cards.findById(investigator_code);
     const deck_options: DeckOption[] = this.deckOptions();
     if (deck_options.length) {
-  		// console.log(card);
-  		for (var i = 0; i < deck_options.length; i++) {
+      for (let i = 0; i < deck_options.length; i++) {
         const finalOption = (i === deck_options.length - 1);
-  			var option = deck_options[i];
+        const option = deck_options[i];
         if (option.aspect_select && option.aspect_select.length) {
           let selected_faction: string = option.aspect_select[0]
           if (this.meta &&
@@ -239,118 +235,112 @@ export default class DeckValidation {
             selected_faction = this.meta.aspect;
           }
           if (card.faction_code != selected_faction &&
-            card.faction2_code != selected_faction){
-            // console.log(`${card.faction_code} does not match selected faction: ${selected_faction}`);
+            card.faction2_code != selected_faction) {
             continue;
           }
         }
         if (option.aspect && option.aspect.length) {
-          var aspect_valid = false;
-  				for(var j = 0; j < option.aspect.length; j++){
-  					var aspect = option.aspect[j];
-  					if (card.faction_code == aspect ||
-              card.faction2_code == aspect){
-  						aspect_valid = true;
-  					}
-  				}
-  				if (!aspect_valid){
-  					continue;
-  				}
+          let aspect_valid = false;
+          for (let j = 0; j < option.aspect.length; j++) {
+            const aspect = option.aspect[j];
+            if (card.faction_code == aspect ||
+              card.faction2_code == aspect) {
+              aspect_valid = true;
+            }
+          }
+          if (!aspect_valid) {
+            continue;
+          }
         }
-  			if (option.type_code && option.type_code.length){
-  				// needs to match at least one faction
-  				var type_valid = false;
-  				for(var j = 0; j < option.type_code.length; j++){
-  					var type = option.type_code[j];
-  					if (card.type_code == type){
-  						type_valid = true;
-  					}
-  				}
+        if (option.type_code && option.type_code.length) {
+          // needs to match at least one faction
+          let type_valid = false;
+          for (let j = 0; j < option.type_code.length; j++) {
+            const type = option.type_code[j];
+            if (card.type_code == type) {
+              type_valid = true;
+            }
+          }
 
-  				if (!type_valid){
-  					continue;
-  				}
-  				//console.log("faction valid");
-  			}
+          if (!type_valid) {
+            continue;
+          }
+        }
 
-  			if (option.trait && option.trait.length){
-  				// needs to match at least one trait
-  				var trait_valid = false;
+        if (option.trait && option.trait.length) {
+          // needs to match at least one trait
+          let trait_valid = false;
 
-  				for(var j = 0; j < option.trait.length; j++){
-  					var trait = option.trait[j];
-  					//console.log(card.traits, trait.toUpperCase()+".");
+          for (let j = 0; j < option.trait.length; j++) {
+            const trait = option.trait[j];
 
-  					if (card.real_traits && card.real_traits.toUpperCase().indexOf(trait.toUpperCase()+".") !== -1){
-  						trait_valid = true;
-  					}
-  				}
+            if (card.real_traits && card.real_traits.toUpperCase().indexOf(trait.toUpperCase() + ".") !== -1) {
+              trait_valid = true;
+            }
+          }
 
-  				if (!trait_valid){
-  					continue;
-  				}
-  				//console.log("faction valid");
-  			}
+          if (!trait_valid) {
+            continue;
+          }
+        }
 
-  			if (option.uses && option.uses.length){
-  				// needs to match at least one trait
-  				var uses_valid = false;
+        if (option.uses && option.uses.length) {
+          // needs to match at least one trait
+          let uses_valid = false;
 
-  				for(var j = 0; j < option.uses.length; j++){
-  					var uses = option.uses[j];
-  					//console.log(card.traits, trait.toUpperCase()+".");
+          for (let j = 0; j < option.uses.length; j++) {
+            const uses = option.uses[j];
 
-  					if (card.real_text && card.real_text.toUpperCase().indexOf(""+uses.toUpperCase()+").") !== -1){
-  						uses_valid = true;
-  					}
-  				}
+            if (card.real_text && card.real_text.toUpperCase().indexOf("" + uses.toUpperCase() + ").") !== -1) {
+              uses_valid = true;
+            }
+          }
 
-  				if (!uses_valid){
-  					continue;
-  				}
-  				//console.log("faction valid");
-  			}
+          if (!uses_valid) {
+            continue;
+          }
+        }
 
         if (option.text && option.text.length) {
-          var text_valid = false;
-          for(var j = 0; j < option.text.length; j++){
-            var text = option.text[j];
-            if (card.real_text && card.real_text.toLowerCase().match(text)){
+          let text_valid = false;
+          for (let j = 0; j < option.text.length; j++) {
+            const text = option.text[j];
+            if (card.real_text && card.real_text.toLowerCase().match(text)) {
               text_valid = true;
-  					}
+            }
           }
           if (!text_valid) {
             continue;
           }
         }
-  			if (option.not){
-  				return false;
-  			} else {
+        if (option.not) {
+          return false;
+        } else {
           if (processDeckCounts && option.atleast && card.faction_code) {
             if (!this.deck_options_counts[i].atleast[card.faction_code]) {
               this.deck_options_counts[i].atleast[card.faction_code] = 0;
             }
             this.deck_options_counts[i].atleast[card.faction_code] += 1;
 
-            if (card.faction2_code){
-              if (!this.deck_options_counts[i].atleast[card.faction2_code]){
+            if (card.faction2_code) {
+              if (!this.deck_options_counts[i].atleast[card.faction2_code]) {
                 this.deck_options_counts[i].atleast[card.faction2_code] = 0;
               }
               this.deck_options_counts[i].atleast[card.faction2_code] += 1;
             }
           }
-  				if (processDeckCounts && option.limit) {
+          if (processDeckCounts && option.limit) {
             if (finalOption || this.deck_options_counts[i].limit < option.limit) {
-				      this.deck_options_counts[i].limit += 1;
+              this.deck_options_counts[i].limit += 1;
               return true;
             }
-  				} else {
+          } else {
             return true;
           }
-  			}
-  		}
-  	}
+        }
+      }
+    }
 
-  	return false;
+    return false;
   }
 }

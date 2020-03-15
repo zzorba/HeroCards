@@ -87,8 +87,10 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
   };
 
   _onStarterDeckChange = (value: boolean) => {
+    const { heroId } = this.props;
     this.setState({
       starterDeck: value,
+      aspect: heroId ? starterDecks[heroId].aspect : this.state.aspect,
     });
   }
 
@@ -183,7 +185,7 @@ class NewDeckOptionsDialog extends React.Component<Props, State> {
       const local = (offlineDeck || !signedIn || !isConnected || networkType === NetInfoStateType.none);
       let slots = this.getSlots();
       if (starterDeck && starterDecks[hero.code]) {
-        slots = starterDecks[hero.code];
+        slots = starterDecks[hero.code].slots;
       }
       this.setState({
         saving: true,

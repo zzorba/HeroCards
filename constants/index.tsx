@@ -4,7 +4,6 @@ import { mapValues } from 'lodash';
 import { DeckMeta } from '../actions/types';
 import MarvelIcon from '../assets/MarvelIcon';
 
-
 export type TypeCodeType =
   'hero' |
   'alter_ego' |
